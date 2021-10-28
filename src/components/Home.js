@@ -61,6 +61,7 @@ const styles = (theme) => ({
   smartBinImg: {
     width: "40%",
     height: "auto",
+    marginTop: "4%",
   },
   smartLabelImg: {
     width: "50%",
@@ -97,7 +98,7 @@ const styles = (theme) => ({
     height: 70,
   },
   listItem: {
-    height: 90,
+    height: 110,
   },
   badge: {
     backgroundColor: "#fce1e4",
@@ -105,8 +106,34 @@ const styles = (theme) => ({
     textAlign: "center",
     display: "inline-block",
     margin: "5% 3% 4%",
+    width: 60,
+    height: 40,
+  },
+  iconButton: {
+    backgroundColor: "#bee6fdbd",
+    borderRadius: "50%",
+    textAlign: "center",
+    margin: "5% 3% 4%",
     width: 40,
     height: 40,
+  },
+  list: {
+    marginLeft: "30%",
+    [theme.breakpoints.down("sm")]: {
+      display: "flex",
+      flexDirection: "row",
+      padding: 0,
+    marginLeft: "25px",
+
+    },
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "row",
+      padding: 0,
+    marginLeft: "25px",
+
+    },
+  
   },
   icon: {
     marginTop: 6,
@@ -183,13 +210,13 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      smartbinGeneralStatus: "yellow",
+      smartbinGeneralStatus: "green",
       isSmartbinOk: false,
       isSmartbinMaintenance: false,
       isTxnsFullWidth: false,
       isOrdersFullWidth: false,
       isSupplyFullWidth: false,
-      options: {
+      barChartOptions: {
         chart: {
           id: "basic-bar",
         },
@@ -197,12 +224,42 @@ class Home extends Component {
           categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
         },
       },
-      series: [
+      barChartSeries: [
         {
           name: "series-1",
           data: [30, 40, 45, 50, 49, 60, 70, 91],
         },
       ],
+      options: {
+        chart: {
+          id: "basic-area",
+        },
+        stroke: {
+          curve: "stepline",
+        },
+        stacked: true,
+      },
+      series: [
+        {
+          name: "Series 1",
+          data: [45, 52, 38, 24, 33, 65, 21, 20, 6, 58, 15, 10],
+        },
+        {
+          name: "Series 2",
+          data: [31, 52, 38, 24, 6, 47, 21, 20, 6, 18, 15, 1],
+        },
+        {
+          name: "Series 3",
+          data: [24, 12, 38, 46, 76, 4, 15, 76, 18, 5, 4],
+        },
+        {
+          name: "Series 4",
+          data: [5, 8, 38, 9, 88, 4, 15, 6, 18, 55, 22],
+        },
+      ],
+      xaxis: {
+        type: "numeric",
+      },
     };
   }
 
@@ -214,52 +271,66 @@ class Home extends Component {
       isSmartbinMaintenance,
       isTxnsFullWidth,
       isOrdersFullWidth,
-      isSupplyFullWidth
+      isSupplyFullWidth,
     } = this.state;
 
     return (
       <>
         <Grid container spacing={3} className={classes.grid}>
-          <Grid item xs={6} sm={5} md={5}>
-            <Grid container direction="column" columnSpacing={4}>
-              <Grid item>
-                <Card className={classes.paper} elevation={1}>
-                  <img
-                    src={smartBin}
-                    className={classes.smartBinImg}
-                    alt="smart bin"
-                  />
-                  <CardActions>
-                    <Tooltip title="Manual Order">
-                      <IconButton className={classes.badge}>
-                        <ShoppingCartOutlined />
-                      </IconButton>
-                    </Tooltip>
+          <Grid item xs={12} sm={2} md={2}>
+            <Card className={classes.paper} elevation={1}>
+              <List className={classes.list}>
+                <ListItem className={classes.listItem}>
+                  <span
+                    className={
+                      smartbinGeneralStatus === "green"
+                        ? classes.greenStatus
+                        : smartbinGeneralStatus === "yellow"
+                        ? classes.yellowStatus
+                        : classes.redStatus
+                    }
+                  ></span>
+                </ListItem>
 
-                    <div
-                      className={classes.badge}
-                      style={{ backgroundColor: "#bee6fdbd" }}
-                    >
-                      {isSmartbinMaintenance ? (
-                        <BuildOutlined className={classes.icon} />
-                      ) : (
-                        <BuildOutlined className={classes.icon} />
-                      )}
-                    </div>
-                    <div
-                      className={classes.badge}
-                      style={{ backgroundColor: "#bee6fdbd" }}
-                    >
-                      {isSmartbinOk ? (
-                        <CheckOutlined className={classes.icon} />
-                      ) : (
-                        <CloseOutlined className={classes.icon} />
-                      )}
-                    </div>
-                  </CardActions>
-                </Card>
-              </Grid>
-            </Grid>
+                <ListItem className={classes.listItem}>
+                  <Avatar className={classes.avatar} src={user} />
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <IOSSwitch />
+                </ListItem>
+              </List>
+            </Card>
+          </Grid>
+          <Grid item xs={6} sm={5} md={5}>
+            <Card className={classes.paper} elevation={1}>
+              <img
+                src={smartBin}
+                className={classes.smartBinImg}
+                alt="smart bin"
+              />
+              <CardActions>
+                <Tooltip title="Manual Order">
+                  <IconButton className={classes.iconButton}>
+                    <ShoppingCartOutlined />
+                  </IconButton>
+                </Tooltip>
+
+                <div className={classes.badge}>
+                  {isSmartbinMaintenance ? (
+                    <BuildOutlined className={classes.icon} />
+                  ) : (
+                    <BuildOutlined className={classes.icon} />
+                  )}
+                </div>
+                <div className={classes.badge}>
+                  {isSmartbinOk ? (
+                    <CheckOutlined className={classes.icon} />
+                  ) : (
+                    <CloseOutlined className={classes.icon} />
+                  )}
+                </div>
+              </CardActions>
+            </Card>
           </Grid>
           <Grid item xs={6} sm={5} md={5}>
             <Grid container direction="column" columnSpacing={4} spacing={1}>
@@ -277,8 +348,8 @@ class Home extends Component {
                   <div className="row">
                     <div className="mixed-chart">
                       <Chart
-                        options={this.state.options}
-                        series={this.state.series}
+                        options={this.state.barChartOptions}
+                        series={this.state.barChartSeries}
                         type="bar"
                         height="150"
                       />
@@ -288,28 +359,6 @@ class Home extends Component {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={4} sm={2} md={2}>
-            <List style={{ marginLeft: "30%" }}>
-              <ListItem className={classes.listItem}>
-                <span
-                  className={
-                    smartbinGeneralStatus === "green"
-                      ? classes.greenStatus
-                      : smartbinGeneralStatus === "yellow"
-                      ? classes.yellowStatus
-                      : classes.redStatus
-                  }
-                ></span>
-              </ListItem>
-
-              <ListItem className={classes.listItem}>
-                <Avatar className={classes.avatar} src={user} />
-              </ListItem>
-              <ListItem className={classes.listItem}>
-                <IOSSwitch />
-              </ListItem>
-            </List>
-          </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={12} className={classes.grid}>
           <Paper className={classes.paper}>
@@ -318,48 +367,66 @@ class Home extends Component {
                 <Chart
                   options={this.state.options}
                   series={this.state.series}
-                  type="bar"
+                  type="area"
                   height="200"
                 />
               </div>
             </div>
           </Paper>
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={2} className={classes.grid}>
           <Grid
             item
-            xs={isTxnsFullWidth ? 12 : 4}
+            xs={isTxnsFullWidth ? 12 : 12}
             sm={isTxnsFullWidth ? 12 : 4}
             md={isTxnsFullWidth ? 12 : 4}
           >
             <TxnsSmartView
               assets={allAssets}
               isTxnsFullWidth={isTxnsFullWidth}
-              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+              setFullWidth={(a, b, c) =>
+                this.setState({
+                  isTxnsFullWidth: a,
+                  isOrdersFullWidth: b,
+                  isSupplyFullWidth: c,
+                })
+              }
             />
           </Grid>
           <Grid
             item
-            xs={isOrdersFullWidth ? 12 : 4}
+            xs={isOrdersFullWidth ? 12 : 12}
             sm={isOrdersFullWidth ? 12 : 4}
             md={isOrdersFullWidth ? 12 : 4}
           >
             <OrdersSmartView
               assets={allAssets}
               isOrdersFullWidth={isOrdersFullWidth}
-              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+              setFullWidth={(a, b, c) =>
+                this.setState({
+                  isTxnsFullWidth: a,
+                  isOrdersFullWidth: b,
+                  isSupplyFullWidth: c,
+                })
+              }
             />
           </Grid>
           <Grid
             item
-            xs={isSupplyFullWidth ? 12 : 4}
+            xs={isSupplyFullWidth ? 12 : 12}
             sm={isSupplyFullWidth ? 12 : 4}
             md={isSupplyFullWidth ? 12 : 4}
           >
             <SupplySmartView
               assets={allAssets}
               isSupplyFullWidth={isSupplyFullWidth}
-              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+              setFullWidth={(a, b, c) =>
+                this.setState({
+                  isTxnsFullWidth: a,
+                  isOrdersFullWidth: b,
+                  isSupplyFullWidth: c,
+                })
+              }
             />
           </Grid>
         </Grid>

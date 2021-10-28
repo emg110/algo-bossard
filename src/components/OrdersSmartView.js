@@ -57,7 +57,7 @@ class OrdersSmartView extends Component {
   }
 
   handleFullWidthClick() {
-    this.props.setFullWidth(false,true,false)
+    this.props.setFullWidth(false,!this.props.isOrdersFullWidth,false)
 
   }
 

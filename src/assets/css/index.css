@@ -18,9 +18,10 @@ code {
 }
 
 .App-header {
-  padding: 0px;
+  /* padding: 0px; */
   color: white;
   text-align: left; 
+  /* height: 126px; */
 }
 
 .App-header .title{
@@ -39,6 +40,7 @@ code {
 }
 .App-name {
   margin-left: 1%;
+  margin-top: 1%;
   display: inline-block;
    vertical-align: middle;
 }

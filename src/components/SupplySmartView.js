@@ -57,7 +57,7 @@ class SupplySmartView extends Component {
   }
 
   handleFullWidthClick() {
-    this.props.setFullWidth(false,false,true)
+    this.props.setFullWidth(false,false,!this.props.isSupplyFullWidth)
 
   }
 

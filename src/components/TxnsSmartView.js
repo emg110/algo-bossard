@@ -57,7 +57,7 @@ class TxnsSmartView extends Component {
   }
 
   handleFullWidthClick() {
-    this.props.setFullWidth(true,false,false)
+    this.props.setFullWidth(!this.props.isTxnsFullWidth,false,false)
   }
 
   render() {
