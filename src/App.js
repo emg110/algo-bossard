@@ -100,20 +100,15 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      showGen: false,
-      showAsset: false,
-      showTxn: false,
-      showTxnOffline: false,
-      showPayment: false,
-      isDescEnabled: false,
-      showNft: false,
+      isDarkMode: false,
     };
   }
 
   render() {
     const { classes } = this.props;
+    const { isDarkMode } = this.state;
     return (
-      <div>
+      <div style={{backgroundColor: isDarkMode && '#000000'}}>
         <AppBar position="static" className="App-header">
           <Toolbar>
               <img
@@ -139,7 +134,7 @@ class App extends Component {
               />
           </Toolbar>
         </AppBar>
-        <Home />
+        <Home isDarkMode={isDarkMode} setIsDarkMode={(isDark) => this.setState({isDarkMode: isDark})} />
       </div>
     );
   }

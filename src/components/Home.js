@@ -98,7 +98,7 @@ const styles = (theme) => ({
     height: 70,
   },
   listItem: {
-    height: 110,
+    height: 105,
   },
   badge: {
     backgroundColor: "#fce1e4",
@@ -106,7 +106,7 @@ const styles = (theme) => ({
     textAlign: "center",
     display: "inline-block",
     margin: "5% 3% 4%",
-    width: 60,
+    width: 40,
     height: 40,
   },
   iconButton: {
@@ -114,26 +114,31 @@ const styles = (theme) => ({
     borderRadius: "50%",
     textAlign: "center",
     margin: "5% 3% 4%",
-    width: 40,
-    height: 40,
+    width: 43,
+    height: 43,
+    marginTop: 13,
+    [theme.breakpoints.down("sm")]: {
+      marginTop: "5px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginTop: "5px",
+    },
+  },
+  cardActionsRoot: {
+    display: "block",
+    margin: "0px auto",
   },
   list: {
     marginLeft: "30%",
     [theme.breakpoints.down("sm")]: {
-      display: "flex",
-      flexDirection: "row",
-      padding: 0,
-    marginLeft: "25px",
-
+      marginLeft: "0",
     },
     [theme.breakpoints.down("xs")]: {
       display: "flex",
       flexDirection: "row",
       padding: 0,
-    marginLeft: "25px",
-
+      marginLeft: "25px",
     },
-  
   },
   icon: {
     marginTop: 6,
@@ -142,6 +147,9 @@ const styles = (theme) => ({
     borderBottom: "2px solid #d747045e",
     borderRadius: 0,
   },
+  cardRootDark:{
+    backgroundColor: '#242424'
+  }
 });
 
 const IOSSwitch = styled((props) => (
@@ -216,6 +224,7 @@ class Home extends Component {
       isTxnsFullWidth: false,
       isOrdersFullWidth: false,
       isSupplyFullWidth: false,
+      isDarkModeChecked: false,
       barChartOptions: {
         chart: {
           id: "basic-bar",
@@ -261,10 +270,17 @@ class Home extends Component {
         type: "numeric",
       },
     };
+    this.handleDarkModeClick = this.handleDarkModeClick.bind(this);
+  }
+
+  handleDarkModeClick() {
+    const { isDarkMode, setIsDarkMode } = this.props;
+    setIsDarkMode(!isDarkMode);
+    this.setState({ isDarkModeChecked: !this.props.isDarkModeChecked });
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isDarkMode } = this.props;
     const {
       smartbinGeneralStatus,
       isSmartbinOk,
@@ -272,13 +288,14 @@ class Home extends Component {
       isTxnsFullWidth,
       isOrdersFullWidth,
       isSupplyFullWidth,
+      isDarkModeChecked,
     } = this.state;
 
     return (
       <>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={2} md={2}>
-            <Card className={classes.paper} elevation={1}>
+            <Card className={classes.paper} elevation={1} classes={{root: isDarkMode && classes.cardRootDark}}>
               <List className={classes.list}>
                 <ListItem className={classes.listItem}>
                   <span
@@ -291,24 +308,33 @@ class Home extends Component {
                     }
                   ></span>
                 </ListItem>
-
-                <ListItem className={classes.listItem}>
-                  <Avatar className={classes.avatar} src={user} />
-                </ListItem>
+                <Tooltip title="?">
+                  <ListItem className={classes.listItem}>
+                    <Avatar className={classes.avatar} src={user} />
+                  </ListItem>
+                </Tooltip>
                 <ListItem className={classes.listItem}>
                   <IOSSwitch />
                 </ListItem>
+                <Tooltip title="Mode">
+                  <ListItem>
+                    <IOSSwitch
+                      checked={isDarkModeChecked}
+                      onChange={this.handleDarkModeClick}
+                    />
+                  </ListItem>
+                </Tooltip>
               </List>
             </Card>
           </Grid>
-          <Grid item xs={6} sm={5} md={5}>
-            <Card className={classes.paper} elevation={1}>
+          <Grid item xs={12} sm={5} md={5}>
+            <Card className={classes.paper} elevation={1}  classes={{root: isDarkMode && classes.cardRootDark}}>
               <img
                 src={smartBin}
                 className={classes.smartBinImg}
                 alt="smart bin"
               />
-              <CardActions>
+              <CardActions classes={{ root: classes.cardActionsRoot }}>
                 <Tooltip title="Manual Order">
                   <IconButton className={classes.iconButton}>
                     <ShoppingCartOutlined />
@@ -332,10 +358,10 @@ class Home extends Component {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={6} sm={5} md={5}>
+          <Grid item xs={12} sm={5} md={5}>
             <Grid container direction="column" columnSpacing={4} spacing={1}>
               <Grid item>
-                <Paper className={classes.paper} elevation={1}>
+                <Paper className={classes.paper} elevation={1}  classes={{root: isDarkMode && classes.cardRootDark}}>
                   <img
                     src={smartLabel}
                     className={classes.smartLabelImg}
@@ -344,14 +370,14 @@ class Home extends Component {
                 </Paper>
               </Grid>
               <Grid item style={{ marginTop: "10%" }}>
-                <Paper className={classes.paper} elevation={1}>
+                <Paper className={classes.paper} elevation={1} classes={{root: isDarkMode && classes.cardRootDark}}>
                   <div className="row">
                     <div className="mixed-chart">
                       <Chart
                         options={this.state.barChartOptions}
                         series={this.state.barChartSeries}
                         type="bar"
-                        height="150"
+                        height="170"
                       />
                     </div>
                   </div>
@@ -361,7 +387,7 @@ class Home extends Component {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={12} className={classes.grid}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} classes={{root: isDarkMode && classes.cardRootDark}}>
             <div className="row">
               <div className="mixed-chart">
                 <Chart
@@ -383,6 +409,7 @@ class Home extends Component {
           >
             <TxnsSmartView
               assets={allAssets}
+              isDarkMode={isDarkMode}
               isTxnsFullWidth={isTxnsFullWidth}
               setFullWidth={(a, b, c) =>
                 this.setState({
@@ -401,6 +428,7 @@ class Home extends Component {
           >
             <OrdersSmartView
               assets={allAssets}
+              isDarkMode={isDarkMode}
               isOrdersFullWidth={isOrdersFullWidth}
               setFullWidth={(a, b, c) =>
                 this.setState({
@@ -419,6 +447,7 @@ class Home extends Component {
           >
             <SupplySmartView
               assets={allAssets}
+              isDarkMode={isDarkMode}
               isSupplyFullWidth={isSupplyFullWidth}
               setFullWidth={(a, b, c) =>
                 this.setState({
@@ -436,5 +465,7 @@ class Home extends Component {
 }
 Home.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
+  setIsDarkMode: PropTypes.func.isRequired,
 };
 export default withStyles(styles)(Home);

@@ -27,6 +27,16 @@ const styles = (theme) => ({
   },
   activeBtn:{
     backgroundColor: '#bee6fdbd'
+  },
+  cardRootDark:{
+    backgroundColor: '#242424'
+  },
+  cardTitleDark:{
+    color: '#ffffff'
+  },
+  darkIcon:{
+    color: '#ffffff'
+
   }
 });
 
@@ -61,24 +71,25 @@ class TxnsSmartView extends Component {
   }
 
   render() {
-    const { classes, assets,isTxnsFullWidth } = this.props;
+    const { classes, assets,isTxnsFullWidth,isDarkMode } = this.props;
     const { isTileView, isTableView,  } = this.state;
 
    
 
     return (
-      <Card>
+      <Card classes={{root: isDarkMode && classes.cardRootDark}}>
         <CardHeader
+        classes={{title: isDarkMode && classes.cardTitleDark}}
           action={
             <>
               <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>
-                <Apps />
+                <Apps className={isDarkMode && classes.darkIcon} />
               </IconButton>
               <IconButton onClick={this.handleClickTableView} className={isTableView && classes.activeBtn}>
-                <List />
+                <List className={isDarkMode && classes.darkIcon} />
               </IconButton>
               <IconButton onClick={this.handleFullWidthClick} className={isTxnsFullWidth && classes.activeBtn}>
-                <Fullscreen />
+                <Fullscreen className={isDarkMode && classes.darkIcon} />
               </IconButton>
             </>
           }
@@ -97,6 +108,7 @@ TxnsSmartView.propTypes = {
   assets: PropTypes.array.isRequired,
   isTxnsFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
 
 };
 export default withStyles(styles)(TxnsSmartView);

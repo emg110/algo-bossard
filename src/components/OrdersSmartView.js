@@ -27,6 +27,16 @@ const styles = (theme) => ({
   },
   activeBtn:{
     backgroundColor: '#bee6fdbd'
+  },
+  cardRootDark:{
+    backgroundColor: '#242424'
+  }, 
+  cardTitleDark:{
+    color: '#ffffff'
+  },
+  darkIcon:{
+    color: '#ffffff'
+
   }
 });
 
@@ -62,24 +72,25 @@ class OrdersSmartView extends Component {
   }
 
   render() {
-    const { classes ,isOrdersFullWidth,assets,} = this.props;
+    const { classes ,isOrdersFullWidth,assets,isDarkMode} = this.props;
     const { isTileView, isTableView } = this.state;
 
    
 
     return (
-      <Card>
+      <Card classes={{root: isDarkMode && classes.cardRootDark}}>
         <CardHeader
+        classes={{title: isDarkMode && classes.cardTitleDark}}
           action={
             <>
               <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>
-                <Apps />
+                <Apps className={isDarkMode && classes.darkIcon} />
               </IconButton>
               <IconButton onClick={this.handleClickTableView} className={isTableView && classes.activeBtn}>
-                <List />
+                <List className={isDarkMode && classes.darkIcon} />
               </IconButton>
               <IconButton onClick={this.handleFullWidthClick} className={isOrdersFullWidth && classes.activeBtn}>
-                <Fullscreen />
+                <Fullscreen className={isDarkMode && classes.darkIcon} />
               </IconButton>
             </>
           }
@@ -96,6 +107,7 @@ class OrdersSmartView extends Component {
 OrdersSmartView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   assets: PropTypes.array.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
   isOrdersFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
   
