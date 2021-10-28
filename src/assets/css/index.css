@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  text-align: left;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.App-logo {
+  height: 80px;
+}
+
+.App-header {
+  padding: 0px;
+  color: white;
+  text-align: left; 
+}
+
+.App-header .title{
+  margin-top: 40px;
+}
+
+.App-header a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: .2s all;
+}
+.App-header a:hover{
+  opacity: .7;
+}
+.App-name {
+  margin-left: 1%;
+  display: inline-block;
+   vertical-align: middle;
+}
+
+
+.Countdown{
+  margin: 10px auto;
+  padding-bottom: 20px;
+}
+
+.Countdown-col{
+  display: inline-block;
+}
+
+.Countdown-col-element{
+  display: inline-block;
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Countdown-col-element strong{
+  font-size: 50px;
+}

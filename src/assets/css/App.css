@@ -1,0 +1,121 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+.App-header {
+  background-image: linear-gradient(to right, #007ac3  , #bee6fdbd);
+  height: 15%;
+  display: block;
+  text-align: middle;
+  vertical-align: middle;
+  color: #d7f0fec7;
+  padding: 50px;
+}
+.App-desc {  
+  width: 512px;
+  display: block; 
+  text-align: left;
+  color: black;
+  padding: 25px 25px 20px 25px;
+  margin: auto;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.link-btn {
+  border-radius: 3;
+    text-align: center;
+    margin: auto;
+    display: block;
+    background-color: rgb(115, 175, 245);
+    border-color: rgb(115, 175, 245);
+    color: #fff;
+    
+}
+.link-btn :hover {
+  background-color: #fff;
+  color: rgb(115, 175, 245);
+
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+.col-5 {
+  float: left;
+  width: 5%;
+  margin-top: 6px;
+}
+.col-13 {
+  float: left;
+  width: 13%;
+  margin-top: 6px;
+  text-align: right;
+  margin-right: 20px;
+}
+.col-15 {
+  float: left;
+  width: 15%;
+  /* margin-top: 6px; */
+  text-align: right;
+  margin-right: 20px;
+}
+.col-35 {
+  float: left;
+  width: 35%;
+  margin-top: 6px;
+}
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 16px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+} 
+
+.card {
+  text-align:center;
+  display: block;
+  margin: auto;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px; 
+  width: 40%;
+}
+.image{
+width: 50%;
+border-radius: 50px;
+}
+
+
+img {
+  border-radius: 5px 5px 0 0;
+}

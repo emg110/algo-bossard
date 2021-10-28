@@ -1,0 +1,90 @@
+{
+  "name": "algo-bossard",
+  "version": "1.2.0",
+  "private": false,
+  "description": "Bossard's Smart Bin Continuous Replenishment using Algorand stateful and stateless smart contracts, standard assets and atomic transfers.",
+  "author": "MG <emg110@gmail.com>",
+  "license": "MIT",
+  "url": "https://emg110.github.io/algo-bossard/",
+  "email": "emg110@gmail.com",
+  "repository": "https://github.com/emg110/algo-bossard",
+  "contributors": [
+    {
+      "name": "Sheghzo",
+      "email": "shm1358110@gmail.com",
+      "url": "https://github.com/sheghzo"
+    }
+  ],
+  "homepage": "https://algo-bossard.com/",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@algonaut/algo-validation-agent": "latest",
+    "@material-ui/core": "^4.9.8",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "@randlabs/myalgo-connect": "latest",
+    "qrcode": "latest",
+    "algosdk": "^1.11.1",
+    "@pinata/sdk": "latest",
+    "chartist": "^0.10.1",
+    "classnames": "^2.3.1",
+    "moment": "latest",
+    "perfect-scrollbar": "^1.5.1",
+    "prop-types": "^15.7.2",
+    "qr-scanner": "latest",
+    "react-chartist": "^0.14.4",
+    "react-color": "^2.19.3",
+    "react-id-generator": "^3.0.1",
+    "react-jsoneditor": "^0.2.22",
+    "react-multi-carousel": "^2.6.3",
+    "react-router-dom": "^5.1.2",
+    "use-file-picker": "^1.2.0",
+    "bs58": "latest",
+    "pouchdb": "latest",
+    "worker-pouch": "latest",
+    "pouchdb-quick-search": "latest",
+    "jsqr-es6": "latest",
+    "react-loaders": "latest",
+    "react-elastic-carousel": "^0.11.5",
+    "styled-components": "^5.3.1",
+    "isomorphic-fetch": "^3.0.0",
+    "react-notifications-component": "^2.4.0",
+    "web-vitals": "latest"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "gh-pages": "^2.2.0",
+    "microbundle-crl": "^0.13.10",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
