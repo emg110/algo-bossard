@@ -17,35 +17,11 @@ const styles = (theme) => ({
     border: "1px solid #333",
     padding: 0,
   }),
-  title: {
-    margin: `${theme.spacing(3)}px 0 ${theme.spacing(2)}px`,
-    color: theme.palette.protectedTitle,
-    textAlign: "center",
-    fontSize: "1.2em",
-  },
-  tablePaperRoot: {
-    display: "flex",
-    marginTop: theme.spacing.unit * 3,
-    overflowX: "hide",
-    width: "100%",
-  },
-  table: {
-    minWidth: 340,
-  },
-  tableCell: {
-    paddingRight: 4,
-    paddingLeft: 5,
-  },
-  tableHeader: {
-    paddingRight: 4,
-    paddingLeft: 5,
-    fontWeight: "bold",
-  },
+  
   avatar: {
-    width: 80,
-    height: 80,
-    // marginLeft:'35%',
-    marginBottom: "10%",
+    width: 50,
+    height: 50,
+    marginLeft:'5%',
   },
   dataDiv: {
     width: "100%",
@@ -65,9 +41,6 @@ const styles = (theme) => ({
     minHeight: 200,
     padding: 0,
     paddingTop: 20,
-  },
-  activeBtn: {
-    backgroundColor: "#bee6fdbd",
   },
 });
 

@@ -17,7 +17,7 @@ const styles = (theme) => ({
     width:'11%',
     float: 'right',
     marginRight: '3%',
-    marginTop: '4%',
+    marginTop: '63px',
   },
   algoBossardImg:{
     width:'5%',

@@ -11,6 +11,7 @@ import {
 import smartBin from "../assets/images/firstThresholdImage.png";
 import smartLabel from "../assets/images/SmartLabel2.jpg";
 import user from "../assets/images/img1.png";
+import Chart from "react-apexcharts";
 import {
   Grid,
   Paper,
@@ -24,10 +25,9 @@ import {
   IconButton,
   Tooltip,
 } from "@material-ui/core";
-import TxnsSmartView from './TxnsSmartView.js'
-import OrdersSmartView from './OrdersSmartView.js'
-import SupplySmartView from './SupplySmartView.js'
-
+import TxnsSmartView from "./TxnsSmartView.js";
+import OrdersSmartView from "./OrdersSmartView.js";
+import SupplySmartView from "./SupplySmartView.js";
 
 const allAssets = [
   {
@@ -63,7 +63,7 @@ const styles = (theme) => ({
     height: "auto",
   },
   smartLabelImg: {
-    width: "70%",
+    width: "50%",
   },
   greenStatus: {
     width: "40px",
@@ -186,13 +186,36 @@ class Home extends Component {
       smartbinGeneralStatus: "yellow",
       isSmartbinOk: false,
       isSmartbinMaintenance: false,
+      isTxnsFullWidth: false,
+      isOrdersFullWidth: false,
+      isSupplyFullWidth: false,
+      options: {
+        chart: {
+          id: "basic-bar",
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        },
+      },
+      series: [
+        {
+          name: "series-1",
+          data: [30, 40, 45, 50, 49, 60, 70, 91],
+        },
+      ],
     };
   }
 
   render() {
     const { classes } = this.props;
-    const { smartbinGeneralStatus, isSmartbinOk, isSmartbinMaintenance } =
-      this.state;
+    const {
+      smartbinGeneralStatus,
+      isSmartbinOk,
+      isSmartbinMaintenance,
+      isTxnsFullWidth,
+      isOrdersFullWidth,
+      isSupplyFullWidth
+    } = this.state;
 
     return (
       <>
@@ -239,21 +262,34 @@ class Home extends Component {
             </Grid>
           </Grid>
           <Grid item xs={6} sm={5} md={5}>
-            <Grid container direction="column" columnSpacing={4}>
+            <Grid container direction="column" columnSpacing={4} spacing={1}>
               <Grid item>
                 <Paper className={classes.paper} elevation={1}>
-                  <img src={smartLabel} className={classes.smartLabelImg} alt="smart label" />
+                  <img
+                    src={smartLabel}
+                    className={classes.smartLabelImg}
+                    alt="smart label"
+                  />
                 </Paper>
               </Grid>
-              <Grid item style={{ marginTop: '10%' }}>
+              <Grid item style={{ marginTop: "10%" }}>
                 <Paper className={classes.paper} elevation={1}>
-                  Chhhhhhaaaaart
+                  <div className="row">
+                    <div className="mixed-chart">
+                      <Chart
+                        options={this.state.options}
+                        series={this.state.series}
+                        type="bar"
+                        height="150"
+                      />
+                    </div>
+                  </div>
                 </Paper>
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={4} sm={2} md={2}>
-            <List style={{ marginLeft: "15%" }}>
+            <List style={{ marginLeft: "30%" }}>
               <ListItem className={classes.listItem}>
                 <span
                   className={
@@ -276,17 +312,55 @@ class Home extends Component {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={12} className={classes.grid}>
-          <Paper className={classes.paper}>CHAAAAARt</Paper>
+          <Paper className={classes.paper}>
+            <div className="row">
+              <div className="mixed-chart">
+                <Chart
+                  options={this.state.options}
+                  series={this.state.series}
+                  type="bar"
+                  height="200"
+                />
+              </div>
+            </div>
+          </Paper>
         </Grid>
         <Grid container spacing={3} className={classes.grid}>
-          <Grid item xs={4} sm={4} md={4}>
-            <TxnsSmartView assets={allAssets} />
+          <Grid
+            item
+            xs={isTxnsFullWidth ? 12 : 4}
+            sm={isTxnsFullWidth ? 12 : 4}
+            md={isTxnsFullWidth ? 12 : 4}
+          >
+            <TxnsSmartView
+              assets={allAssets}
+              isTxnsFullWidth={isTxnsFullWidth}
+              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+            />
           </Grid>
-          <Grid item xs={4} sm={4} md={4}>
-           <OrdersSmartView assets={allAssets} />
+          <Grid
+            item
+            xs={isOrdersFullWidth ? 12 : 4}
+            sm={isOrdersFullWidth ? 12 : 4}
+            md={isOrdersFullWidth ? 12 : 4}
+          >
+            <OrdersSmartView
+              assets={allAssets}
+              isOrdersFullWidth={isOrdersFullWidth}
+              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+            />
           </Grid>
-          <Grid item xs={4} sm={4} md={4}>
-            <SupplySmartView assets={allAssets} />
+          <Grid
+            item
+            xs={isSupplyFullWidth ? 12 : 4}
+            sm={isSupplyFullWidth ? 12 : 4}
+            md={isSupplyFullWidth ? 12 : 4}
+          >
+            <SupplySmartView
+              assets={allAssets}
+              isSupplyFullWidth={isSupplyFullWidth}
+              setFullWidth={(a,b,c) => this.setState({ isTxnsFullWidth: a,isOrdersFullWidth:b,isSupplyFullWidth:c })}
+            />
           </Grid>
         </Grid>
       </>

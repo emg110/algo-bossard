@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -9,8 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
-import Check from "@material-ui/icons/CheckCircleOutline";
-import Close from "@material-ui/icons/HighlightOff";
 
 const styles = (theme) => ({
   paper: {
@@ -62,20 +59,11 @@ const styles = (theme) => ({
     paddingLeft: 5,
     fontWeight: "bold",
   },
-  closeIcon:{
-    color:'#fce1e4'
-  },
-  checkIcon:{
-    color:'#ddedea '
-  },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     // marginLeft:'35%',
     marginBottom: "10%",
-  },
-  selectTableCell: {
-    width: 60,
   },
   tableCell: {
     width: 130,
@@ -92,24 +80,15 @@ class TableView extends Component {
       selectedAsset: {},
       selectedAssetId: "",
     };
-    this.handleCloseDialog = this.handleCloseDialog.bind(this);
   }
 
-  handleCloseDialog() {
-    const { setAssetModalOpen } = this.props;
-    this.setState({
-      isEditMode: false,
-    });
-    setAssetModalOpen(false);
-  }
 
   render() {
     const { classes, assets } = this.props;
     const { selectedAsset } = this.state;
 
     return (
-      <>
-        <Paper className={classes.paper}>
+        
           <Table
             className={classes.table}
             classes={{ root: classes.tableRoot }}
@@ -155,8 +134,6 @@ class TableView extends Component {
                 ))}
             </TableBody>
           </Table>
-        </Paper>
-      </>
     );
   }
 }
