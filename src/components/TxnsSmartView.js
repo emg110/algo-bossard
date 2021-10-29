@@ -96,8 +96,8 @@ class TxnsSmartView extends Component {
           title="TXNS"
         />
         <CardContent>
-          {isTileView && <TileWidget assets={assets} />}
-          {isTableView && <TableView assets={assets} />}
+          {isTileView && <TileWidget assets={assets} isDarkMode={isDarkMode} />}
+          {isTableView && <TableView assets={assets} isDarkMode={isDarkMode} />}
         </CardContent>
       </Card>
     );

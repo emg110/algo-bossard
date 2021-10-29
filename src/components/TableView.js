@@ -84,7 +84,7 @@ class TableView extends Component {
 
 
   render() {
-    const { classes, assets } = this.props;
+    const { classes, assets,isDarkMode } = this.props;
     const { selectedAsset } = this.state;
 
     return (
@@ -96,17 +96,17 @@ class TableView extends Component {
           >
             <TableHead>
               <TableRow>
-              <TableCell align="left" className={classes.tableHeader}>
+              <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                   
                 </TableCell>
-                <TableCell align="left" className={classes.tableHeader}>
+                <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                   Id
                 </TableCell>
-                <TableCell align="left" className={classes.tableHeader}>
+                <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                   Name
                 </TableCell>
                            
-                <TableCell align="left" className={classes.tableHeader}>
+                <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                   Description
                 </TableCell>
                 
@@ -116,17 +116,17 @@ class TableView extends Component {
               {assets &&
                 assets.map((asset) => (
                   <TableRow key={asset._id}> 
-                  <TableCell align="left" className={classes.tableCell}>
+                  <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                       <Avatar src={asset.avatar} />
                     </TableCell>
-                  <TableCell align="left" className={classes.tableCell}>
+                  <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                       {asset._id}
                     </TableCell>                   
-                    <TableCell align="left" className={classes.tableCell}>
+                    <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                      {asset.name}
                     </TableCell>
                     
-                    <TableCell align="left" className={classes.tableCell}>
+                    <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                       {asset.description}
                     </TableCell>
                     
@@ -140,6 +140,7 @@ class TableView extends Component {
 TableView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   assets: PropTypes.array.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
   
 };
 export default withStyles(styles)(TableView);

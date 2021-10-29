@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, styled } from "@material-ui/core/styles";
 import {
-  ReorderOutlined,
+  Brightness4,
+  Brightness7,
   ShoppingCartOutlined,
   BuildOutlined,
   CheckOutlined,
@@ -10,7 +11,7 @@ import {
 } from "@material-ui/icons";
 import smartBin from "../assets/images/firstThresholdImage.png";
 import smartLabel from "../assets/images/SmartLabel2.jpg";
-import user from "../assets/images/img1.png";
+import User from "../assets/images/img1.png";
 import Chart from "react-apexcharts";
 import {
   Grid,
@@ -147,9 +148,9 @@ const styles = (theme) => ({
     borderBottom: "2px solid #d747045e",
     borderRadius: 0,
   },
-  cardRootDark:{
-    backgroundColor: '#242424'
-  }
+  cardRootDark: {
+    backgroundColor: "#242424",
+  },
 });
 
 const IOSSwitch = styled((props) => (
@@ -208,6 +209,23 @@ const IOSSwitch = styled((props) => (
       position: "absolute",
       top: "6px",
     },
+    "&:after": {
+      content: `url(${Brightness7})`,
+      backgroundImage: `url(${Brightness7})`,
+      backgroundSize: "17px",
+      backgroundRepeat: "no-repeat",
+      left: "4px",
+      top: "4px",
+    },
+    "&:before": {
+      content: "''",
+      backgroundImage: `url(${Brightness4})`,
+      backgroundSize: "17px",
+      backgroundRepeat: "no-repeat",
+      right: "5px",
+      top: "4px",
+      padding: 9,
+    },
     transition: theme.transitions.create(["background-color"], {
       duration: 500,
     }),
@@ -230,13 +248,18 @@ class Home extends Component {
           id: "basic-bar",
         },
         xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+          x: new Date("14 Nov 2012").getTime(),
+          borderColor: "#999",
         },
+        
       },
       barChartSeries: [
         {
           name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 70, 91],
+          data: [
+            60, 40, 15, 80, 29, 70, 50, 82, 43, 64, 94, 1, 43, 74, 5, 44, 40,
+            32, 58, 12, 71, 2, 49, 14, 52, 81, 20, 49, 37, 11,
+          ],
         },
       ],
       options: {
@@ -251,19 +274,19 @@ class Home extends Component {
       series: [
         {
           name: "Series 1",
-          data: [45, 52, 38, 24, 33, 65, 21, 20, 6, 58, 15, 10],
+          data: [100, 138, 123, 109, 118, 150, 116, 105, 91, 143, 114, 103],
         },
         {
           name: "Series 2",
-          data: [31, 52, 38, 24, 6, 47, 21, 20, 6, 18, 15, 1],
+          data: [70, 108, 93, 79, 88, 120, 86, 75, 61, 113, 84, 73],
         },
         {
           name: "Series 3",
-          data: [24, 12, 38, 46, 76, 4, 15, 76, 18, 5, 4],
+          data: [40, 78, 63, 49, 58, 90, 56, 45, 31, 83, 54, 43],
         },
         {
           name: "Series 4",
-          data: [5, 8, 38, 9, 88, 4, 15, 6, 18, 55, 22],
+          data: [10, 48, 33, 19, 28, 60, 26, 15, 1, 53, 24, 13],
         },
       ],
       xaxis: {
@@ -295,7 +318,11 @@ class Home extends Component {
       <>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={2} md={2}>
-            <Card className={classes.paper} elevation={1} classes={{root: isDarkMode && classes.cardRootDark}}>
+            <Card
+              className={classes.paper}
+              elevation={1}
+              classes={{ root: isDarkMode && classes.cardRootDark }}
+            >
               <List className={classes.list}>
                 <ListItem className={classes.listItem}>
                   <span
@@ -310,7 +337,7 @@ class Home extends Component {
                 </ListItem>
                 <Tooltip title="?">
                   <ListItem className={classes.listItem}>
-                    <Avatar className={classes.avatar} src={user} />
+                    <Avatar className={classes.avatar} src={User} />
                   </ListItem>
                 </Tooltip>
                 <ListItem className={classes.listItem}>
@@ -328,7 +355,11 @@ class Home extends Component {
             </Card>
           </Grid>
           <Grid item xs={12} sm={5} md={5}>
-            <Card className={classes.paper} elevation={1}  classes={{root: isDarkMode && classes.cardRootDark}}>
+            <Card
+              className={classes.paper}
+              elevation={1}
+              classes={{ root: isDarkMode && classes.cardRootDark }}
+            >
               <img
                 src={smartBin}
                 className={classes.smartBinImg}
@@ -361,7 +392,11 @@ class Home extends Component {
           <Grid item xs={12} sm={5} md={5}>
             <Grid container direction="column" columnSpacing={4} spacing={1}>
               <Grid item>
-                <Paper className={classes.paper} elevation={1}  classes={{root: isDarkMode && classes.cardRootDark}}>
+                <Paper
+                  className={classes.paper}
+                  elevation={1}
+                  classes={{ root: isDarkMode && classes.cardRootDark }}
+                >
                   <img
                     src={smartLabel}
                     className={classes.smartLabelImg}
@@ -370,7 +405,11 @@ class Home extends Component {
                 </Paper>
               </Grid>
               <Grid item style={{ marginTop: "10%" }}>
-                <Paper className={classes.paper} elevation={1} classes={{root: isDarkMode && classes.cardRootDark}}>
+                <Paper
+                  className={classes.paper}
+                  elevation={1}
+                  classes={{ root: isDarkMode && classes.cardRootDark }}
+                >
                   <div className="row">
                     <div className="mixed-chart">
                       <Chart
@@ -387,7 +426,10 @@ class Home extends Component {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={12} className={classes.grid}>
-          <Paper className={classes.paper} classes={{root: isDarkMode && classes.cardRootDark}}>
+          <Paper
+            className={classes.paper}
+            classes={{ root: isDarkMode && classes.cardRootDark }}
+          >
             <div className="row">
               <div className="mixed-chart">
                 <Chart
