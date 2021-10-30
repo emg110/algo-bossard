@@ -10,6 +10,7 @@ import img4 from "../assets/images/presentation/algobossard03.svg";
 import img5 from "../assets/images/presentation/algobossard04.svg";
 import img6 from "../assets/images/presentation/algobossard05.svg";
 import img7 from "../assets/images/presentation/algobossard06.svg";
+import img8 from "../assets/images/presentation/algobossard07.svg";
 
 const styles = (theme) => ({});
 
@@ -34,6 +35,9 @@ class Presentation extends Component {
         </Card>
         <Card>
           <img src={img7} style={{ width: "100%" }} />
+        </Card>
+        <Card>
+          <img src={img8} style={{ width: "100%" }} />
         </Card>
       </Carousel>
     );
