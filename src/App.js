@@ -89,6 +89,16 @@ const styles = (theme) => ({
       marginTop: "2%",
     },
   },
+  dialogRoot: {
+    borderTopLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderRadius: 3,
+  },
+  closeBtn: {
+    position: "absolute",
+    right: 8,
+    top: 8,
+  },
 });
 
 class App extends Component {

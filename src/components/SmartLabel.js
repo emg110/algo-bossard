@@ -7,8 +7,8 @@ import { Grid, Typography } from "@material-ui/core";
 
 const styles = (theme) => ({
   mainDiv: {
-    width: "30%",
-    height: 100,
+    width: "50%",
+    height: 118,
     backgroundColor: "#212121",
     color: "#ffffff",
     borderRadius: 6,

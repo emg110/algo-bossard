@@ -6,7 +6,7 @@ import {
   BuildOutlined,
   CheckOutlined,
   CloseOutlined,
-  Close
+  Close,
 } from "@material-ui/icons";
 import smartBin1 from "../assets/images/firstThresholdImage.png";
 import smartBin2 from "../assets/images/secondThresholdImage.png";
@@ -20,6 +20,7 @@ import {
   Paper,
   Dialog,
   DialogContent,
+  DialogHeader,
   Switch,
   Avatar,
   Card,
@@ -61,11 +62,11 @@ const styles = (theme) => ({
   },
   paper: {
     textAlign: "center",
+    height:'100%'
   },
   smartBinImg: {
-    width: "40%",
+    width: "43%",
     height: "auto",
-    marginTop: "10%",
   },
   smartLabelImg: {
     width: "50%",
@@ -122,7 +123,6 @@ const styles = (theme) => ({
     height: 105,
   },
   badge: {
-    backgroundColor: "#fce1e4",
     borderRadius: "50%",
     textAlign: "center",
     display: "inline-block",
@@ -183,30 +183,40 @@ const styles = (theme) => ({
       display: "flex",
     },
   },
+  dialogRoot: {
+    borderTopLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderRadius: 3,
+  },
+  closeBtn: {
+    position: "absolute",
+    right: 8,
+    top: 8,
+  },
 });
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ordersQty: 0,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
-      isSmartbinMaintenance: false,
+      isSmartbinMaintenance: true,
       isTxnsFullWidth: false,
       isOrdersFullWidth: false,
       isSupplyFullWidth: false,
       isDarkModeChecked: false,
+      isOrderModalOpen: false,
       barChartOptions: {
         chart: {
           id: "basic-bar",
-        }
+        },
       },
       barChartSeries: [
         {
           name: "series-1",
-          data: [
-            60, 40, 15, 80, 29, 70, 50, 82, 43, 64,
-          ],
+          data: [60, 40, 15, 80, 29, 70, 50, 82, 43, 64],
         },
       ],
       options: {
@@ -217,13 +227,12 @@ class Home extends Component {
           curve: "stepline",
         },
         stacked: true,
-        colors:['#1aaf04','#3889fa','#fabe19','#d50b0b']
+        colors: ["#1aaf04", "#3889fa", "#fabe19", "#d50b0b"],
       },
       series: [
         {
           name: "Green",
           data: [100, 100, 100, 100],
-         
         },
         {
           name: "Blue",
@@ -243,6 +252,8 @@ class Home extends Component {
       },
     };
     this.handleDarkModeClick = this.handleDarkModeClick.bind(this);
+    this.handleCloseOrderModal = this.handleCloseOrderModal.bind(this);
+    this.openOrderModal = this.openOrderModal.bind(this);
   }
 
   handleDarkModeClick() {
@@ -250,7 +261,12 @@ class Home extends Component {
     setIsDarkMode(!isDarkMode);
     this.setState({ isDarkModeChecked: !this.state.isDarkModeChecked });
   }
-
+  handleCloseOrderModal() {
+    this.setState({ isOrderModalOpen: false });
+  }
+  openOrderModal() {
+    this.setState({ isOrderModalOpen: true });
+  }
 
   render() {
     const { classes, isDarkMode } = this.props;
@@ -262,11 +278,27 @@ class Home extends Component {
       isOrdersFullWidth,
       isSupplyFullWidth,
       isDarkModeChecked,
+      isOrderModalOpen,
+      ordersQty,
     } = this.state;
 
     return (
       <>
-       
+        <Dialog
+          open={isOrderModalOpen}
+          onClose={this.handleCloseOrderModal}
+          classes={{ paper: classes.dialogRoot }}
+        >
+          <IconButton
+            className={classes.closeBtn}
+            onClick={this.handleCloseOrderModal}
+          >
+            <Close />
+          </IconButton>
+          <DialogContent>
+            <Typography variant="h6">New orders:{ordersQty}</Typography>
+          </DialogContent>
+        </Dialog>
         <Grid container spacing={1} className={classes.grid}>
           <Grid item xs={12} sm={3} md={2}>
             <Card
@@ -281,14 +313,14 @@ class Home extends Component {
                 alignItems="center"
                 className={classes.switchCard}
               >
-              <Grid item style={{ height: 86}}>
-                 <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>                 
-                 <Switch
-                        color="secondary"
-                        checked={isDarkModeChecked}
-                        onChange={this.handleDarkModeClick}
-                      />
-                 </Tooltip>
+                <Grid item style={{ height: 86 }}>
+                  <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
+                    <Switch
+                      color="secondary"
+                      checked={isDarkModeChecked}
+                      onChange={this.handleDarkModeClick}
+                    />
+                  </Tooltip>
                 </Grid>
                 <Grid item style={{ height: 86 }}>
                   <span
@@ -301,28 +333,6 @@ class Home extends Component {
                     }
                   ></span>
                 </Grid>
-                <Grid item style={{ height: 86 }}>
-                  <Tooltip title="Manual Order">
-                    <IconButton className={classes.iconButton}>
-                      <ShoppingCartOutlined />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-                <Grid item style={{ height: 86 }}>
-                  <Grid
-                    component="label"
-                    container
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item></Grid>
-                    <Grid item>
-                      <Switch color="secondary" />
-                    </Grid>
-                    <Grid item></Grid>
-                  </Grid>
-                </Grid>
-                
               </Grid>
               <Grid
                 container
@@ -342,34 +352,15 @@ class Home extends Component {
                     }
                   ></span>
                 </Grid>
-                <Grid item>
-                    <IconButton className={classes.iconButton}>
-                      <ShoppingCartOutlined />
-                    </IconButton>
-                    </Grid>
-                <Grid item>
-                <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>                 
 
-                      <Switch
-                        color="secondary"
-                        checked={isDarkModeChecked}
-                        onChange={this.handleDarkModeClick}
-                      />
-                      </Tooltip>
-                </Grid>
                 <Grid item>
-                  <Grid
-                    component="label"
-                    container
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item></Grid>
-                    <Grid item>
-                      <Switch color="secondary" />
-                    </Grid>
-                    <Grid item></Grid>
-                  </Grid>
+                  <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
+                    <Switch
+                      color="secondary"
+                      checked={isDarkModeChecked}
+                      onChange={this.handleDarkModeClick}
+                    />
+                  </Tooltip>
                 </Grid>
               </Grid>
             </Card>
@@ -380,79 +371,91 @@ class Home extends Component {
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
-              <img
-                src={smartBin1}
-                className={classes.smartBinImg}
-                alt="smart bin"
-              />
-              <CardActions classes={{ root: classes.cardActionsRoot }}>
-                <div className={classes.badge}>
-                  {isSmartbinMaintenance ? (
+              <Grid container>
+              <Grid item xs={10} sm={10} md={10}>
+                <img
+                  src={smartBin1}
+                  className={classes.smartBinImg}
+                  alt="smart bin"
+                />
+              </Grid>
+              <Grid item xs={2} sm={2} md={2}>
+              <br />
+                <div className={classes.badge} style={{backgroundColor: isSmartbinMaintenance ? '#06ba0387' : "#f82a2aa3"}}>
+                 
                     <BuildOutlined className={classes.icon} />
-                  ) : (
-                    <BuildOutlined className={classes.icon} />
-                  )}
                 </div>
-                <div className={classes.badge}>
+                <br />
+                <div className={classes.badge} style={{backgroundColor: isSmartbinOk ? '#06ba0387' : "#f82a2aa3"}}>
                   {isSmartbinOk ? (
                     <CheckOutlined className={classes.icon} />
                   ) : (
                     <CloseOutlined className={classes.icon} />
                   )}
                 </div>
-              </CardActions>
+              </Grid>
+              </Grid>
             </Card>
           </Grid>
           <Grid item xs={12} sm={4} md={5}>
-            <Grid container direction="column" columnSpacing={4} spacing={1}>
-              <Grid item>
-                <Paper
-                  className={classes.paper}
-                  elevation={1}
-                  classes={{ root: isDarkMode && classes.cardRootDark }}
-                >
-                  <Grid container item style={{padding:10}}>
-                    <SmartLabel />
-                  </Grid>
-                </Paper>
+            <Paper
+              className={classes.paper}
+              elevation={1}
+              classes={{ root: isDarkMode && classes.cardRootDark }}
+            >
+              <Grid container item style={{ padding: 26 }}>
+                <Grid item xs={10} sm={10} md={10}>
+                  <SmartLabel />
+                </Grid>
+                <Grid item xs={2} sm={2} md={2}>
+                  <Tooltip title="Manual Order">
+                    <IconButton className={classes.iconButton}>
+                      <ShoppingCartOutlined />
+                    </IconButton>
+                  </Tooltip>
+                  <br />
+                  <Switch color="secondary" />
+                </Grid>
               </Grid>
-              <Grid item>
-                <Paper
-                  className={classes.paper}
-                  elevation={1}
-                  classes={{ root: isDarkMode && classes.cardRootDark }}
-                >
-                  <div className="row">
-                    <div className="mixed-chart">
-                      <Chart
-                        options={this.state.barChartOptions}
-                        series={this.state.barChartSeries}
-                        type="bar"
-                        height="190"
-                      />
-                    </div>
-                  </div>
-                </Paper>
-              </Grid>
-            </Grid>
+            </Paper>
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} className={classes.grid}>
-          <Paper
-            className={classes.paper}
-            classes={{ root: isDarkMode && classes.cardRootDark }}
-          >
-            <div className="row">
-              <div className="mixed-chart">
-                <Chart
-                  options={this.state.options}
-                  series={this.state.series}
-                  type="area"
-                  height="200"
-                />
+        <Grid container spacing={1} className={classes.grid}>
+          <Grid item xs={12} sm={6} md={6}>
+            <Paper
+              className={classes.paper}
+              classes={{ root: isDarkMode && classes.cardRootDark }}
+            >
+              <div className="row">
+                <div className="mixed-chart">
+                  <Chart
+                    options={this.state.options}
+                    series={this.state.series}
+                    type="area"
+                    height="200"
+                  />
+                </div>
               </div>
-            </div>
-          </Paper>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <Paper
+              className={classes.paper}
+              elevation={1}
+              classes={{ root: isDarkMode && classes.cardRootDark }}
+            >
+              <div className="row">
+                <div className="mixed-chart">
+                  <Chart
+                    options={this.state.barChartOptions}
+                    series={this.state.barChartSeries}
+                    type="bar"
+                    height="200"
+                  />
+                </div>
+              </div>
+            </Paper>
+          </Grid>
         </Grid>
         <Grid container spacing={2} className={classes.grid}>
           <Grid

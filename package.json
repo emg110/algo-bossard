@@ -39,7 +39,7 @@
     "react-jsoneditor": "^0.2.22",
     "react-multi-carousel": "^2.6.3",
     "react-router-dom": "^5.1.2",
-    "use-file-picker": "^1.2.0",   
+    "use-file-picker": "^1.2.0",
     "react-loaders": "latest",
     "react-elastic-carousel": "^0.11.5",
     "styled-components": "^5.3.1",
