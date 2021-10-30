@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography,Box } from "@material-ui/core";
-
+import { AppBar, Toolbar, Typography,Box, Dialog, DialogContent,IconButton } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import bossardLogo from "./assets/images/logo.svg";
 import algoBossardLogo from "./assets/images/algoBossard.png";
 import algorandLogo from "./assets/images/algorand_full_logo_white.png";
 import Home from "./components/Home.js";
+import Presentation from "./components/Presentation.js";
 
 const styles = (theme) => ({
   appName: {
@@ -17,7 +18,7 @@ const styles = (theme) => ({
     },
     [theme.breakpoints.down("sm")]: {
       fontSize: "1.7em",
-      marginTop: "2%",
+      marginTop: "0%",
     },
     [theme.breakpoints.down("xs")]: {
       fontSize: "1.5em",
@@ -48,24 +49,18 @@ const styles = (theme) => ({
   },
   algoBossardImg: {
     float: "left",
-    marginLeft: "2%",
     display: "inline",
-    marginTop: "1%",
     [theme.breakpoints.down("lg")]: {
-      width: "5%",
-      marginTop: "1%",
+      width: "60%",
     },
     [theme.breakpoints.down("md")]: {
-      width: "5%",
-      marginTop: "1%",
+      width: "60%",
     },
     [theme.breakpoints.down("sm")]: {
-      width: "6%",
-      marginTop: "0px",
+      width: "55%",
     },
     [theme.breakpoints.down("xs")]: {
-      width: "11%",
-      marginTop: "2%",
+      width: "40%",
     },
   },
   algorandImg: {
@@ -101,21 +96,50 @@ class App extends Component {
     super();
     this.state = {
       isDarkMode: false,
+      isPresentationModalOpen: false,
     };
+    this.handleClosePresentation = this.handleClosePresentation.bind(this);
+    this.openPresentation = this.openPresentation.bind(this);
   }
-
+  handleClosePresentation(){
+    this.setState({isPresentationModalOpen : false})
+  }
+  openPresentation(){
+    this.setState({isPresentationModalOpen : true})
+  }
   render() {
     const { classes } = this.props;
-    const { isDarkMode } = this.state;
+    const { isDarkMode,isPresentationModalOpen } = this.state;
     return (
+      <>
+      <Dialog
+          fullWidth
+          maxWidth="xl"
+          open={isPresentationModalOpen}
+          onClose={this.handleClosePresentation}
+          classes={{ paper: classes.dialogRoot }}
+        >
+          <IconButton
+            className={classes.closeBtn}
+            onClick={this.handleClosePresentation}
+          >
+            <Close />
+          </IconButton>
+          <DialogContent>
+            <Presentation />
+          </DialogContent>
+        </Dialog>
       <div style={{backgroundColor: isDarkMode && '#000000'}}>
         <AppBar position="static" className="App-header">
           <Toolbar>
-              <img
+          <a onClick={this.openPresentation}>
+          <img
                 src={algoBossardLogo}
                 className={classes.algoBossardImg}
                 alt="algo bossard"
               />
+          </a>
+              
               <div className={"App-name"}>
                 <Typography className={classes.appName} variant="h4">
                   Algo Bossard
@@ -136,6 +160,7 @@ class App extends Component {
         </AppBar>
         <Home isDarkMode={isDarkMode} setIsDarkMode={(isDark) => this.setState({isDarkMode: isDark})} />
       </div>
+      </>
     );
   }
 }

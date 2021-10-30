@@ -6,6 +6,7 @@ import {
   BuildOutlined,
   CheckOutlined,
   CloseOutlined,
+  Close
 } from "@material-ui/icons";
 import smartBin1 from "../assets/images/firstThresholdImage.png";
 import smartBin2 from "../assets/images/secondThresholdImage.png";
@@ -17,8 +18,8 @@ import Chart from "react-apexcharts";
 import {
   Grid,
   Paper,
-  List,
-  ListItem,
+  Dialog,
+  DialogContent,
   Switch,
   Avatar,
   Card,
@@ -64,7 +65,7 @@ const styles = (theme) => ({
   smartBinImg: {
     width: "40%",
     height: "auto",
-    marginTop: "4%",
+    marginTop: "10%",
   },
   smartLabelImg: {
     width: "50%",
@@ -79,7 +80,7 @@ const styles = (theme) => ({
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
-      top: "2.7%",
+      top: "2%",
       left: "3%",
     },
   },
@@ -198,10 +199,7 @@ class Home extends Component {
       barChartOptions: {
         chart: {
           id: "basic-bar",
-        },
-        xaxis: {
-          x: [1,2,3,4,5,6,7,8,9,10]
-        },
+        }
       },
       barChartSeries: [
         {
@@ -253,6 +251,7 @@ class Home extends Component {
     this.setState({ isDarkModeChecked: !this.state.isDarkModeChecked });
   }
 
+
   render() {
     const { classes, isDarkMode } = this.props;
     const {
@@ -267,6 +266,7 @@ class Home extends Component {
 
     return (
       <>
+       
         <Grid container spacing={1} className={classes.grid}>
           <Grid item xs={12} sm={3} md={2}>
             <Card
@@ -282,22 +282,13 @@ class Home extends Component {
                 className={classes.switchCard}
               >
               <Grid item style={{ height: 86}}>
-                  <Grid
-                    component="label"
-                    container
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item>Dark</Grid>
-                    <Grid item>
-                      <Switch
+                 <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>                 
+                 <Switch
                         color="secondary"
                         checked={isDarkModeChecked}
                         onChange={this.handleDarkModeClick}
                       />
-                    </Grid>
-                    <Grid item>Light</Grid>
-                  </Grid>
+                 </Tooltip>
                 </Grid>
                 <Grid item style={{ height: 86 }}>
                   <span
@@ -341,7 +332,7 @@ class Home extends Component {
                 className={classes.smallSwitchCard}
               >
                 <Grid item>
-                  <div
+                  <span
                     className={
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
@@ -349,25 +340,22 @@ class Home extends Component {
                         ? classes.yellowStatus
                         : classes.redStatus
                     }
-                  ></div>
+                  ></span>
                 </Grid>
                 <Grid item>
-                  <Grid
-                    component="label"
-                    container
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item>Dark</Grid>
-                    <Grid item>
+                    <IconButton className={classes.iconButton}>
+                      <ShoppingCartOutlined />
+                    </IconButton>
+                    </Grid>
+                <Grid item>
+                <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>                 
+
                       <Switch
                         color="secondary"
                         checked={isDarkModeChecked}
                         onChange={this.handleDarkModeClick}
                       />
-                    </Grid>
-                    <Grid item>Light</Grid>
-                  </Grid>
+                      </Tooltip>
                 </Grid>
                 <Grid item>
                   <Grid
