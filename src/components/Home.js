@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, styled } from "@material-ui/core/styles";
 import {
-  Brightness4,
-  Brightness7,
   ShoppingCartOutlined,
   BuildOutlined,
   CheckOutlined,
   CloseOutlined,
 } from "@material-ui/icons";
-import smartBin from "../assets/images/firstThresholdImage.png";
+import smartBin1 from "../assets/images/firstThresholdImage.png";
+import smartBin2 from "../assets/images/secondThresholdImage.png";
+import smartBin3 from "../assets/images/thirdThresholdImage.png";
+import smartBin4 from "../assets/images/fourthThresholdImage.png";
 import smartLabel from "../assets/images/SmartLabel2.jpg";
 import User from "../assets/images/img1.png";
 import Chart from "react-apexcharts";
@@ -199,16 +200,14 @@ class Home extends Component {
           id: "basic-bar",
         },
         xaxis: {
-          x: new Date("14 Nov 2012").getTime(),
-          borderColor: "#999",
+          x: [1,2,3,4,5,6,7,8,9,10]
         },
       },
       barChartSeries: [
         {
           name: "series-1",
           data: [
-            60, 40, 15, 80, 29, 70, 50, 82, 43, 64, 94, 1, 43, 74, 5, 44, 40,
-            32, 58, 12, 71, 2, 49, 14, 52, 81, 20, 49, 37, 11,
+            60, 40, 15, 80, 29, 70, 50, 82, 43, 64,
           ],
         },
       ],
@@ -220,14 +219,16 @@ class Home extends Component {
           curve: "stepline",
         },
         stacked: true,
+        colors:['#1aaf04','#3889fa','#fabe19','#d50b0b']
       },
       series: [
         {
-          name: "Blue",
+          name: "Green",
           data: [100, 100, 100, 100],
+         
         },
         {
-          name: "Green",
+          name: "Blue",
           data: [70, 70, 70, 70],
         },
         {
@@ -392,7 +393,7 @@ class Home extends Component {
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
               <img
-                src={smartBin}
+                src={smartBin1}
                 className={classes.smartBinImg}
                 alt="smart bin"
               />
