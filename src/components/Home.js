@@ -74,26 +74,7 @@ const styles = (theme) => ({
     borderRadius: "50%",
     backgroundColor: "#03ab13",
     boxShadow: "0px 0px 18px #50fc4a",
-    [theme.breakpoints.down("xl")]: {
-      position: "absolute",
-      top: "14%",
-      left: "8%",
-    },
-    [theme.breakpoints.down("lg")]: {
-      position: "absolute",
-      top: "16%",
-      left: "8%",
-    },
-    [theme.breakpoints.down("md")]: {
-      position: "absolute",
-      top: "18%",
-      left: "7%",
-    },
-    [theme.breakpoints.down("sm")]: {
-      position: "absolute",
-      top: "6%",
-      left: "7%",
-    },
+    display: 'inline-block',
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: "2.7%",
@@ -108,6 +89,12 @@ const styles = (theme) => ({
     border: "1px solid #fad533",
     backgroundColor: "#ef6b06",
     boxShadow: "0px 0px 18px #fdc577",
+    display: 'inline-block',
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: "2.7%",
+      left: "3%",
+    },
   },
   redStatus: {
     width: "40px",
@@ -117,6 +104,12 @@ const styles = (theme) => ({
     border: "1px solid #fda1a1",
     backgroundColor: "#d91d08",
     boxShadow: "0px 0px 18px #fd7c7c",
+    display: 'inline-block',
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: "2.7%",
+      left: "3%",
+    },
   },
   avatar: {
     width: 70,
@@ -176,13 +169,14 @@ const styles = (theme) => ({
     backgroundColor: "#242424",
   },
   switchCard: {
-    [theme.breakpoints.down("sm")]: {
+    marginTop:10,
+    [theme.breakpoints.down("xs")]: {
       display: "none",
     },
   },
   smallSwitchCard: {
     display: "none",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       display: "flex",
     },
   },
@@ -228,20 +222,20 @@ class Home extends Component {
       },
       series: [
         {
-          name: "Series 1",
-          data: [100, 138, 123, 109, 118, 150, 116, 105, 91, 143, 114, 103],
+          name: "Blue",
+          data: [100, 100,100,100],
         },
         {
-          name: "Series 2",
-          data: [70, 108, 93, 79, 88, 120, 86, 75, 61, 113, 84, 73],
+          name: "Green",
+          data: [70, 70,70,70],
         },
         {
-          name: "Series 3",
-          data: [40, 78, 63, 49, 58, 90, 56, 45, 31, 83, 54, 43],
+          name: "Yellow",
+          data: [40, 40,40,40],
         },
         {
-          name: "Series 4",
-          data: [10, 48, 33, 19, 28, 60, 26, 15, 1, 53, 24, 13],
+          name: "Red",
+          data: [10,10,10,10],
         },
       ],
       xaxis: {
@@ -272,7 +266,7 @@ class Home extends Component {
     return (
       <>
         <Grid container spacing={1} className={classes.grid}>
-          <Grid item xs={12} sm={2} md={2}>
+          <Grid item xs={12} sm={3} md={2}>
             <Card
               className={classes.paper}
               elevation={1}
@@ -371,7 +365,7 @@ class Home extends Component {
                     <Grid item>Light</Grid>
                   </Grid>
                 </Grid>
-                <Grid item>
+                <Grid item >
                   <Grid
                     component="label"
                     container
@@ -388,7 +382,7 @@ class Home extends Component {
               </Grid>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={5} md={5}>
+          <Grid item xs={12} sm={4} md={5}>
             <Card
               className={classes.paper}
               elevation={1}
@@ -423,7 +417,7 @@ class Home extends Component {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={5} md={5}>
+          <Grid item xs={12} sm={4} md={5}>
             <Grid container direction="column" columnSpacing={4} spacing={1}>
               <Grid item>
                 <Paper
@@ -438,7 +432,7 @@ class Home extends Component {
                   />
                 </Paper>
               </Grid>
-              <Grid item style={{ marginTop: "10%" }}>
+              <Grid item style={{ marginTop: "11.3%" }}>
                 <Paper
                   className={classes.paper}
                   elevation={1}
