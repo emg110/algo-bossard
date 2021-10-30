@@ -21,7 +21,7 @@ import {
   Switch,
   Avatar,
   Card,
-  CardHeader,
+  Typography,
   CardActions,
   IconButton,
   Tooltip,
@@ -70,11 +70,35 @@ const styles = (theme) => ({
   greenStatus: {
     width: "40px",
     height: "40px",
-    marginLeft: 14,
     border: "1px solid #93fa33",
     borderRadius: "50%",
     backgroundColor: "#03ab13",
     boxShadow: "0px 0px 18px #50fc4a",
+    [theme.breakpoints.down("xl")]: {
+      position: "absolute",
+      top: "24%",
+      left: "8%",
+    },
+    [theme.breakpoints.down("lg")]: {
+      position: "absolute",
+      top: "27%",
+      left: "8%",
+    },
+    [theme.breakpoints.down("md")]: {
+      position: "absolute",
+      top: "28%",
+      left: "7%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      position: "absolute",
+      top: "21%",
+      left: "7%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: "2.7%",
+      left: "3%",
+    },
   },
   yellowStatus: {
     width: "40px",
@@ -151,86 +175,18 @@ const styles = (theme) => ({
   cardRootDark: {
     backgroundColor: "#242424",
   },
+  switchCard: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
+  smallSwitchCard: {
+    display: "none",
+    [theme.breakpoints.down("sm")]: {
+      display: "flex",
+    },
+  },
 });
-
-const IOSSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 52,
-  height: 26,
-  padding: 0,
-  "& .MuiSwitch-switchBase": {
-    padding: 0,
-    margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      marginLeft: 11,
-      "& + .MuiSwitch-track": {
-        backgroundColor: "#cac9c9",
-        opacity: 1,
-        border: 0,
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: 0.5,
-      },
-    },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#f44336",
-      border: "6px solid #fff",
-    },
-    "&.Mui-disabled .MuiSwitch-thumb": {
-      color:
-        theme.palette.mode === "light"
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: 0.7,
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
-    width: 22,
-    height: 22,
-    backgroundRepeat: "no-repeat",
-  },
-  "& .MuiSwitch-track": {
-    borderRadius: 26 / 2,
-    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#cac9c9",
-    opacity: 1,
-    [theme.breakpoints.down("xs")]: {
-      backgroundColor: "#E9E9EA",
-    },
-    "&:after, &:before": {
-      color: "white",
-      fontSize: "11px",
-      position: "absolute",
-      top: "6px",
-    },
-    "&:after": {
-      content: `url(${Brightness7})`,
-      backgroundImage: `url(${Brightness7})`,
-      backgroundSize: "17px",
-      backgroundRepeat: "no-repeat",
-      left: "4px",
-      top: "4px",
-    },
-    "&:before": {
-      content: "''",
-      backgroundImage: `url(${Brightness4})`,
-      backgroundSize: "17px",
-      backgroundRepeat: "no-repeat",
-      right: "5px",
-      top: "4px",
-      padding: 9,
-    },
-    transition: theme.transitions.create(["background-color"], {
-      duration: 500,
-    }),
-  },
-}));
 
 class Home extends Component {
   constructor(props) {
@@ -251,7 +207,6 @@ class Home extends Component {
           x: new Date("14 Nov 2012").getTime(),
           borderColor: "#999",
         },
-        
       },
       barChartSeries: [
         {
@@ -299,7 +254,7 @@ class Home extends Component {
   handleDarkModeClick() {
     const { isDarkMode, setIsDarkMode } = this.props;
     setIsDarkMode(!isDarkMode);
-    this.setState({ isDarkModeChecked: !this.props.isDarkModeChecked });
+    this.setState({ isDarkModeChecked: !this.state.isDarkModeChecked });
   }
 
   render() {
@@ -316,15 +271,21 @@ class Home extends Component {
 
     return (
       <>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={1} className={classes.grid}>
           <Grid item xs={12} sm={2} md={2}>
             <Card
               className={classes.paper}
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
-              <List className={classes.list}>
-                <ListItem className={classes.listItem}>
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.switchCard}
+              >
+                <Grid item style={{ height: 95 }}>
                   <span
                     className={
                       smartbinGeneralStatus === "green"
@@ -334,24 +295,97 @@ class Home extends Component {
                         : classes.redStatus
                     }
                   ></span>
-                </ListItem>
-                <Tooltip title="?">
-                  <ListItem className={classes.listItem}>
-                    <Avatar className={classes.avatar} src={User} />
-                  </ListItem>
-                </Tooltip>
-                <ListItem className={classes.listItem}>
-                  <IOSSwitch />
-                </ListItem>
-                <Tooltip title="Mode">
-                  <ListItem>
-                    <IOSSwitch
-                      checked={isDarkModeChecked}
-                      onChange={this.handleDarkModeClick}
-                    />
-                  </ListItem>
-                </Tooltip>
-              </List>
+                </Grid>
+                <Grid item style={{ height: 95 }}>
+                  <Avatar className={classes.avatar} src={User} />
+                </Grid>
+                <Grid item style={{ height: 95 }}>
+                  <Grid
+                    component="label"
+                    container
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <Grid item>Dark</Grid>
+                    <Grid item>
+                      <Switch
+                        color="secondary"
+                        checked={isDarkModeChecked}
+                        onChange={this.handleDarkModeClick}
+                      />
+                    </Grid>
+                    <Grid item>Light</Grid>
+                  </Grid>
+                </Grid>
+                <Grid item style={{ height: 95 }}>
+                  <Grid
+                    component="label"
+                    container
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <Grid item></Grid>
+                    <Grid item>
+                      <Switch color="secondary" />
+                    </Grid>
+                    <Grid item></Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.smallSwitchCard}
+              >
+                <Grid item>
+                  <div
+                    className={
+                      smartbinGeneralStatus === "green"
+                        ? classes.greenStatus
+                        : smartbinGeneralStatus === "yellow"
+                        ? classes.yellowStatus
+                        : classes.redStatus
+                    }
+                  ></div>
+                </Grid>
+                <Grid item>
+                  <Avatar className={classes.avatar} src={User} />
+                </Grid>
+                <Grid item>
+                  <Grid
+                    component="label"
+                    container
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <Grid item>Dark</Grid>
+                    <Grid item>
+                      <Switch
+                        color="secondary"
+                        checked={isDarkModeChecked}
+                        onChange={this.handleDarkModeClick}
+                      />
+                    </Grid>
+                    <Grid item>Light</Grid>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Grid
+                    component="label"
+                    container
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <Grid item></Grid>
+                    <Grid item>
+                      <Switch color="secondary" />
+                    </Grid>
+                    <Grid item></Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Card>
           </Grid>
           <Grid item xs={12} sm={5} md={5}>
