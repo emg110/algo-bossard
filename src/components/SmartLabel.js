@@ -56,14 +56,15 @@ const styles = (theme) => ({
     color: "#999999",
   },
   orders: {
-    fontSize: "8px",
+    fontSize: "10px",
     color: "#039b0d",
+    marginRight: 10
   },
   topText:{
-    fontSize: "8px",
+    fontSize: "10px",
     color: "#be0a04",
     float: 'right',
-    marginRight: 4
+    marginRight: 20
   }
 });
 
@@ -98,8 +99,8 @@ class SmartLabel extends Component {
               Hexalobular socket pan washer head machine screws-ecosyn-fix
             </Typography>
             <div style={{ float: "right", marginRight: 4 }}>
+              <Typography className={classes.orders}>ORD : 300</Typography>
               <Typography className={classes.subText}>M6 X30/X30</Typography>
-              <Typography className={classes.orders}>300 orders</Typography>
             </div>
           </Grid>
         </Grid>
