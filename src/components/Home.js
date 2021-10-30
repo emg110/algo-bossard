@@ -76,22 +76,22 @@ const styles = (theme) => ({
     boxShadow: "0px 0px 18px #50fc4a",
     [theme.breakpoints.down("xl")]: {
       position: "absolute",
-      top: "24%",
+      top: "14%",
       left: "8%",
     },
     [theme.breakpoints.down("lg")]: {
       position: "absolute",
-      top: "27%",
+      top: "16%",
       left: "8%",
     },
     [theme.breakpoints.down("md")]: {
       position: "absolute",
-      top: "28%",
+      top: "18%",
       left: "7%",
     },
     [theme.breakpoints.down("sm")]: {
       position: "absolute",
-      top: "21%",
+      top: "6%",
       left: "7%",
     },
     [theme.breakpoints.down("xs")]: {
