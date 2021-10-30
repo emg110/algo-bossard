@@ -94,7 +94,7 @@ class SupplySmartView extends Component {
               </IconButton>
             </>
           }
-          title="SUPPLY"
+          title="SUPPLYS"
         />
         <CardContent>
           {isTileView && <TileWidget assets={assets} isDarkMode={isDarkMode} />}

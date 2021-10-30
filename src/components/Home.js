@@ -29,6 +29,7 @@ import {
 import TxnsSmartView from "./TxnsSmartView.js";
 import OrdersSmartView from "./OrdersSmartView.js";
 import SupplySmartView from "./SupplySmartView.js";
+import SmartLabel from "./SmartLabel.js";
 
 const allAssets = [
   {
@@ -74,7 +75,7 @@ const styles = (theme) => ({
     borderRadius: "50%",
     backgroundColor: "#03ab13",
     boxShadow: "0px 0px 18px #50fc4a",
-    display: 'inline-block',
+    display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: "2.7%",
@@ -89,7 +90,7 @@ const styles = (theme) => ({
     border: "1px solid #fad533",
     backgroundColor: "#ef6b06",
     boxShadow: "0px 0px 18px #fdc577",
-    display: 'inline-block',
+    display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: "2.7%",
@@ -104,7 +105,7 @@ const styles = (theme) => ({
     border: "1px solid #fda1a1",
     backgroundColor: "#d91d08",
     boxShadow: "0px 0px 18px #fd7c7c",
-    display: 'inline-block',
+    display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: "2.7%",
@@ -169,7 +170,7 @@ const styles = (theme) => ({
     backgroundColor: "#242424",
   },
   switchCard: {
-    marginTop:10,
+    marginTop: 10,
     [theme.breakpoints.down("xs")]: {
       display: "none",
     },
@@ -223,19 +224,19 @@ class Home extends Component {
       series: [
         {
           name: "Blue",
-          data: [100, 100,100,100],
+          data: [100, 100, 100, 100],
         },
         {
           name: "Green",
-          data: [70, 70,70,70],
+          data: [70, 70, 70, 70],
         },
         {
           name: "Yellow",
-          data: [40, 40,40,40],
+          data: [40, 40, 40, 40],
         },
         {
           name: "Red",
-          data: [10,10,10,10],
+          data: [10, 10, 10, 10],
         },
       ],
       xaxis: {
@@ -279,21 +280,7 @@ class Home extends Component {
                 alignItems="center"
                 className={classes.switchCard}
               >
-                <Grid item style={{ height: 95 }}>
-                  <span
-                    className={
-                      smartbinGeneralStatus === "green"
-                        ? classes.greenStatus
-                        : smartbinGeneralStatus === "yellow"
-                        ? classes.yellowStatus
-                        : classes.redStatus
-                    }
-                  ></span>
-                </Grid>
-                <Grid item style={{ height: 95 }}>
-                  <Avatar className={classes.avatar} src={User} />
-                </Grid>
-                <Grid item style={{ height: 95 }}>
+              <Grid item style={{ height: 86}}>
                   <Grid
                     component="label"
                     container
@@ -311,7 +298,25 @@ class Home extends Component {
                     <Grid item>Light</Grid>
                   </Grid>
                 </Grid>
-                <Grid item style={{ height: 95 }}>
+                <Grid item style={{ height: 86 }}>
+                  <span
+                    className={
+                      smartbinGeneralStatus === "green"
+                        ? classes.greenStatus
+                        : smartbinGeneralStatus === "yellow"
+                        ? classes.yellowStatus
+                        : classes.redStatus
+                    }
+                  ></span>
+                </Grid>
+                <Grid item style={{ height: 86 }}>
+                  <Tooltip title="Manual Order">
+                    <IconButton className={classes.iconButton}>
+                      <ShoppingCartOutlined />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+                <Grid item style={{ height: 86 }}>
                   <Grid
                     component="label"
                     container
@@ -325,6 +330,7 @@ class Home extends Component {
                     <Grid item></Grid>
                   </Grid>
                 </Grid>
+                
               </Grid>
               <Grid
                 container
@@ -345,9 +351,6 @@ class Home extends Component {
                   ></div>
                 </Grid>
                 <Grid item>
-                  <Avatar className={classes.avatar} src={User} />
-                </Grid>
-                <Grid item>
                   <Grid
                     component="label"
                     container
@@ -365,7 +368,7 @@ class Home extends Component {
                     <Grid item>Light</Grid>
                   </Grid>
                 </Grid>
-                <Grid item >
+                <Grid item>
                   <Grid
                     component="label"
                     container
@@ -394,12 +397,6 @@ class Home extends Component {
                 alt="smart bin"
               />
               <CardActions classes={{ root: classes.cardActionsRoot }}>
-                <Tooltip title="Manual Order">
-                  <IconButton className={classes.iconButton}>
-                    <ShoppingCartOutlined />
-                  </IconButton>
-                </Tooltip>
-
                 <div className={classes.badge}>
                   {isSmartbinMaintenance ? (
                     <BuildOutlined className={classes.icon} />
@@ -425,14 +422,12 @@ class Home extends Component {
                   elevation={1}
                   classes={{ root: isDarkMode && classes.cardRootDark }}
                 >
-                  <img
-                    src={smartLabel}
-                    className={classes.smartLabelImg}
-                    alt="smart label"
-                  />
+                  <Grid container item style={{padding:10}}>
+                    <SmartLabel />
+                  </Grid>
                 </Paper>
               </Grid>
-              <Grid item style={{ marginTop: "11.3%" }}>
+              <Grid item>
                 <Paper
                   className={classes.paper}
                   elevation={1}
@@ -444,7 +439,7 @@ class Home extends Component {
                         options={this.state.barChartOptions}
                         series={this.state.barChartSeries}
                         type="bar"
-                        height="170"
+                        height="190"
                       />
                     </div>
                   </div>

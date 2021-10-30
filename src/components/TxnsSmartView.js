@@ -93,7 +93,7 @@ class TxnsSmartView extends Component {
               </IconButton>
             </>
           }
-          title="TXNS"
+          title="PAYMENTS"
         />
         <CardContent>
           {isTileView && <TileWidget assets={assets} isDarkMode={isDarkMode} />}
