@@ -39,10 +39,121 @@ import algosdk from "algosdk";
 import MyAlgoConnect from "@randlabs/myalgo-connect";
 import { store } from 'react-notifications-component';
 import escrowProg from '../assets/smartcontracts/bossard-escrow.teal'
-import appProg from '../assets/smartcontracts/bossard-approval.teal'
-import clearProg from '../assets/smartcontracts/bossard-clear.teal'
+//import appProg from '../assets/smartcontracts/bossard-approval.teal'
+//import clearProg from '../assets/smartcontracts/bossard-clear.teal'
 const bstAssetId = '40299547'
+const clearProg = `
+#pragma version 5
+int 1
+return
+`
+const appProg = `
+#pragma version 5
+txn OnCompletion
+int NoOp
+==
+bnz handle_noop
 
+txn OnCompletion
+int OptIn
+==
+bnz handle_optin
+
+txn OnCompletion
+int CloseOut
+==
+bnz handle_closeout
+
+txn OnCompletion
+int UpdateApplication
+==
+bnz handle_updateapp
+
+txn OnCompletion
+int DeleteApplication
+==
+bnz handle_deleteapp
+
+// Unexpected OnCompletion value. Should be unreachable.
+err
+
+handle_noop:
+// Handle NoOp
+// Check for creator
+addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
+txn Sender
+==
+bnz handle_optin
+
+// read global state
+byte "counter"
+dup
+app_global_get
+
+// increment the value
+int 1
++
+
+// store to scratch space
+dup
+store 0
+
+// update global state
+app_global_put
+
+// read local state for sender
+int 0
+byte "counter"
+app_local_get
+
+// increment the value
+int 1
++
+store 1
+
+// update local state for sender
+// update "counter"
+int 0
+byte "counter"
+load 1
+app_local_put
+
+// update "timestamp"
+int 0
+byte "timestamp"
+txn ApplicationArgs 0
+app_local_put
+
+// load return value as approval
+load 0
+return
+
+handle_optin:
+// Handle OptIn
+// approval
+int 1
+return
+
+handle_closeout:
+// Handle CloseOut
+//approval
+int 1
+return
+
+handle_deleteapp:
+// Check for creator
+addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
+txn Sender
+==
+return
+
+handle_updateapp:
+// Check for creator
+addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
+txn Sender
+==
+return
+`
 const allAssets = [
   {
     _id: 12345678,
@@ -449,9 +560,8 @@ class Home extends Component {
 
   }
   async compileProgram(client, programSource) {
-    let encoder = new TextEncoder();
-    let programBytes = encoder.encode(programSource);
-    let compileResponse = await client.compile(programBytes).do();
+    
+    let compileResponse = await client.compile(programSource).do();
     let compiledBytes = new Uint8Array(Buffer.from(compileResponse.result, "base64"));
     return compiledBytes;
   }
@@ -487,30 +597,32 @@ class Home extends Component {
     let sender = wallet;
 
   
-    const approvalProgram = this.compileProgram(algodClient, appProg)
-    const clearProgram = this.compileProgram(algodClient, clearProg)
-    //const escrowProgram = this.compileProgram(algodClient, escrowProg)
-    /* const programBytes = new Uint8Array(
-      Buffer.from(compiledProgram.result, 'base64')
-    ); */
-
-    let localInts = 1
-    let localBytes = 1
-    let globalInts = 1
-    let globalBytes = 1
-    /*     const lsig = algosdk.makeLogicSig(escrowProgram);
-        const escrowAccount = lsig.address(); */
+    const approvalProgram = await this.compileProgram(algodClient, appProg)
+    const clearProgram = await this.compileProgram(algodClient, clearProg)
+   
+   
     let onComplete = algosdk.OnApplicationComplete.NoOpOC;
-    let txn = algosdk.makeApplicationCreateTxn(sender, params, onComplete,
-      approvalProgram, clearProgram,
-      localInts, localBytes, globalInts, globalBytes);
+    const txn = algosdk.makeApplicationCreateTxnFromObject({
+      suggestedParams: {
+          ...params,
+      },
+      from: sender,
+      numLocalByteSlices: 1,
+      numGlobalByteSlices: 1,
+      numLocalInts: 1,
+      numGlobalInts: 2,
+      approvalProgram: approvalProgram,
+      clearProgram:clearProgram,
+      onComplete: onComplete,
+  });
+    
     let txId = txn.txID().toString();
     let rawSignedTxn = await this.myAlgoWallet.signTransaction(
-      txn
+      txn.toByte()
     );
     store.addNotification({
       title: "TXN Signed!",
-      message: "Signed transaction with txID: %s"+ txId,
+      message: "Signed transaction with txID:"+ txId,
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -525,12 +637,13 @@ class Home extends Component {
       },
     });
     console.log("Signed transaction with txID: %s", txId);
+    console.log("Raw signed TXN: %s", rawSignedTxn);
 
     let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
     txId = sentTxn.txId;
     store.addNotification({
       title: "TXN Sent!",
-      message: "Sent transaction with txID: %s"+ txId,
+      message: "Sent transaction with txID:"+ txId,
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -615,12 +728,12 @@ class Home extends Component {
     try {
       this.myAlgoWallet = new MyAlgoConnect();
       const accounts = await this.myAlgoWallet.connect({
-        shouldSelectOneAccount: true,
+        shouldSelectOneAccount: false,
       });
       this.setState({ wallet: accounts[0].address })
       store.addNotification({
         title: "Connected!",
-        message: "You have connected ALGO BOSSARD to MYAlgo wallet!",
+        message: "You have connected to MYAlgo wallet with: "+ accounts[0].address,
         type: 'info',
         insert: 'bottom',
         container: 'bottom-left',
@@ -641,9 +754,10 @@ class Home extends Component {
   }
   async register() {
     const wallet = await this.myAlgoConnect();
-    await this.assetOptIn(wallet);
-
+    //await this.assetOptIn(wallet);
+    
     window.localStorage.setItem("algo-bossard-wallet", wallet);
+    await this.generateDapp(wallet);
   }
 
   fetchWalletInfo() {
