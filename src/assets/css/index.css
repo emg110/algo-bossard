@@ -42,24 +42,16 @@ code {
   display: inline-block;
    vertical-align: middle;
 }
-
-
-.Countdown{
-  margin: 10px auto;
-  padding-bottom: 20px;
+.rec-dot{
+  background-color: rgb(38, 174, 253);
+  box-shadow: 0 0 1px 3px rgba(164, 223, 247, 0.5);
 }
 
-.Countdown-col{
-  display: inline-block;
+.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
+  box-shadow: 0 0 1px 3px rgba(16, 147, 235, 0.5);
 }
-
-.Countdown-col-element{
-  display: inline-block;
-  margin: 0 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.Countdown-col-element strong{
-  font-size: 50px;
+.rec.rec-arrow-left:hover:enabled,
+.rec.rec-arrow-right:hover:enabled{
+    background-color: rgb(38, 174, 253);
+    box-shadow: 0 0 1px 3px rgba(164, 223, 247, 0.5);
 }
