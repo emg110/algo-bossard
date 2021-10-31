@@ -456,6 +456,7 @@ class Home extends Component {
       ],
       crOptions: {
         chart: {
+          
           id: "basic-area",
           animations: {
             enabled: true,
@@ -470,6 +471,9 @@ class Home extends Component {
               speed: 350
             }
           }
+        },
+        dataLabels: {
+          enabled: false
         },
         /* stroke: {
           curve: "stepline",
