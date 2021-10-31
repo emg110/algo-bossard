@@ -38,7 +38,7 @@ import SmartLabel from "./SmartLabel.js";
 import algosdk from "algosdk";
 import MyAlgoConnect from "@randlabs/myalgo-connect";
 import { store } from "react-notifications-component";
-import escrowProg from "../assets/smartcontracts/bossard-escrow.teal";
+//import escrowProg from "../assets/smartcontracts/bossard-escrow.teal";
 //import appProg from '../assets/smartcontracts/bossard-approval.teal'
 //import clearProg from '../assets/smartcontracts/bossard-clear.teal'
 const bstAssetId = "40299547";
@@ -151,24 +151,87 @@ txn Sender
 ==
 return
 `;
+const escrowProg = `
+#pragma version 5
+b bcheck
+
+baxfer:
+txn AssetCloseTo
+global ZeroAddress
+==
+txn AssetAmount
+int 1
+==
+&&
+assert
+txn TypeEnum
+int axfer
+==
+txn AssetSender
+global ZeroAddress
+==
+&&
+assert
+int 1
+b fin
+
+bacfg:
+txn TypeEnum
+int acfg
+==
+b fin
+
+bcheck:
+gtxn 0 ApplicationID
+int algoBossardAppId
+==
+txn GroupIndex
+int 1
+==
+&&
+gtxn 0 TypeEnum
+int appl
+==
+&&
+assert
+txn RekeyTo
+global ZeroAddress
+==
+assert
+txn Fee
+global MinTxnFee
+<=
+assert
+gtxna 0 ApplicationArgs 0
+byte "bst_cfg"
+==
+bnz bacfg
+gtxna 0 ApplicationArgs 0
+byte "bst-xfer"
+==
+bnz baxfer
+err
+
+fin:
+`
 const allAssets = [
   {
     _id: 12345678,
-    description: "d tempor incididunt ut labore et dolore magna aliqu",
-    name: "testatk one",
+    description: "BOSSARD TEST DATA DESC",
+    name: "Bossard-item1",
     avatar: "",
   },
   {
     _id: 26,
     description:
-      "ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    name: "NASLOWSD",
+      "BOSSARD TEST DATA DESC2",
+    name: "Bossard-item2",
     avatar: "",
   },
   {
     _id: 37,
-    description: "incididunt ut labore et dolore magna",
-    name: "WRbvx",
+    description: "BOSSARD TEST DATA DESC3",
+    name: "Bossard item3",
     avatar: "",
   },
 ];
@@ -349,9 +412,11 @@ class Home extends Component {
       wallet: "AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI",
       walletDataURL: null,
       walletUri: null,
+      escrowAddress: null,
       ordersQty: 1000,
+      appId: '42151131',
       takeQty: 50,
-      smartbinQty:3000,
+      smartbinQty: 3000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
       isContinuousReplenishment: false,
@@ -466,9 +531,9 @@ class Home extends Component {
       ) {
         console.log(
           "Transaction " +
-            txId +
-            " confirmed in round " +
-            pendingInfo["confirmed-round"]
+          txId +
+          " confirmed in round " +
+          pendingInfo["confirmed-round"]
         );
         break;
       }
@@ -594,7 +659,7 @@ class Home extends Component {
     );
 
     store.addNotification({
-      title: "Opting in...",
+      title: "Generating Dapp...",
       message: "Now Generating Algo Bossard dApp! ",
       type: "info",
       insert: "bottom",
@@ -682,7 +747,7 @@ class Home extends Component {
       .do();
     let appId = transactionResponse["application-index"];
     console.log("Created new app-id: ", appId);
-
+    this.setState({})
     store.addNotification({
       title: "dApp Generated!",
       message: "Created new dApp: " + appId,
@@ -699,6 +764,62 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
+  }
+  async generateEscrow() {
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+    store.addNotification({
+      title: "Escrow Generation...",
+      message: "Now Generating Algo Bossard SmartBin Escrow! ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+
+    escrowProg.replace('algoBossardAppId', Number(this.state.appId))
+    const escroWprogram = await this.compileProgram(algodClient, escrowProg);
+    //const clearProgram = await this.compileProgram(algodClient, clearProg);
+
+
+    const lsig = algosdk.makeLogicSig(escroWprogram);
+    const escrowAcc = lsig.address();
+
+    this.setState({ escrowAddress: escrowAcc })
+
+    store.addNotification({
+      title: "Escrow Generated!",
+      message: "SmartBin Escrow Account created with address: " + escrowAcc,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+
+
+
   }
   generateWalletQRCode() {
     let {
@@ -767,10 +888,12 @@ class Home extends Component {
   }
   async register() {
     const wallet = await this.myAlgoConnect();
-    //await this.assetOptIn(wallet);
+    await this.assetOptIn(wallet);
+
 
     window.localStorage.setItem("algo-bossard-wallet", wallet);
     await this.generateDapp(wallet);
+    //await this.generateEscrow();
   }
 
   fetchWalletInfo() {
@@ -905,10 +1028,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                        ? classes.yellowStatus
-                        : smartbinGeneralStatus === "blue"
-                        ? classes.blueStatus
-                        : classes.redStatus
+                          ? classes.yellowStatus
+                          : smartbinGeneralStatus === "blue"
+                            ? classes.blueStatus
+                            : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -926,10 +1049,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                        ? classes.yellowStatus
-                        : smartbinGeneralStatus === "blue"
-                        ? classes.blueStatus
-                        : classes.redStatus
+                          ? classes.yellowStatus
+                          : smartbinGeneralStatus === "blue"
+                            ? classes.blueStatus
+                            : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -964,10 +1087,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? smartBin1
                         : smartbinGeneralStatus === "yellow"
-                        ? smartBin3
-                        : smartbinGeneralStatus === "blue"
-                        ? smartBin2
-                        : smartBin4
+                          ? smartBin3
+                          : smartbinGeneralStatus === "blue"
+                            ? smartBin2
+                            : smartBin4
                     }
                     className={classes.smartBinImg}
                     alt="smart bin"
@@ -1015,11 +1138,11 @@ class Home extends Component {
             >
               <Grid container item style={{ padding: 26 }}>
                 <Grid item xs={10} sm={10} md={10}>
-                  <SmartLabel 
-                  ordersQty={ordersQty}
-                  smartbinQty={smartbinQty}
-                  takeQty={takeQty}
-                   />
+                  <SmartLabel
+                    ordersQty={ordersQty}
+                    smartbinQty={smartbinQty}
+                    takeQty={takeQty}
+                  />
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <Tooltip title="Configure SmartBin">
