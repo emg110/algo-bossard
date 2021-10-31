@@ -14,11 +14,17 @@ const styles = (theme) => ({
     borderRadius: 6,
     border: "10px solid #5e5f61",
     margin: "0px auto",
+    [theme.breakpoints.down("xl")]: {
+      width: '60%',
+    },
+    [theme.breakpoints.down("lg")]: {
+      width: '58%',
+    },
      [theme.breakpoints.down("md")]: {
-      width: '42%',
+      width: '80%',
     },
     [theme.breakpoints.down("sm")]: {
-      width: '60%',
+      width: '83%',
       height: 'auto',
     },
     [theme.breakpoints.down("xs")]: {

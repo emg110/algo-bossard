@@ -76,6 +76,13 @@ const styles = (theme) => ({
   smartBinImg: {
     width: "43%",
     height: "auto",
+    [theme.breakpoints.down("sm")]: {
+      width: "76%",
+      marginTop:30,
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "48%",
+    },
   },
   smartLabelImg: {
     width: "50%",
@@ -90,8 +97,10 @@ const styles = (theme) => ({
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
-      top: "2%",
-      left: "3%",
+      top: "55px",
+      left: "30%",
+      width: "30px",
+      height: "30px",
     },
   },
   yellowStatus: {
@@ -105,8 +114,10 @@ const styles = (theme) => ({
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
-      top: "2.7%",
-      left: "3%",
+      top: "55px",
+      left: "30%",
+      width: "30px",
+    height: "30px",
     },
   },
   redStatus: {
@@ -120,8 +131,10 @@ const styles = (theme) => ({
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
-      top: "2.7%",
-      left: "3%",
+      top: "55px",
+      left: "30%",
+      width: "30px",
+      height: "30px",
     },
   },
   avatar: {
@@ -747,7 +760,7 @@ class Home extends Component {
           </DialogContent>
         </Dialog>
         <Grid container spacing={1} className={classes.grid}>
-          <Grid item xs={12} sm={4} md={2}>
+          <Grid item xs={12} sm={3} md={2}>
             <Card
               className={classes.paper}
               elevation={1}
@@ -759,6 +772,7 @@ class Home extends Component {
                 justifyContent="center"
                 alignItems="center"
                 className={classes.switchCard}
+                style={{padding:26}}
               >
                 <Grid item style={{ height: 86 }}>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
@@ -801,7 +815,7 @@ class Home extends Component {
                   ></span>
                 </Grid>
 
-                {/* <Grid item>
+                <Grid item>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
                     <Switch
                       color="secondary"
@@ -809,26 +823,25 @@ class Home extends Component {
                       onChange={this.handleDarkModeClick}
                     />
                   </Tooltip>
-                </Grid> */}
+                </Grid>
               </Grid>
             </Card>
           </Grid>
           <Grid item xs={12} sm={4} md={5}>
             <Card
               className={classes.paper}
-              style={{ verticalAlign: 'middle' }}
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
-              <Grid style={{ verticalAlign: 'middle' }} container>
-                <Grid style={{ verticalAlign: 'middle' }} item xs={10} sm={10} md={10}>
+              <Grid container style={{padding:26}}>
+                <Grid  item xs={10} sm={10} md={10}>
                   <img
                     src={smartBin1}
                     className={classes.smartBinImg}
                     alt="smart bin"
                   />
                 </Grid>
-                <Grid style={{ verticalAlign: 'middle' }} item xs={2} sm={2} md={2}>
+                <Grid item xs={2} sm={2} md={2} style={{paddingTop:'1%'}}>
                   <br />
                   <div className={classes.badge} style={{ backgroundColor: isSmartbinMaintenance ? '#06ba0387' : "#f82a2aa3" }}>
 
@@ -846,7 +859,7 @@ class Home extends Component {
               </Grid>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={4} md={5}>
+          <Grid item xs={12} sm={5} md={5}>
             <Paper
               className={classes.paper}
               elevation={1}
