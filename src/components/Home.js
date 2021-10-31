@@ -49,7 +49,6 @@ return
 `;
 const appProg = `
 #pragma version 5
-
 txn OnCompletion
 int NoOp
 ==
@@ -75,42 +74,53 @@ int DeleteApplication
 ==
 bnz handle_deleteapp
 
+
 err
 
 handle_noop:
 
 
-byte "bsbqty"
+addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
+txn Sender
+==
+bnz handle_optin
+
+
+byte "bstcrqty"
 dup
 app_global_get
-txna ApplicationArgs 1
+
+
+int 1
 +
+
 
 dup
 store 0
+
 
 app_global_put
 
 
 int 0
-byte "bsbqty"
+byte "bstcrqty"
 app_local_get
 
 
-txna ApplicationArgs 2
+int 1
 +
 store 1
 
 
 int 0
-byte "bsbqty"
+byte "bstcrqty"
 load 1
 app_local_put
 
 
 int 0
-byte "timestamp"
-txn ApplicationArgs 3
+byte "bstqty"
+txn ApplicationArgs 0
 app_local_put
 
 
@@ -118,14 +128,14 @@ load 0
 return
 
 handle_optin:
-int 0
-byte "bsbqty"
-int 0
-app_local_put
+// Handle OptIn
+// approval
 int 1
 return
 
 handle_closeout:
+// Handle CloseOut
+//approval
 int 1
 return
 
@@ -137,7 +147,7 @@ txn Sender
 return
 
 handle_updateapp:
-
+// Check for creator
 addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
 txn Sender
 ==
