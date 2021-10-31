@@ -78,8 +78,6 @@ bnz handle_deleteapp
 err
 
 handle_noop:
-
-
 addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
 txn Sender
 ==
