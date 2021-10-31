@@ -38,7 +38,10 @@ import SmartLabel from "./SmartLabel.js";
 import algosdk from "algosdk";
 import MyAlgoConnect from "@randlabs/myalgo-connect";
 import { store } from 'react-notifications-component';
-
+import escrowProg from '../assets/smartcontracts/bossard-escrow.teal'
+import appProg from '../assets/smartcontracts/bossard-approval.teal'
+import clearProg from '../assets/smartcontracts/bossard-clear.teal'
+const bstAssetId = '40299547'
 
 const allAssets = [
   {
@@ -205,7 +208,7 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wallet: null,
+      wallet: 'AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',
       walletDataURL: null,
       walletUri: null,
       ordersQty: 0,
@@ -270,6 +273,9 @@ class Home extends Component {
     this.myAlgoConnect = this.myAlgoConnect.bind(this);
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
+    this.register = this.register.bind(this);
+    this.generateDapp = this.generateDapp.bind(this);
+    this.compileProgram = this.compileProgram.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
 
@@ -332,38 +338,18 @@ class Home extends Component {
       await algodClient.statusAfterBlock(lastround).do();
     }
   }
-  async assetOptIn(wallet, role) {
-    const tokens = {
-      supplier: [
-        ["RIT", "29186874"],
-        ["SUP", "29186667"],
-        ["GOO", "29187737"],
-      ],
-      retailer: [
-        ["CER", "29187037"],
-        ["RIT", "29186874"],
-        ["SUP", "29186667"],
-        ["POS", "29187343"],
-        ["PRO", "29187472"],
-        ["GOO", "29187737"],
-      ],
-      consumer: [
-        ["RIT", "29186874"],
-        ["PRO", "29187472"],
-        ["CER", "29187037"],
-      ],
-    };
+  async assetOptIn(wallet) {
+
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
       ""
     );
-    let roleTokens = tokens[`${role.toLowerCase()}`];
-    //console.log("Tokens are: ", tokens);
-    //console.log("Role is: ", role);
+
+
     store.addNotification({
       title: "Opting in...",
-      message: "Now opting into token utilities for role: " + role,
+      message: "Now opting into Bossard Smart Token: BST! ",
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -377,7 +363,7 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-    //console.log("Role tokens are: ", roleTokens);
+
     let params = await algodClient.getTransactionParams().do();
     params.fee = 1000;
     params.flatFee = true;
@@ -393,73 +379,39 @@ class Home extends Component {
       })
     );
 
-    let opttxnGroup = [];
-    for (let i = 0; i < roleTokens.length; i++) {
-      console.log(role, roleTokens[i]);
-      /* let txn = await algosdk.makeAssetTransferTxnWithSuggestedParams(sender, recipient, closeRemainderTo, revocationTarget,
-        amount, note, token[1], params); */
-      let txn = {
-        ...params,
+    //let opttxnGroup = [];
 
-        type: "axfer",
-        assetIndex: Number(roleTokens[i][1]),
-        from: sender,
-        to: recipient,
-        amount: amount,
-        note: note,
-        closeRemainderTo: undefined,
-        revocationTarget: undefined,
+    let txn = {
+      ...params,
 
-      };
-      /*  let txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        suggestedParams: {
-            ...params,
-        },
+      type: "axfer",
+      assetIndex: Number(bstAssetId),
+      from: sender,
+      to: recipient,
+      amount: amount,
+      note: note,
+      closeRemainderTo: undefined,
+      revocationTarget: undefined,
+
+    };
+    /* 
+        const groupID = await algosdk.computeGroupID(opttxnGroup)
+        for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
         
-        type: 'axfer',
-        assetIndex: 12400859,
-        from: sender,
-        to: recipient,
-        amount: amount,
-        note: note
-    }) */
+     */
 
-      /* let txn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender,
-        recipient,
-        closeRemainderTo,
-        revocationTarget,
-        amount,
-        note,
-        Number(roleTokens[i][1]),
-        params
-      ); */
-      //console.log("TXN:", txn);
-
-      opttxnGroup.push(txn);
-    }
-    //console.log("going to assign group id:", opttxnGroup);
-    const groupID = await algosdk.computeGroupID(opttxnGroup)
-    for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
-    //await algosdk.assignGroupID(opttxnGroup);
-
-    //console.log("After assigned group id:", opttxnGroup);
-    /* const groupID = algosdk.computeGroupID(opttxnGroup)
-for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; */
-    //await algosdk.assignGroupID(opttxnGroup);
-
-    let rawSignedTxnGroup = await this.myAlgoWallet.signTransaction(
-      opttxnGroup
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(
+      txn
     );
-    //console.log('SIGNED TXN:', rawSignedTxnGroup)
-    let sigendTrxArray = [];
+
+    /* let sigendTrxArray = [];
     await rawSignedTxnGroup.forEach((txn) => {
       sigendTrxArray.push(txn.blob);
-    });
-    //console.log("SIGNED TXN GROUP:", sigendTrxArray);
-    let sentTxn = await algodClient.sendRawTransaction(sigendTrxArray).do();
+    }); */
+
+    let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
     let txId = sentTxn.txId;
-    //console.log("SENT TXN GROUP:", sentTxn);
+
     store.addNotification({
       title: "Waiting for transaction...",
       message: "Now waiting for Opti-in transaction response from Algorand... ",
@@ -493,8 +445,135 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
         waitForAnimation: false,
       },
     });
-    //await algodClient.pendingTransactionInformation(txId).do();
-    //console.log(`You have opted in to all BST tokens!`);
+
+
+  }
+  async compileProgram(client, programSource) {
+    let encoder = new TextEncoder();
+    let programBytes = encoder.encode(programSource);
+    let compileResponse = await client.compile(programBytes).do();
+    let compiledBytes = new Uint8Array(Buffer.from(compileResponse.result, "base64"));
+    return compiledBytes;
+  }
+  async generateDapp(wallet) {
+
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+
+    store.addNotification({
+      title: "Opting in...",
+      message: "Now Generating Algo Bossard dApp! ",
+      type: 'info',
+      insert: 'bottom',
+      container: 'bottom-left',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let sender = wallet;
+
+  
+    const approvalProgram = this.compileProgram(algodClient, appProg)
+    const clearProgram = this.compileProgram(algodClient, clearProg)
+    //const escrowProgram = this.compileProgram(algodClient, escrowProg)
+    /* const programBytes = new Uint8Array(
+      Buffer.from(compiledProgram.result, 'base64')
+    ); */
+
+    let localInts = 1
+    let localBytes = 1
+    let globalInts = 1
+    let globalBytes = 1
+    /*     const lsig = algosdk.makeLogicSig(escrowProgram);
+        const escrowAccount = lsig.address(); */
+    let onComplete = algosdk.OnApplicationComplete.NoOpOC;
+    let txn = algosdk.makeApplicationCreateTxn(sender, params, onComplete,
+      approvalProgram, clearProgram,
+      localInts, localBytes, globalInts, globalBytes);
+    let txId = txn.txID().toString();
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(
+      txn
+    );
+    store.addNotification({
+      title: "TXN Signed!",
+      message: "Signed transaction with txID: %s"+ txId,
+      type: 'info',
+      insert: 'bottom',
+      container: 'bottom-left',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    console.log("Signed transaction with txID: %s", txId);
+
+    let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
+    txId = sentTxn.txId;
+    store.addNotification({
+      title: "TXN Sent!",
+      message: "Sent transaction with txID: %s"+ txId,
+      type: 'info',
+      insert: 'bottom',
+      container: 'bottom-left',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    console.log("Sent transaction with txID: %s", txId);
+
+    await this.waitForConfirmation(algodClient, txId);
+
+    // display results
+    let transactionResponse = await algodClient.pendingTransactionInformation(txId).do();
+    let appId = transactionResponse['application-index'];
+    console.log("Created new app-id: ", appId);
+
+    store.addNotification({
+      title: "dApp Generated!",
+      message: "Created new dApp: "+ appId,
+      type: 'info',
+      insert: 'bottom',
+      container: 'bottom-left',
+      animationIn: ['animated', 'fadeIn'],
+      animationOut: ['animated', 'fadeOut'],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+ 
+
+
+
   }
   generateWalletQRCode() {
     let {
@@ -531,17 +610,14 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
         console.error(err);
       });
   }
-  handleRegister() {
-    const { role } = this.state;
-    this.setState({ startRegister: true });
 
-  }
   async myAlgoConnect() {
     try {
       this.myAlgoWallet = new MyAlgoConnect();
       const accounts = await this.myAlgoWallet.connect({
         shouldSelectOneAccount: true,
       });
+      this.setState({ wallet: accounts[0].address })
       store.addNotification({
         title: "Connected!",
         message: "You have connected ALGO BOSSARD to MYAlgo wallet!",
@@ -562,6 +638,12 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
     } catch (err) {
       console.error(err);
     }
+  }
+  async register() {
+    const wallet = await this.myAlgoConnect();
+    await this.assetOptIn(wallet);
+
+    window.localStorage.setItem("algo-bossard-wallet", wallet);
   }
 
   fetchWalletInfo() {
@@ -776,7 +858,7 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <Tooltip title="Configure SmartBin">
-                    <IconButton className={classes.iconButton}>
+                    <IconButton onClick={this.register} className={classes.iconButton}>
                       <BuildOutlined />
                     </IconButton>
                   </Tooltip>
@@ -832,7 +914,7 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
           </Grid>
         </Grid>
         <Grid container spacing={2} className={classes.grid}>
-        <Grid
+          <Grid
             item
             xs={isOracleFullWidth ? 12 : 12}
             sm={isOracleFullWidth ? 12 : 3}
@@ -908,9 +990,9 @@ for (let i = 0; i < opttxnGroup.length; i++) {opttxnGroup[i].group = groupID}; *
               }
             />
           </Grid>
-         
-          
-         
+
+
+
         </Grid>
       </>
     );

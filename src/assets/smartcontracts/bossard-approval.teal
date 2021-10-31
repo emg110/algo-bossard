@@ -1,0 +1,113 @@
+#pragma version 5
+txn GroupIndex
+int 0
+==
+txn OnCompletion
+int DeleteApplication
+==
+bnz berror
+txn OnCompletion
+int UpdateApplication
+==
+bnz berror
+txn OnCompletion
+int CloseOut
+==
+bnz berror
+txn OnCompletion
+int OptIn
+==
+bnz berror
+txn ApplicationID
+bz end
+txna ApplicationArgs 0
+byte "escrow_set"
+==
+bnz bescset
+txna ApplicationArgs 0
+byte "bst_cfg"
+==
+bnz bacfg
+txna ApplicationArgs 0
+byte "bst-xfer"
+==
+bnz bxfer
+b berror
+
+
+bescset:
+txn Sender
+global CreatorAddress
+==
+assert
+byte "acc"
+txna ApplicationArgs 1
+app_global_put
+int 1
+&&
+b end
+
+bacfgcheck:
+global GroupSize
+int 2
+==
+assert
+gtxn 1 Sender
+byte "acc"
+app_global_get
+==
+assert
+retsub
+
+
+bacfg:
+callsub bacfgcheck
+byte "iter"
+app_global_get
+int 10
+%
+store 0
+gtxn 1 TypeEnum
+int acfg
+==
+gtxn 1 ConfigAssetName
+byte "BST-"
+byte "0123456789"
+load 0
+dup
+int 1
++
+substring3
+concat
+==
+&&
+assert
+byte "iter"
+dup
+app_global_get
+int 1
++
+app_global_put
+int 1
+&&
+b end
+
+
+bxfer:
+global GroupSize
+int 2
+==
+assert
+gtxn 1 Sender
+byte "acc"
+app_global_get
+==
+assert
+int 1
+&&
+b end
+
+
+berror:
+err
+end:
