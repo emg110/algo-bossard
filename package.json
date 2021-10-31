@@ -1,6 +1,6 @@
 {
   "name": "algo-bossard",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": false,
   "description": "Bossard's Smart Bin Continuous Replenishment using Algorand stateful and stateless smart contracts, standard assets and atomic transfers.",
   "author": "MG <emg110@gmail.com>",
