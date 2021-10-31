@@ -25,12 +25,9 @@ int DeleteApplication
 ==
 bnz handle_deleteapp
 
-// Unexpected OnCompletion value. Should be unreachable.
 err
 
 handle_noop:
-// Handle NoOp
-// Check for creator
 addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
 txn Sender
 ==
