@@ -413,10 +413,10 @@ class Home extends Component {
       walletDataURL: null,
       walletUri: null,
       escrowAddress: null,
-      ordersQty: 1000,
       appId: '42151131',
-      takeQty: 50,
-      smartbinQty: 3000,
+      ordersQty: 1000,
+      takeQty: 100,
+      smartbinQty: 4000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
       isContinuousReplenishment: false,
@@ -434,8 +434,8 @@ class Home extends Component {
       },
       barChartSeries: [
         {
-          name: "series-1",
-          data: [60, 40, 15, 80, 29, 70, 50, 82, 43, 64],
+          name: "SmartBin Consumtion",
+          data: [1,1,10,10],
         },
       ],
       options: {
@@ -450,20 +450,20 @@ class Home extends Component {
       },
       series: [
         {
-          name: "Green",
-          data: [100, 100, 100, 100],
+          name: "Green Status",
+          data: [4000, 4000, 4000, 4000],
         },
         {
-          name: "Blue",
-          data: [70, 70, 70, 70],
+          name: "Blue Status",
+          data: [3000, 3000, 3000, 3000],
         },
         {
-          name: "Yellow",
-          data: [40, 40, 40, 40],
+          name: "Yellow Status",
+          data: [2000, 2000, 2000, 2000],
         },
         {
-          name: "Red",
-          data: [10, 10, 10, 10],
+          name: "Red Status",
+          data: [1000, 1000, 1000, 1000],
         },
       ],
       xaxis: {
@@ -479,10 +479,67 @@ class Home extends Component {
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
     this.register = this.register.bind(this);
+    this.handleContinuousReplenishment = this.handleContinuousReplenishment.bind(this);
+    this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
+  }
+
+  continuousReplenishment(swt) {
+    const that = this;
+    let { ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
+    if (swt && isContinuousReplenishment) {
+      setTimeout(() => {
+        let remVal = Number(smartbinQty) - Number(takeQty)
+        if ( remVal >= 3500) {
+          smartbinGeneralStatus = 'green'
+        } else if (remVal >= 2000) {
+          smartbinGeneralStatus = 'blue'
+        } else if (remVal >= 1000) {
+          smartbinGeneralStatus = 'yellow'
+        } else if (remVal >= 500) {
+          smartbinGeneralStatus = 'red'
+        }
+        let data = that.state.barChartSeries[0].data
+        console.log('barChartdata: ',  that.state.barChartSeries)
+      
+        console.log('remVale: ', remVal)
+        data.push(remVal)
+        const newSeries = [];
+        newSeries.push(
+          {
+            name: "SmartBin Consumtion",
+            data: data,
+          },
+        )
+        
+        that.setState({
+          smartbinQty: (Number(smartbinQty) - Number(takeQty)),
+          smartbinGeneralStatus: smartbinGeneralStatus,
+          barChartSeries: newSeries,
+
+        })
+        that.continuousReplenishment(true)
+
+
+      }, 2000)
+    }
+  }
+
+  handleContinuousReplenishment() {
+    const that = this;
+    this.setState({ isContinuousReplenishment: !this.state.isContinuousReplenishment }, () => {
+      if (that.state.isContinuousReplenishment) {
+        that.continuousReplenishment(true)
+      } else {
+        that.continuousReplenishment(false)
+      }
+    })
+
+
+
   }
   checkAssetOptIn(wallet, asset) {
     const self = this;
@@ -1162,6 +1219,7 @@ class Home extends Component {
                   <br />
                   <br />
                   <Switch
+                    onChange={this.handleContinuousReplenishment}
                     color="secondary"
                     title={
                       isContinuousReplenishment
