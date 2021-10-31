@@ -37,11 +37,11 @@ import SupplySmartView from "./SupplySmartView.js";
 import SmartLabel from "./SmartLabel.js";
 import algosdk from "algosdk";
 import MyAlgoConnect from "@randlabs/myalgo-connect";
-import { store } from 'react-notifications-component';
-import escrowProg from '../assets/smartcontracts/bossard-escrow.teal'
-import appProg from '../assets/smartcontracts/bossard-approval.teal'
-import clearProg from '../assets/smartcontracts/bossard-clear.teal'
-const bstAssetId = '40299547'
+import { store } from "react-notifications-component";
+import escrowProg from "../assets/smartcontracts/bossard-escrow.teal";
+import appProg from "../assets/smartcontracts/bossard-approval.teal";
+import clearProg from "../assets/smartcontracts/bossard-clear.teal";
+const bstAssetId = "40299547";
 
 const allAssets = [
   {
@@ -71,14 +71,14 @@ const styles = (theme) => ({
   },
   paper: {
     textAlign: "center",
-    height: '100%'
+    height: "100%",
   },
   smartBinImg: {
     width: "43%",
     height: "auto",
     [theme.breakpoints.down("sm")]: {
       width: "76%",
-      marginTop:30,
+      marginTop: 30,
     },
     [theme.breakpoints.down("xs")]: {
       width: "48%",
@@ -103,21 +103,38 @@ const styles = (theme) => ({
       height: "30px",
     },
   },
-  yellowStatus: {
+  blueStatus: {
     width: "40px",
     height: "40px",
     marginLeft: 14,
     borderRadius: "50%",
-    border: "1px solid #fad533",
-    backgroundColor: "#ef6b06",
-    boxShadow: "0px 0px 18px #fdc577",
+    border: "1px solid #9be4fd",
+    backgroundColor: "#2393f6",
+    boxShadow: "0px 0px 18px #b1d7fc",
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: "55px",
       left: "30%",
       width: "30px",
-    height: "30px",
+      height: "30px",
+    },
+  },
+  yellowStatus: {
+    width: "40px",
+    height: "40px",
+    marginLeft: 14,
+    borderRadius: "50%",
+    border: "1px solid #f7f01d",
+    backgroundColor: "#fac20a",
+    boxShadow: "0px 0px 18px #fcfc27",
+    display: "inline-block",
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: "55px",
+      left: "30%",
+      width: "30px",
+      height: "30px",
     },
   },
   redStatus: {
@@ -221,7 +238,7 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wallet: 'AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',
+      wallet: "AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI",
       walletDataURL: null,
       walletUri: null,
       ordersQty: 0,
@@ -291,8 +308,6 @@ class Home extends Component {
     this.compileProgram = this.compileProgram.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
-
-
   }
   checkAssetOptIn(wallet, asset) {
     const self = this;
@@ -341,9 +356,9 @@ class Home extends Component {
       ) {
         console.log(
           "Transaction " +
-          txId +
-          " confirmed in round " +
-          pendingInfo["confirmed-round"]
+            txId +
+            " confirmed in round " +
+            pendingInfo["confirmed-round"]
         );
         break;
       }
@@ -352,22 +367,20 @@ class Home extends Component {
     }
   }
   async assetOptIn(wallet) {
-
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
       ""
     );
 
-
     store.addNotification({
       title: "Opting in...",
       message: "Now opting into Bossard Smart Token: BST! ",
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 2000,
         onScreen: false,
@@ -405,7 +418,6 @@ class Home extends Component {
       note: note,
       closeRemainderTo: undefined,
       revocationTarget: undefined,
-
     };
     /* 
         const groupID = await algosdk.computeGroupID(opttxnGroup)
@@ -413,9 +425,7 @@ class Home extends Component {
         
      */
 
-    let rawSignedTxn = await this.myAlgoWallet.signTransaction(
-      txn
-    );
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
 
     /* let sigendTrxArray = [];
     await rawSignedTxnGroup.forEach((txn) => {
@@ -428,11 +438,11 @@ class Home extends Component {
     store.addNotification({
       title: "Waiting for transaction...",
       message: "Now waiting for Opti-in transaction response from Algorand... ",
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 2000,
         onScreen: false,
@@ -445,11 +455,11 @@ class Home extends Component {
     store.addNotification({
       title: "Welcome to Algo Bossard",
       message: "Done! Thank you for registering in Algo Bossard!",
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 2000,
         onScreen: false,
@@ -458,33 +468,31 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-
-
   }
   async compileProgram(client, programSource) {
     let encoder = new TextEncoder();
     let programBytes = encoder.encode(programSource);
     let compileResponse = await client.compile(programBytes).do();
-    let compiledBytes = new Uint8Array(Buffer.from(compileResponse.result, "base64"));
+    let compiledBytes = new Uint8Array(
+      Buffer.from(compileResponse.result, "base64")
+    );
     return compiledBytes;
   }
   async generateDapp(wallet) {
-
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
       ""
     );
 
-
     store.addNotification({
       title: "Opting in...",
       message: "Now Generating Algo Bossard dApp! ",
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 4000,
         onScreen: false,
@@ -499,36 +507,41 @@ class Home extends Component {
     params.flatFee = true;
     let sender = wallet;
 
-  
-    const approvalProgram = this.compileProgram(algodClient, appProg)
-    const clearProgram = this.compileProgram(algodClient, clearProg)
+    const approvalProgram = this.compileProgram(algodClient, appProg);
+    const clearProgram = this.compileProgram(algodClient, clearProg);
     //const escrowProgram = this.compileProgram(algodClient, escrowProg)
     /* const programBytes = new Uint8Array(
       Buffer.from(compiledProgram.result, 'base64')
     ); */
 
-    let localInts = 1
-    let localBytes = 1
-    let globalInts = 1
-    let globalBytes = 1
+    let localInts = 1;
+    let localBytes = 1;
+    let globalInts = 1;
+    let globalBytes = 1;
     /*     const lsig = algosdk.makeLogicSig(escrowProgram);
         const escrowAccount = lsig.address(); */
     let onComplete = algosdk.OnApplicationComplete.NoOpOC;
-    let txn = algosdk.makeApplicationCreateTxn(sender, params, onComplete,
-      approvalProgram, clearProgram,
-      localInts, localBytes, globalInts, globalBytes);
-    let txId = txn.txID().toString();
-    let rawSignedTxn = await this.myAlgoWallet.signTransaction(
-      txn
+    let txn = algosdk.makeApplicationCreateTxn(
+      sender,
+      params,
+      onComplete,
+      approvalProgram,
+      clearProgram,
+      localInts,
+      localBytes,
+      globalInts,
+      globalBytes
     );
+    let txId = txn.txID().toString();
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
     store.addNotification({
       title: "TXN Signed!",
-      message: "Signed transaction with txID: %s"+ txId,
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      message: "Signed transaction with txID: %s" + txId,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 4000,
         onScreen: false,
@@ -543,12 +556,12 @@ class Home extends Component {
     txId = sentTxn.txId;
     store.addNotification({
       title: "TXN Sent!",
-      message: "Sent transaction with txID: %s"+ txId,
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      message: "Sent transaction with txID: %s" + txId,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 4000,
         onScreen: false,
@@ -562,18 +575,20 @@ class Home extends Component {
     await this.waitForConfirmation(algodClient, txId);
 
     // display results
-    let transactionResponse = await algodClient.pendingTransactionInformation(txId).do();
-    let appId = transactionResponse['application-index'];
+    let transactionResponse = await algodClient
+      .pendingTransactionInformation(txId)
+      .do();
+    let appId = transactionResponse["application-index"];
     console.log("Created new app-id: ", appId);
 
     store.addNotification({
       title: "dApp Generated!",
-      message: "Created new dApp: "+ appId,
-      type: 'info',
-      insert: 'bottom',
-      container: 'bottom-left',
-      animationIn: ['animated', 'fadeIn'],
-      animationOut: ['animated', 'fadeOut'],
+      message: "Created new dApp: " + appId,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
       dismiss: {
         duration: 4000,
         onScreen: false,
@@ -582,11 +597,6 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-
- 
-
-
-
   }
   generateWalletQRCode() {
     let {
@@ -630,15 +640,15 @@ class Home extends Component {
       const accounts = await this.myAlgoWallet.connect({
         shouldSelectOneAccount: true,
       });
-      this.setState({ wallet: accounts[0].address })
+      this.setState({ wallet: accounts[0].address });
       store.addNotification({
         title: "Connected!",
         message: "You have connected ALGO BOSSARD to MYAlgo wallet!",
-        type: 'info',
-        insert: 'bottom',
-        container: 'bottom-left',
-        animationIn: ['animated', 'fadeIn'],
-        animationOut: ['animated', 'fadeOut'],
+        type: "info",
+        insert: "bottom",
+        container: "bottom-left",
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
         dismiss: {
           duration: 2000,
           onScreen: false,
@@ -772,7 +782,7 @@ class Home extends Component {
                 justifyContent="center"
                 alignItems="center"
                 className={classes.switchCard}
-                style={{padding:26}}
+                style={{ padding: 26 }}
               >
                 <Grid item style={{ height: 86 }}>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
@@ -781,7 +791,6 @@ class Home extends Component {
                       checked={isDarkModeChecked}
                       onChange={this.handleDarkModeClick}
                     />
-
                   </Tooltip>
                 </Grid>
                 <Grid item style={{ height: 86 }}>
@@ -790,8 +799,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                          ? classes.yellowStatus
-                          : classes.redStatus
+                        ? classes.yellowStatus
+                        : smartbinGeneralStatus === "blue"
+                        ? classes.blueStatus
+                        : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -809,8 +820,8 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                          ? classes.yellowStatus
-                          : classes.redStatus
+                        ? classes.yellowStatus
+                        : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -833,22 +844,41 @@ class Home extends Component {
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
-              <Grid container style={{padding:26}}>
-                <Grid  item xs={10} sm={10} md={10}>
+              <Grid container style={{ padding: 26 }}>
+                <Grid item xs={10} sm={10} md={10}>
                   <img
-                    src={smartBin1}
+                    src={
+                      smartbinGeneralStatus === "green"
+                        ? smartBin1
+                        : smartbinGeneralStatus === "yellow"
+                        ? smartBin3
+                        : smartbinGeneralStatus === "blue"
+                        ? smartBin2
+                        : smartBin4
+                    }
                     className={classes.smartBinImg}
                     alt="smart bin"
                   />
                 </Grid>
-                <Grid item xs={2} sm={2} md={2} style={{paddingTop:'1%'}}>
+                <Grid item xs={2} sm={2} md={2} style={{ paddingTop: "1%" }}>
                   <br />
-                  <div className={classes.badge} style={{ backgroundColor: isSmartbinMaintenance ? '#06ba0387' : "#f82a2aa3" }}>
-
+                  <div
+                    className={classes.badge}
+                    style={{
+                      backgroundColor: isSmartbinMaintenance
+                        ? "#06ba0387"
+                        : "#f82a2aa3",
+                    }}
+                  >
                     <BuildOutlined className={classes.icon} />
                   </div>
                   <br />
-                  <div className={classes.badge} style={{ backgroundColor: isSmartbinOk ? '#06ba0387' : "#f82a2aa3" }}>
+                  <div
+                    className={classes.badge}
+                    style={{
+                      backgroundColor: isSmartbinOk ? "#06ba0387" : "#f82a2aa3",
+                    }}
+                  >
                     {isSmartbinOk ? (
                       <CheckOutlined className={classes.icon} />
                     ) : (
@@ -871,7 +901,10 @@ class Home extends Component {
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <Tooltip title="Configure SmartBin">
-                    <IconButton onClick={this.register} className={classes.iconButton}>
+                    <IconButton
+                      onClick={this.register}
+                      className={classes.iconButton}
+                    >
                       <BuildOutlined />
                     </IconButton>
                   </Tooltip>
@@ -883,7 +916,14 @@ class Home extends Component {
                   </Tooltip>
                   <br />
                   <br />
-                  <Switch color="secondary" title={isContinuousReplenishment ? "Turn ON Continuous Replenishment" : "Turn ON Continuous Replenishment"} />
+                  <Switch
+                    color="secondary"
+                    title={
+                      isContinuousReplenishment
+                        ? "Turn ON Continuous Replenishment"
+                        : "Turn ON Continuous Replenishment"
+                    }
+                  />
                 </Grid>
               </Grid>
             </Paper>
@@ -894,6 +934,7 @@ class Home extends Component {
             <Paper
               className={classes.paper}
               classes={{ root: isDarkMode && classes.cardRootDark }}
+              style={{ padding: 10 }}
             >
               <div className="row">
                 <div className="mixed-chart">
@@ -912,6 +953,7 @@ class Home extends Component {
               className={classes.paper}
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
+              style={{ padding: 10 }}
             >
               <div className="row">
                 <div className="mixed-chart">
@@ -1003,9 +1045,6 @@ class Home extends Component {
               }
             />
           </Grid>
-
-
-
         </Grid>
       </>
     );
