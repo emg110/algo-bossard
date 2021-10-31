@@ -532,7 +532,7 @@ class Home extends Component {
   consume() {
     const that = this;
     let { ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
-    
+
     let remVal = Number(smartbinQty) - Number(takeQty)
     if (remVal >= 3500) {
       smartbinGeneralStatus = 'green'
@@ -625,19 +625,20 @@ class Home extends Component {
       ],
 
     })
-   
+
 
 
   }
   continuousReplenishment(swt) {
     const that = this;
+    let timeout = (Math.floor(Math.random() * 3.5) + 1)* 1000
     let { isContinuousReplenishment } = that.state
     if (swt && isContinuousReplenishment) {
-      setTimeout(()=>{
+      setTimeout(() => {
         that.consume()
         that.continuousReplenishment(true)
-      }, Math.floor(Math.random() * 3.5) + 1)*1000
-      
+      }, timeout)
+
     }
   }
 
@@ -1065,7 +1066,7 @@ class Home extends Component {
     await this.generateDapp(wallet);
     window.localStorage.setItem("algo-bossard-wallet", wallet);
     window.localStorage.setItem("algo-bossard-configured", 'ok');
-    this.setState({wallet: wallet})
+    this.setState({ wallet: wallet })
 
     //await this.generateEscrow();
   }
@@ -1330,15 +1331,15 @@ class Home extends Component {
                     </IconButton>
                   </Tooltip>)}
                   {isConfigured === 'ok' && (<Tooltip title="Manual Randomized Consumption">
-                    <IconButton 
-                     onClick={this.consume}
-                    className={classes.iconButton}>
+                    <IconButton
+                      onClick={this.consume}
+                      className={classes.iconButton}>
                       <GroupWork />
                     </IconButton>
                   </Tooltip>)}
                   {isConfigured !== 'ok' && (<Typography variant="body2">↑ Please configure SmartBin first!</Typography>)}
                   <br />
-                  {isConfigured !== 'ok' && (<Typography style={{color: 'darkred'}}variant="subtitle">You need MyAlgo Wallet</Typography>)}
+                  {isConfigured !== 'ok' && (<Typography style={{ color: 'darkred' }} variant="subtitle">You need MyAlgo Wallet</Typography>)}
                   {isConfigured === 'ok' && (<Tooltip title="Manual Order">
                     <IconButton className={classes.iconButton}>
                       <ShoppingCartOutlined />
