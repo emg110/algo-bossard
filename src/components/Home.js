@@ -520,12 +520,12 @@ class Home extends Component {
         }
         let data = that.state.barChartSeries[0].data
         let categories = that.state.barChartOptions.xaxis.categories
-      
-        data.push(takeQty)
+      let take = Math.floor(Math.random() * Number(takeQty)) + 1
+        data.push(take)
         const newSeries = [];
         const newCategories = [];
         categories.map((item)=>newCategories.push(item))
-        newCategories.push(takeQty)
+        newCategories.push(take)
         newSeries.push(
           {
             name: "SmartBin Consumtion",
@@ -534,7 +534,7 @@ class Home extends Component {
         )
 
         that.setState({
-          smartbinQty: (Number(smartbinQty) - Number(takeQty)),
+          smartbinQty: (Number(smartbinQty) - Number(take)),
           smartbinGeneralStatus: smartbinGeneralStatus,
           barChartSeries: newSeries,
           barChartOptions: {
