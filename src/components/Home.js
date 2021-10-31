@@ -454,33 +454,52 @@ class Home extends Component {
           data: [0],
         },
       ],
-      options: {
+      crOptions: {
         chart: {
           id: "basic-area",
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
+            }
+          }
         },
-        stroke: {
+        /* stroke: {
           curve: "stepline",
-        },
+        }, */
         stacked: true,
-        colors: ["#1aaf04", "#3889fa", "#fabe19", "#d50b0b"],
+        colors: ["#1aaf04", "#3889fa", "#fabe19", "#d50b0b", "#e08e0b",],
       },
-      series: [
+      crSeries: [
+
         {
-          name: "Green Status",
-          data: [4000, 4000, 4000, 4000],
-        },
-        {
-          name: "Blue Status",
-          data: [3000, 3000, 3000, 3000],
+          name: "Red Status",
+          data: [100, 100, 100, 100],
         },
         {
           name: "Yellow Status",
-          data: [2000, 2000, 2000, 2000],
+          data: [70, 70, 70, 70],
         },
         {
-          name: "Red Status",
-          data: [1000, 1000, 1000, 1000],
+          name: "Blue Status",
+          data: [40, 40, 40, 40],
         },
+        {
+          name: "Green Status",
+          data: [20, 20, 20, 20],
+        },
+        {
+          name: 'Consumption',
+          type: 'line',
+          data: [0]
+        }
       ],
       xaxis: {
         type: "numeric",
@@ -519,12 +538,16 @@ class Home extends Component {
           smartbinGeneralStatus = 'red'
         }
         let data = that.state.barChartSeries[0].data
+        let crdata = that.state.crSeries[4].data
         let categories = that.state.barChartOptions.xaxis.categories
-      let take = Math.floor(Math.random() * Number(takeQty)) + 1
+        let take = Math.floor(Math.random() * Number(takeQty)) + 1
         data.push(take)
+        crdata.push(take)
         const newSeries = [];
+        const newCrData = [];
         const newCategories = [];
-        categories.map((item)=>newCategories.push(item))
+        categories.map((item) => newCategories.push(item))
+        crdata.map((item) => newCrData.push(item))
         newCategories.push(take)
         newSeries.push(
           {
@@ -532,7 +555,18 @@ class Home extends Component {
             data: data,
           },
         )
-
+        let crSeries0 = []
+        let crSeries1 = []
+        let crSeries2 = []
+        let crSeries3 = []
+        that.state.crSeries[0].data.map((item) => crSeries0.push(item))
+        that.state.crSeries[1].data.map((item) => crSeries1.push(item))
+        that.state.crSeries[2].data.map((item) => crSeries2.push(item))
+        that.state.crSeries[3].data.map((item) => crSeries3.push(item))
+        crSeries0.push(100)
+        crSeries1.push(70)
+        crSeries2.push(40)
+        crSeries3.push(20)
         that.setState({
           smartbinQty: (Number(smartbinQty) - Number(take)),
           smartbinGeneralStatus: smartbinGeneralStatus,
@@ -557,7 +591,31 @@ class Home extends Component {
             xaxis: {
               categories: newCategories
             }
-          }
+          },
+          crSeries: [
+
+            {
+              name: "Red Status",
+              data: crSeries0,
+            },
+            {
+              name: "Yellow Status",
+              data: crSeries1,
+            },
+            {
+              name: "Blue Status",
+              data: crSeries2,
+            },
+            {
+              name: "Green Status",
+              data: crSeries3,
+            },
+            {
+              name: 'Consumption',
+              type: 'line',
+              data: newCrData
+            }
+          ],
 
         })
         that.continuousReplenishment(true)
@@ -1281,8 +1339,8 @@ class Home extends Component {
               <div className="row">
                 <div className="mixed-chart">
                   <Chart
-                    options={this.state.options}
-                    series={this.state.series}
+                    options={this.state.crOptions}
+                    series={this.state.crSeries}
                     type="area"
                     height="200"
                   />
