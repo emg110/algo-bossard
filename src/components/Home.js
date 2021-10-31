@@ -430,12 +430,28 @@ class Home extends Component {
       barChartOptions: {
         chart: {
           id: "basic-bar",
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
+            }
+          }
         },
+        xaxis: {
+          categories: [0]
+        }
       },
       barChartSeries: [
         {
           name: "SmartBin Consumtion",
-          data: [1,1,10,10],
+          data: [0],
         },
       ],
       options: {
@@ -493,7 +509,7 @@ class Home extends Component {
     if (swt && isContinuousReplenishment) {
       setTimeout(() => {
         let remVal = Number(smartbinQty) - Number(takeQty)
-        if ( remVal >= 3500) {
+        if (remVal >= 3500) {
           smartbinGeneralStatus = 'green'
         } else if (remVal >= 2000) {
           smartbinGeneralStatus = 'blue'
@@ -503,22 +519,45 @@ class Home extends Component {
           smartbinGeneralStatus = 'red'
         }
         let data = that.state.barChartSeries[0].data
-        console.log('barChartdata: ',  that.state.barChartSeries)
+        let categories = that.state.barChartOptions.xaxis.categories
       
-        console.log('remVale: ', remVal)
-        data.push(remVal)
+        data.push(takeQty)
         const newSeries = [];
+        const newCategories = [];
+        categories.map((item)=>newCategories.push(item))
+        newCategories.push(takeQty)
         newSeries.push(
           {
             name: "SmartBin Consumtion",
             data: data,
           },
         )
-        
+
         that.setState({
           smartbinQty: (Number(smartbinQty) - Number(takeQty)),
           smartbinGeneralStatus: smartbinGeneralStatus,
           barChartSeries: newSeries,
+          barChartOptions: {
+            chart: {
+              id: "basic-bar",
+              animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+                animateGradually: {
+                  enabled: true,
+                  delay: 150
+                },
+                dynamicAnimation: {
+                  enabled: true,
+                  speed: 350
+                }
+              }
+            },
+            xaxis: {
+              categories: newCategories
+            }
+          }
 
         })
         that.continuousReplenishment(true)
