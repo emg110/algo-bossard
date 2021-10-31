@@ -351,7 +351,9 @@ class Home extends Component {
       wallet: "AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI",
       walletDataURL: null,
       walletUri: null,
-      ordersQty: 0,
+      ordersQty: 1000,
+      takeQty: 50,
+      smartbinQty:3000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
       isContinuousReplenishment: false,
@@ -854,6 +856,8 @@ class Home extends Component {
       isDarkModeChecked,
       isOrderModalOpen,
       ordersQty,
+      takeQty,
+      smartbinQty
     } = this.state;
 
     return (
@@ -1013,7 +1017,11 @@ class Home extends Component {
             >
               <Grid container item style={{ padding: 26 }}>
                 <Grid item xs={10} sm={10} md={10}>
-                  <SmartLabel />
+                  <SmartLabel 
+                  ordersQty={ordersQty}
+                  smartbinQty={smartbinQty}
+                  takeQty={takeQty}
+                   />
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <Tooltip title="Configure SmartBin">

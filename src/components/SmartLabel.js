@@ -81,7 +81,7 @@ class SmartLabel extends Component {
   }
 
   render() {
-    const { classes, assets, isDarkMode } = this.props;
+    const { classes, assets, isDarkMode,ordersQty,smartbinQty,takeQty } = this.props;
     const {} = this.state;
 
     return (
@@ -99,13 +99,13 @@ class SmartLabel extends Component {
             <Typography className={classes.subtitle}>01.01.2035</Typography>
           </Grid>
           <Grid item xs={9} sm={9} md={9} style={{ textAlign: "left" }}>
-          <Typography className={classes.topText}>20</Typography>
-            <Typography className={classes.num}>30000</Typography>
+          <Typography className={classes.topText}>{takeQty}</Typography>
+            <Typography className={classes.num}>{smartbinQty}</Typography>
             <Typography className={classes.text}>
               Hexalobular socket pan washer head machine screws-ecosyn-fix
             </Typography>
             <div style={{ float: "right", marginRight: 4 }}>
-              <Typography className={classes.orders}>ORD : 300</Typography>
+              <Typography className={classes.orders}>ORD : {ordersQty}</Typography>
               <Typography className={classes.subText}>M6 X30/X30</Typography>
             </div>
           </Grid>
@@ -118,5 +118,8 @@ SmartLabel.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   assets: PropTypes.array.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
+  ordersQty: PropTypes.number.isRequired,
+  takeQty: PropTypes.number.isRequired,
+  smartbinQty: PropTypes.number.isRequired,
 };
 export default withStyles(styles)(SmartLabel);
