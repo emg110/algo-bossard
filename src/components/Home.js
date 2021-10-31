@@ -527,109 +527,117 @@ class Home extends Component {
     this.compileProgram = this.compileProgram.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
+    this.consume = this.consume.bind(this);
   }
-
-  continuousReplenishment(swt) {
+  consume() {
     const that = this;
     let { ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
-    if (swt && isContinuousReplenishment) {
-      setTimeout(() => {
-        let remVal = Number(smartbinQty) - Number(takeQty)
-        if (remVal >= 3500) {
-          smartbinGeneralStatus = 'green'
-        } else if (remVal >= 2000) {
-          smartbinGeneralStatus = 'blue'
-        } else if (remVal >= 1000) {
-          smartbinGeneralStatus = 'yellow'
-        } else if (remVal >= 500) {
-          smartbinGeneralStatus = 'red'
+    
+    let remVal = Number(smartbinQty) - Number(takeQty)
+    if (remVal >= 3500) {
+      smartbinGeneralStatus = 'green'
+    } else if (remVal >= 2000) {
+      smartbinGeneralStatus = 'blue'
+    } else if (remVal >= 1000) {
+      smartbinGeneralStatus = 'yellow'
+    } else if (remVal >= 500) {
+      smartbinGeneralStatus = 'red'
+    }
+    let data = that.state.barChartSeries[0].data
+    let crdata = that.state.crSeries[4].data
+    let categories = that.state.barChartOptions.xaxis.categories
+    let take = Math.floor(Math.random() * Number(100)) + 1
+    data.push(take)
+    crdata.push(take)
+    const newSeries = [];
+    const newCrData = [];
+    const newCategories = [];
+    categories.map((item) => newCategories.push(item))
+    crdata.map((item) => newCrData.push(item))
+    newCategories.push(take)
+    newSeries.push(
+      {
+        name: "SmartBin Consumtion",
+        data: data,
+      },
+    )
+    let crSeries0 = []
+    let crSeries1 = []
+    let crSeries2 = []
+    let crSeries3 = []
+    that.state.crSeries[0].data.map((item) => crSeries0.push(item))
+    that.state.crSeries[1].data.map((item) => crSeries1.push(item))
+    that.state.crSeries[2].data.map((item) => crSeries2.push(item))
+    that.state.crSeries[3].data.map((item) => crSeries3.push(item))
+    crSeries0.push(100)
+    crSeries1.push(70)
+    crSeries2.push(40)
+    crSeries3.push(20)
+    that.setState({
+      takeQty: take,
+      smartbinQty: (Number(smartbinQty) - Number(take)),
+      smartbinGeneralStatus: smartbinGeneralStatus,
+      barChartSeries: newSeries,
+      barChartOptions: {
+        chart: {
+          id: "basic-bar",
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
+            }
+          }
+        },
+        xaxis: {
+          categories: newCategories
         }
-        let data = that.state.barChartSeries[0].data
-        let crdata = that.state.crSeries[4].data
-        let categories = that.state.barChartOptions.xaxis.categories
-        let take = Math.floor(Math.random() * Number(100)) + 1
-        data.push(take)
-        crdata.push(take)
-        const newSeries = [];
-        const newCrData = [];
-        const newCategories = [];
-        categories.map((item) => newCategories.push(item))
-        crdata.map((item) => newCrData.push(item))
-        newCategories.push(take)
-        newSeries.push(
-          {
-            name: "SmartBin Consumtion",
-            data: data,
-          },
-        )
-        let crSeries0 = []
-        let crSeries1 = []
-        let crSeries2 = []
-        let crSeries3 = []
-        that.state.crSeries[0].data.map((item) => crSeries0.push(item))
-        that.state.crSeries[1].data.map((item) => crSeries1.push(item))
-        that.state.crSeries[2].data.map((item) => crSeries2.push(item))
-        that.state.crSeries[3].data.map((item) => crSeries3.push(item))
-        crSeries0.push(100)
-        crSeries1.push(70)
-        crSeries2.push(40)
-        crSeries3.push(20)
-        that.setState({
-          takeQty: take,
-          smartbinQty: (Number(smartbinQty) - Number(take)),
-          smartbinGeneralStatus: smartbinGeneralStatus,
-          barChartSeries: newSeries,
-          barChartOptions: {
-            chart: {
-              id: "basic-bar",
-              animations: {
-                enabled: true,
-                easing: 'easeinout',
-                speed: 800,
-                animateGradually: {
-                  enabled: true,
-                  delay: 150
-                },
-                dynamicAnimation: {
-                  enabled: true,
-                  speed: 350
-                }
-              }
-            },
-            xaxis: {
-              categories: newCategories
-            }
-          },
-          crSeries: [
+      },
+      crSeries: [
 
-            {
-              name: "Red Status",
-              data: crSeries0,
-            },
-            {
-              name: "Yellow Status",
-              data: crSeries1,
-            },
-            {
-              name: "Blue Status",
-              data: crSeries2,
-            },
-            {
-              name: "Green Status",
-              data: crSeries3,
-            },
-            {
-              name: 'Consumption',
-              type: 'line',
-              data: newCrData
-            }
-          ],
+        {
+          name: "Red Status",
+          data: crSeries0,
+        },
+        {
+          name: "Yellow Status",
+          data: crSeries1,
+        },
+        {
+          name: "Blue Status",
+          data: crSeries2,
+        },
+        {
+          name: "Green Status",
+          data: crSeries3,
+        },
+        {
+          name: 'Consumption',
+          type: 'line',
+          data: newCrData
+        }
+      ],
 
-        })
+    })
+   
+
+
+  }
+  continuousReplenishment(swt) {
+    const that = this;
+    let { isContinuousReplenishment } = that.state
+    if (swt && isContinuousReplenishment) {
+      setTimeout(()=>{
+        that.consume()
         that.continuousReplenishment(true)
-
-
-      }, 2000)
+      }, Math.floor(Math.random() * 3.5) + 1)*1000
+      
     }
   }
 
@@ -1321,8 +1329,10 @@ class Home extends Component {
                       <BuildOutlined />
                     </IconButton>
                   </Tooltip>)}
-                  {isConfigured === 'ok' && (<Tooltip title="Manual Random Consumption">
-                    <IconButton className={classes.iconButton}>
+                  {isConfigured === 'ok' && (<Tooltip title="Manual Randomized Consumption">
+                    <IconButton 
+                     onClick={this.consume}
+                    className={classes.iconButton}>
                       <GroupWork />
                     </IconButton>
                   </Tooltip>)}
@@ -1343,7 +1353,7 @@ class Home extends Component {
                         color="secondary"
                         title={
                           !isContinuousReplenishment
-                            ? "Turn ON Continuous Replenishment (Random)"
+                            ? "Turn ON Continuous Replenishment (Randomized)"
                             : "Turn OFF Continuous Replenishment"
                         }
                       />
