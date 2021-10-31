@@ -455,8 +455,7 @@ class Home extends Component {
         },
       ],
       crOptions: {
-        chart: {
-          
+        chart: {          
           id: "basic-area",
           animations: {
             enabled: true,
@@ -472,6 +471,9 @@ class Home extends Component {
             }
           }
         },
+        legend:{
+          show: true
+        },
         dataLabels: {
           enabled: false
         },
@@ -479,7 +481,7 @@ class Home extends Component {
           curve: "stepline",
         }, */
         stacked: true,
-        colors: ["#1aaf04", "#3889fa", "#fabe19", "#d50b0b", "#e08e0b",],
+        colors: [ "#d50b0b","#fabe19","#3889fa","#1aaf04",   "#e08e0b",],
       },
       crSeries: [
 
