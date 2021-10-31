@@ -8,6 +8,7 @@ import {
   CloseOutlined,
   Close,
 } from "@material-ui/icons";
+import GroupWork from "@material-ui/icons/GroupWork";
 import smartBin1 from "../assets/images/firstThresholdImage.png";
 import smartBin2 from "../assets/images/secondThresholdImage.png";
 import smartBin3 from "../assets/images/thirdThresholdImage.png";
@@ -414,8 +415,8 @@ class Home extends Component {
       walletUri: null,
       escrowAddress: null,
       appId: '42151131',
-      ordersQty: 1000,
-      takeQty: 100,
+      ordersQty: 0,
+      takeQty: 0,
       smartbinQty: 4000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
@@ -455,7 +456,7 @@ class Home extends Component {
         },
       ],
       crOptions: {
-        chart: {          
+        chart: {
           id: "basic-area",
           animations: {
             enabled: true,
@@ -471,7 +472,7 @@ class Home extends Component {
             }
           }
         },
-        legend:{
+        legend: {
           show: true
         },
         dataLabels: {
@@ -481,7 +482,7 @@ class Home extends Component {
           curve: "stepline",
         }, */
         stacked: true,
-        colors: [ "#d50b0b","#fabe19","#3889fa","#1aaf04",   "#e08e0b",],
+        colors: ["#d50b0b", "#fabe19", "#3889fa", "#1aaf04", "#e08e0b",],
       },
       crSeries: [
 
@@ -546,7 +547,7 @@ class Home extends Component {
         let data = that.state.barChartSeries[0].data
         let crdata = that.state.crSeries[4].data
         let categories = that.state.barChartOptions.xaxis.categories
-        let take = Math.floor(Math.random() * Number(takeQty)) + 1
+        let take = Math.floor(Math.random() * Number(100)) + 1
         data.push(take)
         crdata.push(take)
         const newSeries = [];
@@ -574,6 +575,7 @@ class Home extends Component {
         crSeries2.push(40)
         crSeries3.push(20)
         that.setState({
+          takeQty: take,
           smartbinQty: (Number(smartbinQty) - Number(take)),
           smartbinGeneralStatus: smartbinGeneralStatus,
           barChartSeries: newSeries,
@@ -1051,8 +1053,12 @@ class Home extends Component {
     await this.assetOptIn(wallet);
 
 
-    window.localStorage.setItem("algo-bossard-wallet", wallet);
+
     await this.generateDapp(wallet);
+    window.localStorage.setItem("algo-bossard-wallet", wallet);
+    window.localStorage.setItem("algo-bossard-configured", 'ok');
+    this.setState({wallet: wallet})
+
     //await this.generateEscrow();
   }
 
@@ -1125,11 +1131,13 @@ class Home extends Component {
   }
 
   render() {
-    const { classes, isDarkMode, isContinuousReplenishment } = this.props;
+    let isConfigured = window.localStorage.getItem('algo-bossard-configured')
+    const { classes, isDarkMode } = this.props;
     const {
       smartbinGeneralStatus,
       isSmartbinOk,
       isSmartbinMaintenance,
+      isContinuousReplenishment,
       isTxnsFullWidth,
       isOracleFullWidth,
       isOrdersFullWidth,
@@ -1266,7 +1274,7 @@ class Home extends Component {
                   <div
                     className={classes.badge}
                     style={{
-                      backgroundColor: isSmartbinMaintenance
+                      backgroundColor: isConfigured === 'ok'
                         ? "#06ba0387"
                         : "#f82a2aa3",
                     }}
@@ -1277,10 +1285,10 @@ class Home extends Component {
                   <div
                     className={classes.badge}
                     style={{
-                      backgroundColor: isSmartbinOk ? "#06ba0387" : "#f82a2aa3",
+                      backgroundColor: isContinuousReplenishment ? "#06ba0387" : "#f82a2aa3",
                     }}
                   >
-                    {isSmartbinOk ? (
+                    {isContinuousReplenishment ? (
                       <CheckOutlined className={classes.icon} />
                     ) : (
                       <CloseOutlined className={classes.icon} />
@@ -1305,31 +1313,41 @@ class Home extends Component {
                   />
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
-                  <Tooltip title="Configure SmartBin">
+                  {isConfigured !== 'ok' && (<Tooltip title="Configure SmartBin">
                     <IconButton
                       onClick={this.register}
                       className={classes.iconButton}
                     >
                       <BuildOutlined />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip>)}
+                  {isConfigured === 'ok' && (<Tooltip title="Manual Random Consumption">
+                    <IconButton className={classes.iconButton}>
+                      <GroupWork />
+                    </IconButton>
+                  </Tooltip>)}
+                  {isConfigured !== 'ok' && (<Typography variant="body2">↑ Please configure SmartBin first!</Typography>)}
                   <br />
-                  <Tooltip title="Manual Order">
+                  {isConfigured !== 'ok' && (<Typography style={{color: 'darkred'}}variant="subtitle">You need MyAlgo Wallet</Typography>)}
+                  {isConfigured === 'ok' && (<Tooltip title="Manual Order">
                     <IconButton className={classes.iconButton}>
                       <ShoppingCartOutlined />
                     </IconButton>
-                  </Tooltip>
-                  <br />
-                  <br />
-                  <Switch
-                    onChange={this.handleContinuousReplenishment}
-                    color="secondary"
-                    title={
-                      isContinuousReplenishment
-                        ? "Turn ON Continuous Replenishment"
-                        : "Turn ON Continuous Replenishment"
-                    }
-                  />
+                  </Tooltip>)}
+                  {isConfigured === 'ok' && (
+                    <>
+                      <br />
+                      <br />
+                      <Switch
+                        onChange={this.handleContinuousReplenishment}
+                        color="secondary"
+                        title={
+                          !isContinuousReplenishment
+                            ? "Turn ON Continuous Replenishment (Random)"
+                            : "Turn OFF Continuous Replenishment"
+                        }
+                      />
+                    </>)}
                 </Grid>
               </Grid>
             </Paper>
