@@ -62,7 +62,7 @@ const styles = (theme) => ({
   },
   paper: {
     textAlign: "center",
-    height:'100%'
+    height: "100%",
   },
   smartBinImg: {
     width: "43%",
@@ -300,7 +300,7 @@ class Home extends Component {
           </DialogContent>
         </Dialog>
         <Grid container spacing={1} className={classes.grid}>
-          <Grid item xs={12} sm={3} md={2}>
+          <Grid item xs={12} sm={4} md={2}>
             <Card
               className={classes.paper}
               elevation={1}
@@ -372,28 +372,39 @@ class Home extends Component {
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
               <Grid container>
-              <Grid item xs={10} sm={10} md={10}>
-                <img
-                  src={smartBin1}
-                  className={classes.smartBinImg}
-                  alt="smart bin"
-                />
-              </Grid>
-              <Grid item xs={2} sm={2} md={2}>
-              <br />
-                <div className={classes.badge} style={{backgroundColor: isSmartbinMaintenance ? '#06ba0387' : "#f82a2aa3"}}>
-                 
+                <Grid item xs={10} sm={10} md={10}>
+                  <img
+                    src={smartBin1}
+                    className={classes.smartBinImg}
+                    alt="smart bin"
+                  />
+                </Grid>
+                <Grid item xs={2} sm={2} md={2}>
+                  <br />
+                  <div
+                    className={classes.badge}
+                    style={{
+                      backgroundColor: isSmartbinMaintenance
+                        ? "#06ba0387"
+                        : "#f82a2aa3",
+                    }}
+                  >
                     <BuildOutlined className={classes.icon} />
-                </div>
-                <br />
-                <div className={classes.badge} style={{backgroundColor: isSmartbinOk ? '#06ba0387' : "#f82a2aa3"}}>
-                  {isSmartbinOk ? (
-                    <CheckOutlined className={classes.icon} />
-                  ) : (
-                    <CloseOutlined className={classes.icon} />
-                  )}
-                </div>
-              </Grid>
+                  </div>
+                  <br />
+                  <div
+                    className={classes.badge}
+                    style={{
+                      backgroundColor: isSmartbinOk ? "#06ba0387" : "#f82a2aa3",
+                    }}
+                  >
+                    {isSmartbinOk ? (
+                      <CheckOutlined className={classes.icon} />
+                    ) : (
+                      <CloseOutlined className={classes.icon} />
+                    )}
+                  </div>
+                </Grid>
               </Grid>
             </Card>
           </Grid>
