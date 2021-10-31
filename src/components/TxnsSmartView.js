@@ -32,7 +32,12 @@ const styles = (theme) => ({
     backgroundColor: '#242424'
   },
   cardTitleDark:{
-    color: '#ffffff'
+    color: '#ffffff',
+    fontSize: '1em',
+  },
+  cardTitle:{
+    color: '#000000',
+    fontSize: '1em',
   },
   darkIcon:{
     color: '#ffffff'
@@ -79,7 +84,7 @@ class TxnsSmartView extends Component {
     return (
       <Card classes={{root: isDarkMode && classes.cardRootDark}}>
         <CardHeader
-        classes={{title: isDarkMode && classes.cardTitleDark}}
+      classes={{title: isDarkMode ? classes.cardTitleDark : classes.cardTitle}}
           action={
             <>
               <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>

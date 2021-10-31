@@ -177,6 +177,23 @@ const allAssets = [
 ];
 
 const styles = (theme) => ({
+  blueStatus: {
+    width: "40px",
+    height: "40px",
+    marginLeft: 14,
+    borderRadius: "50%",
+    border: "1px solid #9BE4FD",
+    backgroundColor: "#2393F6",
+    boxShadow: "0px 0px 18px #B1D7FC",
+    display: "inline-block",
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: "55px",
+      left: "30%",
+      width: "30px",
+      height: "30px",
+    },
+  },
   grid: {
     padding: "1%",
   },
@@ -210,9 +227,9 @@ const styles = (theme) => ({
     height: "40px",
     marginLeft: 14,
     borderRadius: "50%",
-    border: "1px solid #fad533",
-    backgroundColor: "#ef6b06",
-    boxShadow: "0px 0px 18px #fdc577",
+    border: "1px solid #f7f01d",
+    backgroundColor: "#fac20a",
+    boxShadow: "0px 0px 18px #fcfc27",
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
@@ -560,7 +577,7 @@ class Home extends Component {
 
   }
   async compileProgram(client, programSource) {
-    
+
     let compileResponse = await client.compile(programSource).do();
     let compiledBytes = new Uint8Array(Buffer.from(compileResponse.result, "base64"));
     return compiledBytes;
@@ -596,15 +613,15 @@ class Home extends Component {
     params.flatFee = true;
     let sender = wallet;
 
-  
+
     const approvalProgram = await this.compileProgram(algodClient, appProg)
     const clearProgram = await this.compileProgram(algodClient, clearProg)
-   
-   
+
+
     let onComplete = algosdk.OnApplicationComplete.NoOpOC;
     const txn = algosdk.makeApplicationCreateTxnFromObject({
       suggestedParams: {
-          ...params,
+        ...params,
       },
       from: sender,
       numLocalByteSlices: 1,
@@ -612,17 +629,17 @@ class Home extends Component {
       numLocalInts: 1,
       numGlobalInts: 2,
       approvalProgram: approvalProgram,
-      clearProgram:clearProgram,
+      clearProgram: clearProgram,
       onComplete: onComplete,
-  });
-    
+    });
+
     let txId = txn.txID().toString();
     let rawSignedTxn = await this.myAlgoWallet.signTransaction(
       txn.toByte()
     );
     store.addNotification({
       title: "TXN Signed!",
-      message: "Signed transaction with txID:"+ txId,
+      message: "Signed transaction with txID:" + txId,
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -643,7 +660,7 @@ class Home extends Component {
     txId = sentTxn.txId;
     store.addNotification({
       title: "TXN Sent!",
-      message: "Sent transaction with txID:"+ txId,
+      message: "Sent transaction with txID:" + txId,
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -668,7 +685,7 @@ class Home extends Component {
 
     store.addNotification({
       title: "dApp Generated!",
-      message: "Created new dApp: "+ appId,
+      message: "Created new dApp: " + appId,
       type: 'info',
       insert: 'bottom',
       container: 'bottom-left',
@@ -683,7 +700,7 @@ class Home extends Component {
       },
     });
 
- 
+
 
 
 
@@ -733,7 +750,7 @@ class Home extends Component {
       this.setState({ wallet: accounts[0].address })
       store.addNotification({
         title: "Connected!",
-        message: "You have connected to MYAlgo wallet with: "+ accounts[0].address,
+        message: "You have connected to MYAlgo wallet with: " + accounts[0].address,
         type: 'info',
         insert: 'bottom',
         container: 'bottom-left',
@@ -755,7 +772,7 @@ class Home extends Component {
   async register() {
     const wallet = await this.myAlgoConnect();
     //await this.assetOptIn(wallet);
-    
+
     window.localStorage.setItem("algo-bossard-wallet", wallet);
     await this.generateDapp(wallet);
   }
@@ -868,6 +885,7 @@ class Home extends Component {
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
               <Grid
+                style={{ padding: 26 }}
                 container
                 direction="column"
                 justifyContent="center"
@@ -891,7 +909,9 @@ class Home extends Component {
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
                           ? classes.yellowStatus
-                          : classes.redStatus
+                          : smartbinGeneralStatus === "blue"
+                            ? classes.blueStatus
+                            : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -937,7 +957,15 @@ class Home extends Component {
               <Grid style={{ verticalAlign: 'middle' }} container>
                 <Grid style={{ verticalAlign: 'middle' }} item xs={10} sm={10} md={10}>
                   <img
-                    src={smartBin1}
+                    src={
+                      smartbinGeneralStatus === "green"
+                        ? smartBin1
+                        : smartbinGeneralStatus === "yellow"
+                          ? smartBin3
+                          : smartbinGeneralStatus === "blue"
+                            ? smartBin2
+                            : smartBin4
+                    }
                     className={classes.smartBinImg}
                     alt="smart bin"
                   />
@@ -993,6 +1021,7 @@ class Home extends Component {
         <Grid container spacing={1} className={classes.grid}>
           <Grid item xs={12} sm={6} md={6}>
             <Paper
+              styel={{ padding: 10 }}
               className={classes.paper}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
@@ -1010,6 +1039,7 @@ class Home extends Component {
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <Paper
+              styel={{ padding: 10 }}
               className={classes.paper}
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}

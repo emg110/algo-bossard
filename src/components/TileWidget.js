@@ -10,18 +10,30 @@ import CardHeader from "@material-ui/core/CardHeader";
 import nextId from "react-id-generator";
 
 const styles = (theme) => ({
-  card: theme.mixins.gutters({
+  card: {
     margin: "auto",
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(3),
+    // marginTop: theme.spacing(5),
+    // marginBottom: theme.spacing(3),
     border: "1px solid #333",
     padding: 0,
-  }),
-  
+    height: "100%",
+    width: "100%",
+  },
+  darkCard: {
+    margin: "auto",
+    // marginTop: theme.spacing(5),
+    // marginBottom: theme.spacing(3),
+    border: "1px solid #333",
+    padding: 0,
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#333131",
+    color: "#ffffff",
+  },
   avatar: {
     width: 50,
     height: 50,
-    marginLeft:'5%',
+    marginLeft: "5%",
   },
   dataDiv: {
     width: "100%",
@@ -51,7 +63,7 @@ class TileWiget extends Component {
   }
 
   render() {
-    const { classes, assets } = this.props;
+    const { classes, assets, isDarkMode } = this.props;
     const {} = this.state;
 
     return (
@@ -65,13 +77,16 @@ class TileWiget extends Component {
             md={6}
             style={{ display: "flex" }}
           >
-            <Card className={classes.card}>
-            <CardHeader action={<Avatar
-                      className={classes.avatar}
-                      // src={asset.avatar ? asset.avatar : avatarSample}
-                    />} />
+            <Card className={isDarkMode ? classes.darkCard : classes.card}>
+              <CardHeader
+                action={
+                  <Avatar
+                    className={classes.avatar}
+                    // src={asset.avatar ? asset.avatar : avatarSample}
+                  />
+                }
+              />
               <CardContent className={classes.classContentRoot}>
-                
                 <div
                   className={classes.dataDiv}
                   // style={{ height: asset.description.length < 100 && 158 }}
@@ -107,5 +122,6 @@ class TileWiget extends Component {
 TileWiget.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   assets: PropTypes.array.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
 };
 export default withStyles(styles)(TileWiget);
