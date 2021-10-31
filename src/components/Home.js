@@ -225,7 +225,7 @@ const styles = (theme) => ({
     display: "inline-block",
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
-      top: "55px",
+      top: "63px",
       left: "30%",
       width: "30px",
       height: "30px",

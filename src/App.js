@@ -51,16 +51,17 @@ const styles = (theme) => ({
     float: "left",
     display: "inline",
     [theme.breakpoints.down("lg")]: {
-      width: "60%",
+      width: "4%",
     },
     [theme.breakpoints.down("md")]: {
-      width: "60%",
+      width: "4%",
     },
     [theme.breakpoints.down("sm")]: {
-      width: "55%",
+      width: "6%",
     },
     [theme.breakpoints.down("xs")]: {
-      width: "40%",
+      width: "10%",
+      marginRight: 10
     },
   },
   algorandImg: {
@@ -90,8 +91,7 @@ const styles = (theme) => ({
     },
   },
   dialogRoot: {
-    borderTopLeftRadius: 20,
-    borderBottomRightRadius: 20,
+  
     borderRadius: 3,
   },
   closeBtn: {
@@ -142,13 +142,11 @@ class App extends Component {
       <div style={{backgroundColor: isDarkMode && '#000000'}}>
         <AppBar position="static" className="App-header">
           <Toolbar>
-          <a onClick={this.openPresentation}>
           <img
                 src={algoBossardLogo}
                 className={classes.algoBossardImg}
                 alt="algo bossard"
               />
-          </a>
               
               <div className={"App-name"}>
                 <Typography className={classes.appName} variant="h4">
