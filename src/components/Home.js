@@ -628,44 +628,48 @@ class Home extends Component {
     const that = this;
     let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
     let order = smartbinQtyDefault - smartbinQty
-
-    if (order === 0) {
-      store.addNotification({
-        title: "Error",
-        message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
-        type: "danger",
-        insert: "bottom",
-        container: "bottom-left",
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 2000,
-          onScreen: false,
-          pauseOnHover: true,
-          showIcon: true,
-          waitForAnimation: false,
-        },
-      });
-    }
-    else {
-      store.addNotification({
-        title: "Ordering...",
-        message: "Manually ordering in Qty: " + ordersQty,
-        type: "info",
-        insert: "bottom",
-        container: "bottom-left",
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 2000,
-          onScreen: false,
-          pauseOnHover: true,
-          showIcon: true,
-          waitForAnimation: false,
-        },
-      });
-      this.setState({ isOrderModalOpen: true });
-    }
+    this.setState({ ordersQty: order },()=>{
+      if (Number(that.state.ordersQty) === 0) {
+        store.addNotification({
+          title: "Error",
+          message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
+          type: "danger",
+          insert: "bottom",
+          container: "bottom-left",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 2000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+            waitForAnimation: false,
+          },
+        });
+      }
+      else {
+        setTimeout(()=>{
+          store.addNotification({
+            title: "Ordering...",
+            message: "Manually ordering in Qty: " + ordersQty,
+            type: "info",
+            insert: "bottom",
+            container: "bottom-left",
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
+            dismiss: {
+              duration: 2000,
+              onScreen: false,
+              pauseOnHover: true,
+              showIcon: true,
+              waitForAnimation: false,
+            },
+          });
+          that.setState({ isOrderModalOpen: true });
+        },100)
+      }
+    });
+    
 
   }
   consume() {
