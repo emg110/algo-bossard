@@ -219,7 +219,7 @@ bnz baxfer
 err
 
 fin:
-`
+`;
 const allAssets = [
   {
     _id: 12345678,
@@ -229,8 +229,7 @@ const allAssets = [
   },
   {
     _id: 26,
-    description:
-      "BOSSARD TEST DATA DESC2",
+    description: "BOSSARD TEST DATA DESC2",
     name: "Bossard-item2",
     avatar: "",
   },
@@ -400,8 +399,12 @@ const styles = (theme) => ({
     },
   },
   dialogRoot: {
-
-    borderRadius: 20,
+    borderRadius: 10,
+    backgroundColor: "#ffffff",
+  },
+  dialogRootDark: {
+    borderRadius: 10,
+    backgroundColor: "#242424",
   },
   closeBtn: {
     position: "absolute",
@@ -409,16 +412,15 @@ const styles = (theme) => ({
     top: 8,
   },
   cardTitleDark: {
-    color: '#ffffff',
-    fontSize: '1em',
+    color: "#ffffff",
+    fontSize: "1em",
   },
   cardTitle: {
-    color: '#000000',
-    fontSize: '1em',
+    color: "#000000",
+    fontSize: "1em",
   },
   darkIcon: {
-    color: '#ffffff'
-
+    color: "#ffffff",
   },
   bossardImg: {
     width: "11%",
@@ -443,8 +445,8 @@ const styles = (theme) => ({
     },
   },
   algoBossardImg: {
-    display: "inline",
-    width: 64
+    // display: "inline",
+    width: 34,
   },
 });
 
@@ -456,7 +458,11 @@ class Home extends Component {
       walletDataURL: null,
       walletUri: null,
       escrowAddress: null,
-      appId: '42151131',
+      appId: "42151131",
+      description:
+        "Hexalobular socket pan washer head machine screws-ecosyn-fix",
+      expDate: "01.01.2035",
+      prodName: "ST",
       ordersQty: 0,
       supplyQty: 0,
       takeQty: 0,
@@ -482,21 +488,21 @@ class Home extends Component {
           id: "basic-bar",
           animations: {
             enabled: true,
-            easing: 'easeinout',
+            easing: "easeinout",
             speed: 800,
             animateGradually: {
               enabled: true,
-              delay: 150
+              delay: 150,
             },
             dynamicAnimation: {
               enabled: true,
-              speed: 350
-            }
-          }
+              speed: 350,
+            },
+          },
         },
         xaxis: {
-          categories: [0]
-        }
+          categories: [0],
+        },
       },
       barChartSeries: [
         {
@@ -509,32 +515,31 @@ class Home extends Component {
           id: "basic-area",
           animations: {
             enabled: true,
-            easing: 'easeinout',
+            easing: "easeinout",
             speed: 800,
             animateGradually: {
               enabled: true,
-              delay: 150
+              delay: 150,
             },
             dynamicAnimation: {
               enabled: true,
-              speed: 350
-            }
-          }
+              speed: 350,
+            },
+          },
         },
         legend: {
-          show: true
+          show: true,
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         /* stroke: {
           curve: "stepline",
         }, */
         stacked: true,
-        colors: ["#d50b0b", "#fabe19", "#3889fa", "#1aaf04", "#e08e0b",],
+        colors: ["#d50b0b", "#fabe19", "#3889fa", "#1aaf04", "#e08e0b"],
       },
       crSeries: [
-
         {
           name: "Red Status",
           data: [100, 100, 100, 100],
@@ -552,10 +557,10 @@ class Home extends Component {
           data: [20, 20, 20, 20],
         },
         {
-          name: 'Consumption',
-          type: 'line',
-          data: [0]
-        }
+          name: "Consumption",
+          type: "line",
+          data: [0],
+        },
       ],
       xaxis: {
         type: "numeric",
@@ -571,7 +576,8 @@ class Home extends Component {
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
     this.register = this.register.bind(this);
-    this.handleContinuousReplenishment = this.handleContinuousReplenishment.bind(this);
+    this.handleContinuousReplenishment =
+      this.handleContinuousReplenishment.bind(this);
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
@@ -582,8 +588,15 @@ class Home extends Component {
   }
   openSupplyModal() {
     const that = this;
-    let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
-    let supply = ordersQty
+    let {
+      smartbinQtyDefault,
+      ordersQty,
+      takeQty,
+      smartbinQty,
+      isContinuousReplenishment,
+      smartbinGeneralStatus,
+    } = that.state;
+    let supply = ordersQty;
 
     if (supply === 0) {
       store.addNotification({
@@ -602,8 +615,7 @@ class Home extends Component {
           waitForAnimation: false,
         },
       });
-    }
-    else {
+    } else {
       store.addNotification({
         title: "Supplying...",
         message: "Manually supplying in Qty: " + supply,
@@ -622,18 +634,26 @@ class Home extends Component {
       });
       this.setState({ isOrderModalOpen: true });
     }
-
   }
   openOrderModal() {
     const that = this;
-    let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
-    let order = smartbinQtyDefault - smartbinQty
-    this.setState({ ordersQty: order },()=>{
-      let {ordersQty} = that.state
+    let {
+      smartbinQtyDefault,
+      ordersQty,
+      takeQty,
+      smartbinQty,
+      isContinuousReplenishment,
+      smartbinGeneralStatus,
+    } = that.state;
+    let order = smartbinQtyDefault - smartbinQty;
+    this.setState({ ordersQty: order }, () => {
+      let { ordersQty } = that.state;
       if (Number(ordersQty) === 0) {
         store.addNotification({
           title: "Error",
-          message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
+          message:
+            "There is no need for replenishment, currently! The SmartBin contains: " +
+            smartbinQty,
           type: "danger",
           insert: "bottom",
           container: "bottom-left",
@@ -647,8 +667,7 @@ class Home extends Component {
             waitForAnimation: false,
           },
         });
-      }
-      else {
+      } else {
         store.addNotification({
           title: "Ordering...",
           message: "Manually ordering in Qty: " + ordersQty,
@@ -668,54 +687,55 @@ class Home extends Component {
         that.setState({ isOrderModalOpen: true });
       }
     });
-    
-
   }
   consume() {
     const that = this;
-    let { ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
+    let {
+      ordersQty,
+      takeQty,
+      smartbinQty,
+      isContinuousReplenishment,
+      smartbinGeneralStatus,
+    } = that.state;
 
-
-    let data = that.state.barChartSeries[0].data
-    let crdata = that.state.crSeries[4].data
-    let categories = that.state.barChartOptions.xaxis.categories
-    let take = Math.floor(Math.random() * Number(100)) + 1
-    let remVal = Number(smartbinQty) - Number(take)
+    let data = that.state.barChartSeries[0].data;
+    let crdata = that.state.crSeries[4].data;
+    let categories = that.state.barChartOptions.xaxis.categories;
+    let take = Math.floor(Math.random() * Number(100)) + 1;
+    let remVal = Number(smartbinQty) - Number(take);
     if (remVal >= 3500) {
-      smartbinGeneralStatus = 'green'
+      smartbinGeneralStatus = "green";
     } else if (remVal >= 2000) {
-      smartbinGeneralStatus = 'blue'
+      smartbinGeneralStatus = "blue";
     } else if (remVal >= 1000) {
-      smartbinGeneralStatus = 'yellow'
+      smartbinGeneralStatus = "yellow";
     } else if (remVal >= 500) {
-      smartbinGeneralStatus = 'red'
+      smartbinGeneralStatus = "red";
     }
-    data.push(take)
-    crdata.push(take)
+    data.push(take);
+    crdata.push(take);
     const newSeries = [];
     const newCrData = [];
     const newCategories = [];
-    categories.map((item) => newCategories.push(item))
-    crdata.map((item) => newCrData.push(item))
-    newCategories.push(take)
-    newSeries.push(
-      {
-        name: "SmartBin Consumtion",
-        data: data,
-      },
-    )
-    let crSeries0 = []
-    let crSeries1 = []
-    let crSeries2 = []
-    let crSeries3 = []
-    this.state.crSeries[0].data.map((item) => crSeries0.push(item))
-    this.state.crSeries[1].data.map((item) => crSeries1.push(item))
-    this.state.crSeries[2].data.map((item) => crSeries2.push(item))
-    this.state.crSeries[3].data.map((item) => crSeries3.push(item))
-    crSeries0.push(100)
-    crSeries1.push(70)
-    crSeries2.push(40)
-    crSeries3.push(20)
+    categories.map((item) => newCategories.push(item));
+    crdata.map((item) => newCrData.push(item));
+    newCategories.push(take);
+    newSeries.push({
+      name: "SmartBin Consumtion",
+      data: data,
+    });
+    let crSeries0 = [];
+    let crSeries1 = [];
+    let crSeries2 = [];
+    let crSeries3 = [];
+    this.state.crSeries[0].data.map((item) => crSeries0.push(item));
+    this.state.crSeries[1].data.map((item) => crSeries1.push(item));
+    this.state.crSeries[2].data.map((item) => crSeries2.push(item));
+    this.state.crSeries[3].data.map((item) => crSeries3.push(item));
+    crSeries0.push(100);
+    crSeries1.push(70);
+    crSeries2.push(40);
+    crSeries3.push(20);
     this.setState({
       takeQty: take,
       smartbinQty: remVal,
@@ -726,24 +746,23 @@ class Home extends Component {
           id: "basic-bar",
           animations: {
             enabled: true,
-            easing: 'easeinout',
+            easing: "easeinout",
             speed: 800,
             animateGradually: {
               enabled: true,
-              delay: 150
+              delay: 150,
             },
             dynamicAnimation: {
               enabled: true,
-              speed: 350
-            }
-          }
+              speed: 350,
+            },
+          },
         },
         xaxis: {
-          categories: newCategories
-        }
+          categories: newCategories,
+        },
       },
       crSeries: [
-
         {
           name: "Red Status",
           data: crSeries0,
@@ -761,42 +780,37 @@ class Home extends Component {
           data: crSeries3,
         },
         {
-          name: 'Consumption',
-          type: 'line',
-          data: newCrData
-        }
+          name: "Consumption",
+          type: "line",
+          data: newCrData,
+        },
       ],
-
-    })
-
-
-
+    });
   }
   continuousReplenishment(swt) {
     const that = this;
-    let timeout = (Math.floor(Math.random() * 3.5) + 1) * 1000
-    let { isContinuousReplenishment } = that.state
+    let timeout = (Math.floor(Math.random() * 3.5) + 1) * 1000;
+    let { isContinuousReplenishment } = that.state;
     if (swt && isContinuousReplenishment) {
-      that.consume()
-      setTimeout(() => {        
-        that.continuousReplenishment(true)
-      }, timeout)
-
+      that.consume();
+      setTimeout(() => {
+        that.continuousReplenishment(true);
+      }, timeout);
     }
   }
 
   handleContinuousReplenishment() {
     const that = this;
-    this.setState({ isContinuousReplenishment: !this.state.isContinuousReplenishment }, () => {
-      if (that.state.isContinuousReplenishment) {
-        that.continuousReplenishment(true)
-      } else {
-        that.continuousReplenishment(false)
+    this.setState(
+      { isContinuousReplenishment: !this.state.isContinuousReplenishment },
+      () => {
+        if (that.state.isContinuousReplenishment) {
+          that.continuousReplenishment(true);
+        } else {
+          that.continuousReplenishment(false);
+        }
       }
-    })
-
-
-
+    );
   }
   checkAssetOptIn(wallet, asset) {
     const self = this;
@@ -845,9 +859,9 @@ class Home extends Component {
       ) {
         console.log(
           "Transaction " +
-          txId +
-          " confirmed in round " +
-          pendingInfo["confirmed-round"]
+            txId +
+            " confirmed in round " +
+            pendingInfo["confirmed-round"]
         );
         break;
       }
@@ -1061,10 +1075,10 @@ class Home extends Component {
       .do();
     let appId = transactionResponse["application-index"];
     console.log("Created new app-id: ", appId);
-    this.setState({})
+    this.setState({});
     store.addNotification({
       title: "dApp Generated!",
-      message: "Created new dApp: " + appId+ " on Algorand!",
+      message: "Created new dApp: " + appId + " on Algorand!",
       type: "success",
       insert: "bottom",
       container: "bottom-left",
@@ -1103,16 +1117,14 @@ class Home extends Component {
       },
     });
 
-
-    escrowProg.replace('algoBossardAppId', Number(this.state.appId))
+    escrowProg.replace("algoBossardAppId", Number(this.state.appId));
     const escroWprogram = await this.compileProgram(algodClient, escrowProg);
     //const clearProgram = await this.compileProgram(algodClient, clearProg);
-
 
     const lsig = algosdk.makeLogicSig(escroWprogram);
     const escrowAcc = lsig.address();
 
-    this.setState({ escrowAddress: escrowAcc })
+    this.setState({ escrowAddress: escrowAcc });
 
     store.addNotification({
       title: "Escrow Generated!",
@@ -1130,10 +1142,6 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-
-
-
-
   }
   generateWalletQRCode() {
     let {
@@ -1204,12 +1212,10 @@ class Home extends Component {
     const wallet = await this.myAlgoConnect();
     await this.assetOptIn(wallet);
 
-
-
     await this.generateDapp(wallet);
     window.localStorage.setItem("algo-bossard-wallet", wallet);
-    window.localStorage.setItem("algo-bossard-configured", 'ok');
-    this.setState({ wallet: wallet })
+    window.localStorage.setItem("algo-bossard-configured", "ok");
+    this.setState({ wallet: wallet });
 
     //await this.generateEscrow();
   }
@@ -1282,9 +1288,8 @@ class Home extends Component {
     this.setState({ isSupplyModalOpen: false });
   }
 
-
   render() {
-    let isConfigured = window.localStorage.getItem('algo-bossard-configured')
+    let isConfigured = window.localStorage.getItem("algo-bossard-configured");
     const { classes, isDarkMode } = this.props;
     const {
       smartbinGeneralStatus,
@@ -1297,12 +1302,14 @@ class Home extends Component {
       isSupplyFullWidth,
       isDarkModeChecked,
       isOrderModalOpen,
+      description,
+      expDate,
+      prodName,
       ordersQty,
       takeQty,
       smartbinQty,
       supplySty,
-      isSupplyModalOpen
-
+      isSupplyModalOpen,
     } = this.state;
 
     return (
@@ -1310,7 +1317,9 @@ class Home extends Component {
         <Dialog
           open={isOrderModalOpen}
           onClose={this.handleCloseOrderModal}
-          classes={{ paper: classes.dialogRoot }}
+          classes={{
+            paper: isDarkMode ? classes.dialogRootDark : classes.dialogRoot,
+          }}
         >
           <IconButton
             className={classes.closeBtn}
@@ -1319,35 +1328,35 @@ class Home extends Component {
             <Close />
           </IconButton>
           <DialogContent>
-            <CardHeader
-              classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
-
-              title="SmartBin"
-            >
-
-              <Typography variant="h6"><img
-                src={algoBossardLogo}
-                className={classes.algoBossardImg}
-                alt="algo bossard"
-              />SmartBin</Typography>
-            </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
-
+              <CardHeader
+                classes={{
+                  title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+                }}
+                title="SmartBin"
+                avatar={
+                  <img
+                    src={algoBossardLogo}
+                    className={classes.algoBossardImg}
+                    alt="algo bossard"
+                  />
+                }
+              />
               <CardContent>
-
-                <Typography variant="h6">New Order: </Typography>
-                <Typography variant="h6">Qty: {ordersQty}</Typography>
-                <Button>OK</Button>
-                <Button>CANCEL</Button>
+                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>New Order: </Typography>
+                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>Qty: {ordersQty}</Typography>
+                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>OK</Button>
+                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>CANCEL</Button>
               </CardContent>
-
             </Card>
           </DialogContent>
         </Dialog>
         <Dialog
           open={isSupplyModalOpen}
           onClose={this.handleCloseSupplyModal}
-          classes={{ paper: classes.dialogRoot }}
+          classes={{
+            paper: isDarkMode ? classes.dialogRootDark : classes.dialogRoot,
+          }}
         >
           <IconButton
             className={classes.closeBtn}
@@ -1357,26 +1366,27 @@ class Home extends Component {
           </IconButton>
           <DialogContent>
             <CardHeader
-              classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
-
+              classes={{
+                title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+              }}
               title="SmartBin"
             >
-
-              <Typography variant="h6"><img
-                src={algoBossardLogo}
-                className={classes.algoBossardImg}
-                alt="algo bossard"
-              />SmartBin</Typography>
+              <Typography variant="h6">
+                <img
+                  src={algoBossardLogo}
+                  className={classes.algoBossardImg}
+                  alt="algo bossard"
+                />
+                SmartBin
+              </Typography>
             </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
-
               <CardContent>
-                <Typography variant="h6">New Supply: </Typography>
-                <Typography variant="h6">Qty: {supplySty}</Typography>
-                <Button>OK</Button>
-                <Button>CANCEL</Button>
+                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>New Supply: </Typography>
+                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>Qty: {supplySty}</Typography>
+                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>OK</Button>
+                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>CANCEL</Button>
               </CardContent>
-
             </Card>
           </DialogContent>
         </Dialog>
@@ -1410,10 +1420,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                          ? classes.yellowStatus
-                          : smartbinGeneralStatus === "blue"
-                            ? classes.blueStatus
-                            : classes.redStatus
+                        ? classes.yellowStatus
+                        : smartbinGeneralStatus === "blue"
+                        ? classes.blueStatus
+                        : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -1431,10 +1441,10 @@ class Home extends Component {
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                          ? classes.yellowStatus
-                          : smartbinGeneralStatus === "blue"
-                            ? classes.blueStatus
-                            : classes.redStatus
+                        ? classes.yellowStatus
+                        : smartbinGeneralStatus === "blue"
+                        ? classes.blueStatus
+                        : classes.redStatus
                     }
                   ></span>
                 </Grid>
@@ -1458,39 +1468,28 @@ class Home extends Component {
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
               <Grid style={{ padding: 26 }} container>
-                <Grid
-                  item
-                  xs={10}
-                  sm={10}
-                  md={10}
-                >
+                <Grid item xs={10} sm={10} md={10}>
                   <img
                     src={
                       smartbinGeneralStatus === "green"
                         ? smartBin1
                         : smartbinGeneralStatus === "yellow"
-                          ? smartBin3
-                          : smartbinGeneralStatus === "blue"
-                            ? smartBin2
-                            : smartBin4
+                        ? smartBin3
+                        : smartbinGeneralStatus === "blue"
+                        ? smartBin2
+                        : smartBin4
                     }
                     className={classes.smartBinImg}
                     alt="smart bin"
                   />
                 </Grid>
-                <Grid
-                  item
-                  xs={2}
-                  sm={2}
-                  md={2}
-                >
+                <Grid item xs={2} sm={2} md={2}>
                   <br />
                   <div
                     className={classes.badge}
                     style={{
-                      backgroundColor: isConfigured === 'ok'
-                        ? "#06ba0387"
-                        : "#f82a2aa3",
+                      backgroundColor:
+                        isConfigured === "ok" ? "#06ba0387" : "#f82a2aa3",
                     }}
                   >
                     <BuildOutlined className={classes.icon} />
@@ -1499,7 +1498,9 @@ class Home extends Component {
                   <div
                     className={classes.badge}
                     style={{
-                      backgroundColor: isContinuousReplenishment ? "#06ba0387" : "#f82a2aa3",
+                      backgroundColor: isContinuousReplenishment
+                        ? "#06ba0387"
+                        : "#f82a2aa3",
                     }}
                   >
                     {isContinuousReplenishment ? (
@@ -1524,33 +1525,65 @@ class Home extends Component {
                     ordersQty={ordersQty}
                     smartbinQty={smartbinQty}
                     takeQty={takeQty}
+                    description={description}
+                    expDate={expDate}
+                    prodName={prodName}
+                    isDarkMode={isDarkMode}
                   />
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
-                  {isConfigured !== 'ok' && (<Tooltip title="Configure SmartBin">
-                    <IconButton
-                      onClick={this.register}
-                      className={classes.iconButton}
-                    >
-                      <BuildOutlined />
-                    </IconButton>
-                  </Tooltip>)}
-                  {isConfigured === 'ok' && (<Tooltip title="Manual Randomized Consumption">
-                    <IconButton
-                      onClick={this.consume}
-                      className={classes.iconButton}>
-                      <GroupWork />
-                    </IconButton>
-                  </Tooltip>)}
-                  {isConfigured !== 'ok' && (<Typography variant="body2">↑ Please configure SmartBin first!</Typography>)}
+                  {isConfigured !== "ok" && (
+                    <Tooltip title="Configure SmartBin">
+                      <IconButton
+                        onClick={this.register}
+                        className={classes.iconButton}
+                      >
+                        <BuildOutlined />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {isConfigured === "ok" && (
+                    <Tooltip title="Manual Randomized Consumption">
+                      <IconButton
+                        onClick={this.consume}
+                        className={classes.iconButton}
+                      >
+                        <GroupWork />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {isConfigured !== "ok" && (
+                    <Typography variant="body2">
+                      ↑ Please configure SmartBin first!
+                    </Typography>
+                  )}
                   <br />
-                  {isConfigured !== 'ok' && (<Typography style={{ color: 'darkred' }} variant="subtitle">You need MyAlgo Wallet</Typography>)}
-                  {isConfigured === 'ok' && (<Tooltip title="Manual Order">
-                    <IconButton onClick={this.openOrderModal} className={classes.iconButton}>
-                      <ShoppingCartOutlined />
-                    </IconButton>
-                  </Tooltip>)}
-                  {isConfigured === 'ok' && (
+                  {isConfigured !== "ok" && (
+                    <Typography style={{ color: "darkred" }} variant="subtitle">
+                      You need MyAlgo Wallet
+                    </Typography>
+                  )}
+                  {isConfigured === "ok" && (
+                    <Tooltip title="Manual Order">
+                      <IconButton
+                        onClick={this.openOrderModal}
+                        style={{
+                          backgroundColor:
+                            smartbinGeneralStatus === "green"
+                              ? "#03ab13"
+                              : smartbinGeneralStatus === "yellow"
+                              ? "#fac20a"
+                              : smartbinGeneralStatus === "blue"
+                              ? "#2393F6"
+                              : "#d91d08",
+                        }}
+                        className={classes.iconButton}
+                      >
+                        <ShoppingCartOutlined />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {isConfigured === "ok" && (
                     <>
                       <br />
                       <br />
@@ -1563,7 +1596,8 @@ class Home extends Component {
                             : "Turn OFF Continuous Replenishment"
                         }
                       />
-                    </>)}
+                    </>
+                  )}
                 </Grid>
               </Grid>
             </Paper>
