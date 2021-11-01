@@ -629,7 +629,8 @@ class Home extends Component {
     let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
     let order = smartbinQtyDefault - smartbinQty
     this.setState({ ordersQty: order },()=>{
-      if (Number(that.state.ordersQty) === 0) {
+      let {ordersQty} = that.state
+      if (Number(ordersQty) === 0) {
         store.addNotification({
           title: "Error",
           message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
@@ -648,25 +649,23 @@ class Home extends Component {
         });
       }
       else {
-        setTimeout(()=>{
-          store.addNotification({
-            title: "Ordering...",
-            message: "Manually ordering in Qty: " + ordersQty,
-            type: "info",
-            insert: "bottom",
-            container: "bottom-left",
-            animationIn: ["animated", "fadeIn"],
-            animationOut: ["animated", "fadeOut"],
-            dismiss: {
-              duration: 2000,
-              onScreen: false,
-              pauseOnHover: true,
-              showIcon: true,
-              waitForAnimation: false,
-            },
-          });
-          that.setState({ isOrderModalOpen: true });
-        },100)
+        store.addNotification({
+          title: "Ordering...",
+          message: "Manually ordering in Qty: " + ordersQty,
+          type: "info",
+          insert: "bottom",
+          container: "bottom-left",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 2000,
+            onScreen: false,
+            pauseOnHover: true,
+            showIcon: true,
+            waitForAnimation: false,
+          },
+        });
+        that.setState({ isOrderModalOpen: true });
       }
     });
     
@@ -709,15 +708,15 @@ class Home extends Component {
     let crSeries1 = []
     let crSeries2 = []
     let crSeries3 = []
-    that.state.crSeries[0].data.map((item) => crSeries0.push(item))
-    that.state.crSeries[1].data.map((item) => crSeries1.push(item))
-    that.state.crSeries[2].data.map((item) => crSeries2.push(item))
-    that.state.crSeries[3].data.map((item) => crSeries3.push(item))
+    this.state.crSeries[0].data.map((item) => crSeries0.push(item))
+    this.state.crSeries[1].data.map((item) => crSeries1.push(item))
+    this.state.crSeries[2].data.map((item) => crSeries2.push(item))
+    this.state.crSeries[3].data.map((item) => crSeries3.push(item))
     crSeries0.push(100)
     crSeries1.push(70)
     crSeries2.push(40)
     crSeries3.push(20)
-    that.setState({
+    this.setState({
       takeQty: take,
       smartbinQty: remVal,
       smartbinGeneralStatus: smartbinGeneralStatus,
@@ -778,8 +777,8 @@ class Home extends Component {
     let timeout = (Math.floor(Math.random() * 3.5) + 1) * 1000
     let { isContinuousReplenishment } = that.state
     if (swt && isContinuousReplenishment) {
-      setTimeout(() => {
-        that.consume()
+      that.consume()
+      setTimeout(() => {        
         that.continuousReplenishment(true)
       }, timeout)
 
