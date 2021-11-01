@@ -1415,6 +1415,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                   </Tooltip>
                 </Grid>
                 <Grid item style={{ height: 86 }}>
+                <Tooltip title="SmartBin status">
                   <span
                     className={
                       smartbinGeneralStatus === "green"
@@ -1426,6 +1427,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                         : classes.redStatus
                     }
                   ></span>
+                  </Tooltip>
                 </Grid>
               </Grid>
               <Grid
@@ -1469,6 +1471,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
             >
               <Grid style={{ padding: 26 }} container>
                 <Grid item xs={10} sm={10} md={10}>
+                <Tooltip title="SmartBin">
                   <img
                     src={
                       smartbinGeneralStatus === "green"
@@ -1482,9 +1485,11 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                     className={classes.smartBinImg}
                     alt="smart bin"
                   />
+                  </Tooltip>
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <br />
+                  <Tooltip title="Configuration status">
                   <div
                     className={classes.badge}
                     style={{
@@ -1494,7 +1499,9 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                   >
                     <BuildOutlined className={classes.icon} />
                   </div>
+                  </Tooltip>
                   <br />
+                  <Tooltip title="Continus replenishment status">
                   <div
                     className={classes.badge}
                     style={{
@@ -1509,6 +1516,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                       <CloseOutlined className={classes.icon} />
                     )}
                   </div>
+                  </Tooltip>
                 </Grid>
               </Grid>
             </Card>
@@ -1567,16 +1575,6 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                     <Tooltip title="Manual Order">
                       <IconButton
                         onClick={this.openOrderModal}
-                        style={{
-                          backgroundColor:
-                            smartbinGeneralStatus === "green"
-                              ? "#03ab13"
-                              : smartbinGeneralStatus === "yellow"
-                              ? "#fac20a"
-                              : smartbinGeneralStatus === "blue"
-                              ? "#2393F6"
-                              : "#d91d08",
-                        }}
                         className={classes.iconButton}
                       >
                         <ShoppingCartOutlined />
@@ -1587,15 +1585,14 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                     <>
                       <br />
                       <br />
+                      <Tooltip title={!isContinuousReplenishment
+                            ? "Turn ON Continuous Replenishment (Randomized)"
+                            : "Turn OFF Continuous Replenishment"}>
                       <Switch
                         onChange={this.handleContinuousReplenishment}
                         color="secondary"
-                        title={
-                          !isContinuousReplenishment
-                            ? "Turn ON Continuous Replenishment (Randomized)"
-                            : "Turn OFF Continuous Replenishment"
-                        }
                       />
+                      </Tooltip>
                     </>
                   )}
                 </Grid>

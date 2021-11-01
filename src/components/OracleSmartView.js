@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import CardHeader from "@material-ui/core/CardHeader";
+import Tooltip from "@material-ui/core/Tooltip";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Apps from "@material-ui/icons/Apps";
@@ -10,7 +11,6 @@ import Fullscreen from "@material-ui/icons/Fullscreen";
 import { IconButton } from "@material-ui/core";
 import TileWidget from "./TileWidget";
 import TableView from "./TableView";
-
 
 const styles = (theme) => ({
   title: {
@@ -25,24 +25,23 @@ const styles = (theme) => ({
     // marginLeft:'35%',
     marginBottom: "10%",
   },
-  activeBtn:{
-    backgroundColor: '#bee6fdbd'
+  activeBtn: {
+    backgroundColor: "#bee6fdbd",
   },
-  cardRootDark:{
-    backgroundColor: '#242424'
+  cardRootDark: {
+    backgroundColor: "#242424",
   },
-  cardTitleDark:{
-    color: '#ffffff',
-    fontSize: '1em',
+  cardTitleDark: {
+    color: "#ffffff",
+    fontSize: "1em",
   },
-  cardTitle:{
-    color: '#000000',
-    fontSize: '1em',
+  cardTitle: {
+    color: "#000000",
+    fontSize: "1em",
   },
-  darkIcon:{
-    color: '#ffffff'
-
-  }
+  darkIcon: {
+    color: "#ffffff",
+  },
 });
 
 class OracleSmartView extends Component {
@@ -72,30 +71,45 @@ class OracleSmartView extends Component {
   }
 
   handleFullWidthClick() {
-    this.props.setFullWidth(!this.props.isOracleFullWidth,false,false)
+    this.props.setFullWidth(!this.props.isOracleFullWidth, false, false);
   }
 
   render() {
-    const { classes, assets,isOracleFullWidth,isDarkMode } = this.props;
-    const { isTileView, isTableView,  } = this.state;
-
-   
+    const { classes, assets, isOracleFullWidth, isDarkMode } = this.props;
+    const { isTileView, isTableView } = this.state;
 
     return (
-      <Card classes={{root: isDarkMode && classes.cardRootDark}}>
+      <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
         <CardHeader
-        classes={{title: isDarkMode ? classes.cardTitleDark : classes.cardTitle}}
+          classes={{
+            title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+          }}
           action={
             <>
-              <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>
-                <Apps className={isDarkMode && classes.darkIcon} />
-              </IconButton>
-              <IconButton onClick={this.handleClickTableView} className={isTableView && classes.activeBtn}>
-                <List className={isDarkMode && classes.darkIcon} />
-              </IconButton>
-              <IconButton onClick={this.handleFullWidthClick} className={isOracleFullWidth && classes.activeBtn}>
-                <Fullscreen className={isDarkMode && classes.darkIcon} />
-              </IconButton>
+              <Tooltip title="Tile view">
+                <IconButton
+                  onClick={this.handleClickTileView}
+                  className={isTileView && classes.activeBtn}
+                >
+                  <Apps className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="List view">
+                <IconButton
+                  onClick={this.handleClickTableView}
+                  className={isTableView && classes.activeBtn}
+                >
+                  <List className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Full width">
+                <IconButton
+                  onClick={this.handleFullWidthClick}
+                  className={isOracleFullWidth && classes.activeBtn}
+                >
+                  <Fullscreen className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
             </>
           }
           title="ORACLE"
@@ -114,6 +128,5 @@ OracleSmartView.propTypes = {
   isOracleFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
-
 };
 export default withStyles(styles)(OracleSmartView);

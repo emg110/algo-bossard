@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import Tooltip from "@material-ui/core/Tooltip";
 import Apps from "@material-ui/icons/Apps";
 import List from "@material-ui/icons/List";
 import Fullscreen from "@material-ui/icons/Fullscreen";
@@ -88,15 +89,21 @@ class SupplySmartView extends Component {
         classes={{title: isDarkMode ? classes.cardTitleDark : classes.cardTitle}}
           action={
             <>
+             <Tooltip title="Tile view">
               <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>
                 <Apps className={isDarkMode && classes.darkIcon} />
               </IconButton>
+              </Tooltip>
+             <Tooltip title="List view">
               <IconButton onClick={this.handleClickTableView} className={isTableView && classes.activeBtn}>
                 <List className={isDarkMode && classes.darkIcon} />
               </IconButton>
+              </Tooltip>
+             <Tooltip title="Full width">
               <IconButton onClick={this.handleFullWidthClick} className={isSupplyFullWidth && classes.activeBtn}>
                 <Fullscreen className={isDarkMode && classes.darkIcon} />
               </IconButton>
+              </Tooltip>
             </>
           }
           title="SUPPLYS"

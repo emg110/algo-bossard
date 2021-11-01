@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import CardHeader from "@material-ui/core/CardHeader";
+import Tooltip from "@material-ui/core/Tooltip";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Apps from "@material-ui/icons/Apps";
@@ -10,7 +11,6 @@ import Fullscreen from "@material-ui/icons/Fullscreen";
 import { IconButton } from "@material-ui/core";
 import TileWidget from "./TileWidget";
 import TableView from "./TableView";
-
 
 const styles = (theme) => ({
   title: {
@@ -25,24 +25,23 @@ const styles = (theme) => ({
     // marginLeft:'35%',
     marginBottom: "10%",
   },
-  activeBtn:{
-    backgroundColor: '#bee6fdbd'
+  activeBtn: {
+    backgroundColor: "#bee6fdbd",
   },
-  cardRootDark:{
-    backgroundColor: '#242424'
-  }, 
-  cardTitleDark:{
-    color: '#ffffff',
-    fontSize: '1em',
+  cardRootDark: {
+    backgroundColor: "#242424",
   },
-  cardTitle:{
-    color: '#000000',
-    fontSize: '1em',
+  cardTitleDark: {
+    color: "#ffffff",
+    fontSize: "1em",
   },
-  darkIcon:{
-    color: '#ffffff'
-
-  }
+  cardTitle: {
+    color: "#000000",
+    fontSize: "1em",
+  },
+  darkIcon: {
+    color: "#ffffff",
+  },
 });
 
 class OrdersSmartView extends Component {
@@ -72,31 +71,45 @@ class OrdersSmartView extends Component {
   }
 
   handleFullWidthClick() {
-    this.props.setFullWidth(false,!this.props.isOrdersFullWidth,false)
-
+    this.props.setFullWidth(false, !this.props.isOrdersFullWidth, false);
   }
 
   render() {
-    const { classes ,isOrdersFullWidth,assets,isDarkMode} = this.props;
+    const { classes, isOrdersFullWidth, assets, isDarkMode } = this.props;
     const { isTileView, isTableView } = this.state;
 
-   
-
     return (
-      <Card classes={{root: isDarkMode && classes.cardRootDark}}>
+      <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
         <CardHeader
-        classes={{title: isDarkMode ? classes.cardTitleDark : classes.cardTitle}}
+          classes={{
+            title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+          }}
           action={
             <>
-              <IconButton onClick={this.handleClickTileView} className={isTileView && classes.activeBtn}>
-                <Apps className={isDarkMode && classes.darkIcon} />
-              </IconButton>
-              <IconButton onClick={this.handleClickTableView} className={isTableView && classes.activeBtn}>
-                <List className={isDarkMode && classes.darkIcon} />
-              </IconButton>
-              <IconButton onClick={this.handleFullWidthClick} className={isOrdersFullWidth && classes.activeBtn}>
-                <Fullscreen className={isDarkMode && classes.darkIcon} />
-              </IconButton>
+              <Tooltip title="Tile view">
+                <IconButton
+                  onClick={this.handleClickTileView}
+                  className={isTileView && classes.activeBtn}
+                >
+                  <Apps className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="List view">
+                <IconButton
+                  onClick={this.handleClickTableView}
+                  className={isTableView && classes.activeBtn}
+                >
+                  <List className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Full width">
+                <IconButton
+                  onClick={this.handleFullWidthClick}
+                  className={isOrdersFullWidth && classes.activeBtn}
+                >
+                  <Fullscreen className={isDarkMode && classes.darkIcon} />
+                </IconButton>
+              </Tooltip>
             </>
           }
           title="ORDERS"
@@ -115,6 +128,5 @@ OrdersSmartView.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   isOrdersFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
-  
 };
 export default withStyles(styles)(OrdersSmartView);
