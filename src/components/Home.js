@@ -985,7 +985,7 @@ class Home extends Component {
       "https://api.testnet.algoexplorer.io",
       ""
     );
-
+let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet)
     store.addNotification({
       title: "Generating Dapp...",
       message: "Now Generating Algo Bossard dApp! ",
@@ -1008,7 +1008,7 @@ class Home extends Component {
     params.flatFee = true;
     let sender = wallet;
 
-    const approvalProgram = await this.compileProgram(algodClient, appProg);
+    const approvalProgram = await this.compileProgram(algodClient, thisAppProg);
     const clearProgram = await this.compileProgram(algodClient, clearProg);
 
     let onComplete = algosdk.OnApplicationComplete.NoOpOC;
