@@ -31,8 +31,10 @@ import {
   Typography,
   CardHeader,
   CardContent,
+  CardFooter,
   IconButton,
   Tooltip,
+  Button,
 } from "@material-ui/core";
 import TxnsSmartView from "./TxnsSmartView.js";
 import OrdersSmartView from "./OrdersSmartView.js";
@@ -398,23 +400,23 @@ const styles = (theme) => ({
     },
   },
   dialogRoot: {
-  
+
     borderRadius: 20,
   },
   closeBtn: {
     position: "absolute",
     right: 8,
     top: 8,
-  }, 
-  cardTitleDark:{
+  },
+  cardTitleDark: {
     color: '#ffffff',
     fontSize: '1em',
   },
-  cardTitle:{
+  cardTitle: {
     color: '#000000',
     fontSize: '1em',
   },
-  darkIcon:{
+  darkIcon: {
     color: '#ffffff'
 
   },
@@ -471,6 +473,10 @@ class Home extends Component {
       isDarkModeChecked: false,
       isOrderModalOpen: false,
       isSupplyModalOpen: false,
+      isOracleViewOpen: false,
+      isOrdersViewOpen: false,
+      isSupplyViewOpen: false,
+      isPaymentsViewOpen: false,
       barChartOptions: {
         chart: {
           id: "basic-bar",
@@ -569,24 +575,109 @@ class Home extends Component {
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
-    this.handleManualOrder = this.handleManualOrder.bind(this);
+    this.openSupplyModal = this.openSupplyModal.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
   }
-  handleManualOrder() {
+  openSupplyModal() {
+    const that = this;
+    let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
+    let supply = ordersQty
+
+    if (supply === 0) {
+      store.addNotification({
+        title: "Error",
+        message: "Supply of 0 is not allowed!",
+        type: "danger",
+        insert: "bottom",
+        container: "bottom-left",
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+          waitForAnimation: false,
+        },
+      });
+    }
+    else {
+      store.addNotification({
+        title: "Supplying...",
+        message: "Manually supplying in Qty: " + supply,
+        type: "info",
+        insert: "bottom",
+        container: "bottom-left",
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+          waitForAnimation: false,
+        },
+      });
+      this.setState({ isOrderModalOpen: true });
+    }
+
+  }
+  openOrderModal() {
     const that = this;
     let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
     let order = smartbinQtyDefault - smartbinQty
-    this.setState({ ordersQty: order })
-    this.openOrderModal()
+
+    if (order === 0) {
+      store.addNotification({
+        title: "Error",
+        message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
+        type: "danger",
+        insert: "bottom",
+        container: "bottom-left",
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+          waitForAnimation: false,
+        },
+      });
+    }
+    else {
+      store.addNotification({
+        title: "Ordering...",
+        message: "Manually ordering in Qty: " + ordersQty,
+        type: "info",
+        insert: "bottom",
+        container: "bottom-left",
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+          pauseOnHover: true,
+          showIcon: true,
+          waitForAnimation: false,
+        },
+      });
+      this.setState({ isOrderModalOpen: true });
+    }
 
   }
   consume() {
     const that = this;
     let { ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
 
-    let remVal = Number(smartbinQty) - Number(takeQty)
+
+    let data = that.state.barChartSeries[0].data
+    let crdata = that.state.crSeries[4].data
+    let categories = that.state.barChartOptions.xaxis.categories
+    let take = Math.floor(Math.random() * Number(100)) + 1
+    let remVal = Number(smartbinQty) - Number(take)
     if (remVal >= 3500) {
       smartbinGeneralStatus = 'green'
     } else if (remVal >= 2000) {
@@ -596,10 +687,6 @@ class Home extends Component {
     } else if (remVal >= 500) {
       smartbinGeneralStatus = 'red'
     }
-    let data = that.state.barChartSeries[0].data
-    let crdata = that.state.crSeries[4].data
-    let categories = that.state.barChartOptions.xaxis.categories
-    let take = Math.floor(Math.random() * Number(100)) + 1
     data.push(take)
     crdata.push(take)
     const newSeries = [];
@@ -628,7 +715,7 @@ class Home extends Component {
     crSeries3.push(20)
     that.setState({
       takeQty: take,
-      smartbinQty: (Number(smartbinQty) - Number(take)),
+      smartbinQty: remVal,
       smartbinGeneralStatus: smartbinGeneralStatus,
       barChartSeries: newSeries,
       barChartOptions: {
@@ -854,7 +941,7 @@ class Home extends Component {
     store.addNotification({
       title: "Welcome to Algo Bossard",
       message: "Done! Thank you for registering in Algo Bossard!",
-      type: "info",
+      type: "success",
       insert: "bottom",
       container: "bottom-left",
       animationIn: ["animated", "fadeIn"],
@@ -926,8 +1013,8 @@ class Home extends Component {
     let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn.toByte());
     store.addNotification({
       title: "TXN Signed!",
-      message: "Signed transaction with txID:" + txId,
-      type: "info",
+      message: "Signed transaction  to Algorand with txID:" + txId,
+      type: "success",
       insert: "bottom",
       container: "bottom-left",
       animationIn: ["animated", "fadeIn"],
@@ -947,8 +1034,8 @@ class Home extends Component {
     txId = sentTxn.txId;
     store.addNotification({
       title: "TXN Sent!",
-      message: "Sent transaction with txID:" + txId,
-      type: "info",
+      message: "Sent dApp generation transaction to Algorand with txID:" + txId,
+      type: "success",
       insert: "bottom",
       container: "bottom-left",
       animationIn: ["animated", "fadeIn"],
@@ -974,8 +1061,8 @@ class Home extends Component {
     this.setState({})
     store.addNotification({
       title: "dApp Generated!",
-      message: "Created new dApp: " + appId,
-      type: "info",
+      message: "Created new dApp: " + appId+ " on Algorand!",
+      type: "success",
       insert: "bottom",
       container: "bottom-left",
       animationIn: ["animated", "fadeIn"],
@@ -1191,9 +1278,7 @@ class Home extends Component {
   handleCloseSupplyModal() {
     this.setState({ isSupplyModalOpen: false });
   }
-  openOrderModal() {
-    this.setState({ isOrderModalOpen: true });
-  }
+
 
   render() {
     let isConfigured = window.localStorage.getItem('algo-bossard-configured')
@@ -1231,25 +1316,28 @@ class Home extends Component {
             <Close />
           </IconButton>
           <DialogContent>
-          <CardHeader
-                classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
+            <CardHeader
+              classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
 
-                title="SmartBin"
-              >
-             
-                <Typography variant="h6"><img
+              title="SmartBin"
+            >
+
+              <Typography variant="h6"><img
                 src={algoBossardLogo}
                 className={classes.algoBossardImg}
                 alt="algo bossard"
               />SmartBin</Typography>
-              </CardHeader>
+            </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
-              
+
               <CardContent>
-              
+
                 <Typography variant="h6">New Order: </Typography>
                 <Typography variant="h6">Qty: {ordersQty}</Typography>
+                <Button>OK</Button>
+                <Button>CANCEL</Button>
               </CardContent>
+
             </Card>
           </DialogContent>
         </Dialog>
@@ -1265,25 +1353,27 @@ class Home extends Component {
             <Close />
           </IconButton>
           <DialogContent>
-          <CardHeader
-                classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
+            <CardHeader
+              classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
 
-                title="SmartBin"
-              >
-             
-                <Typography variant="h6"><img
+              title="SmartBin"
+            >
+
+              <Typography variant="h6"><img
                 src={algoBossardLogo}
                 className={classes.algoBossardImg}
                 alt="algo bossard"
               />SmartBin</Typography>
-              </CardHeader>
+            </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
-              
+
               <CardContent>
-              
                 <Typography variant="h6">New Supply: </Typography>
                 <Typography variant="h6">Qty: {supplySty}</Typography>
+                <Button>OK</Button>
+                <Button>CANCEL</Button>
               </CardContent>
+
             </Card>
           </DialogContent>
         </Dialog>
@@ -1453,7 +1543,7 @@ class Home extends Component {
                   <br />
                   {isConfigured !== 'ok' && (<Typography style={{ color: 'darkred' }} variant="subtitle">You need MyAlgo Wallet</Typography>)}
                   {isConfigured === 'ok' && (<Tooltip title="Manual Order">
-                    <IconButton onClick={this.handleManualOrder} className={classes.iconButton}>
+                    <IconButton onClick={this.openOrderModal} className={classes.iconButton}>
                       <ShoppingCartOutlined />
                     </IconButton>
                   </Tooltip>)}
