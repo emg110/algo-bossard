@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, styled } from "@material-ui/core/styles";
+import bossardLogo from "../assets/images/logo.svg";
+import algoBossardLogo from "../assets/images/algoBossard.png";
 import {
   ShoppingCartOutlined,
   BuildOutlined,
@@ -415,7 +417,33 @@ const styles = (theme) => ({
   darkIcon:{
     color: '#ffffff'
 
-  }
+  },
+  bossardImg: {
+    width: "11%",
+    float: "right",
+    marginRight: "3%",
+    marginTop: "19px",
+    [theme.breakpoints.down("lg")]: {
+      width: "8%",
+      marginTop: "2%",
+    },
+    [theme.breakpoints.down("md")]: {
+      width: "8%",
+      marginTop: "2%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "8%",
+      marginTop: "2%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "14%",
+      marginTop: "4%",
+    },
+  },
+  algoBossardImg: {
+    display: "inline",
+    width: 64
+  },
 });
 
 class Home extends Component {
@@ -428,6 +456,7 @@ class Home extends Component {
       escrowAddress: null,
       appId: '42151131',
       ordersQty: 0,
+      supplyQty: 0,
       takeQty: 0,
       smartbinQty: 4000,
       smartbinQtyDefault: 4000,
@@ -441,6 +470,7 @@ class Home extends Component {
       isSupplyFullWidth: false,
       isDarkModeChecked: false,
       isOrderModalOpen: false,
+      isSupplyModalOpen: false,
       barChartOptions: {
         chart: {
           id: "basic-bar",
@@ -527,6 +557,7 @@ class Home extends Component {
     };
     this.handleDarkModeClick = this.handleDarkModeClick.bind(this);
     this.handleCloseOrderModal = this.handleCloseOrderModal.bind(this);
+    this.handleCloseSupplyModal = this.handleCloseSupplyModal.bind(this);
     this.openOrderModal = this.openOrderModal.bind(this);
 
     this.fetchWalletInfo = this.fetchWalletInfo.bind(this);
@@ -1157,6 +1188,9 @@ class Home extends Component {
   handleCloseOrderModal() {
     this.setState({ isOrderModalOpen: false });
   }
+  handleCloseSupplyModal() {
+    this.setState({ isSupplyModalOpen: false });
+  }
   openOrderModal() {
     this.setState({ isOrderModalOpen: true });
   }
@@ -1177,7 +1211,10 @@ class Home extends Component {
       isOrderModalOpen,
       ordersQty,
       takeQty,
-      smartbinQty
+      smartbinQty,
+      supplySty,
+      isSupplyModalOpen
+
     } = this.state;
 
     return (
@@ -1199,13 +1236,53 @@ class Home extends Component {
 
                 title="SmartBin"
               >
-                <Typography variant="h6">SmartBin</Typography>
+             
+                <Typography variant="h6"><img
+                src={algoBossardLogo}
+                className={classes.algoBossardImg}
+                alt="algo bossard"
+              />SmartBin</Typography>
               </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
               
               <CardContent>
+              
                 <Typography variant="h6">New Order: </Typography>
                 <Typography variant="h6">Qty: {ordersQty}</Typography>
+              </CardContent>
+            </Card>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={isSupplyModalOpen}
+          onClose={this.handleCloseSupplyModal}
+          classes={{ paper: classes.dialogRoot }}
+        >
+          <IconButton
+            className={classes.closeBtn}
+            onClick={this.handleCloseSupplyModal}
+          >
+            <Close />
+          </IconButton>
+          <DialogContent>
+          <CardHeader
+                classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
+
+                title="SmartBin"
+              >
+             
+                <Typography variant="h6"><img
+                src={algoBossardLogo}
+                className={classes.algoBossardImg}
+                alt="algo bossard"
+              />SmartBin</Typography>
+              </CardHeader>
+            <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
+              
+              <CardContent>
+              
+                <Typography variant="h6">New Supply: </Typography>
+                <Typography variant="h6">Qty: {supplySty}</Typography>
               </CardContent>
             </Card>
           </DialogContent>
