@@ -27,7 +27,8 @@ import {
   Avatar,
   Card,
   Typography,
-  CardActions,
+  CardHeader,
+  CardContent,
   IconButton,
   Tooltip,
 } from "@material-ui/core";
@@ -395,15 +396,26 @@ const styles = (theme) => ({
     },
   },
   dialogRoot: {
-    borderTopLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    borderRadius: 3,
+  
+    borderRadius: 20,
   },
   closeBtn: {
     position: "absolute",
     right: 8,
     top: 8,
+  }, 
+  cardTitleDark:{
+    color: '#ffffff',
+    fontSize: '1em',
   },
+  cardTitle:{
+    color: '#000000',
+    fontSize: '1em',
+  },
+  darkIcon:{
+    color: '#ffffff'
+
+  }
 });
 
 class Home extends Component {
@@ -418,6 +430,7 @@ class Home extends Component {
       ordersQty: 0,
       takeQty: 0,
       smartbinQty: 4000,
+      smartbinQtyDefault: 4000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
       isContinuousReplenishment: false,
@@ -525,9 +538,18 @@ class Home extends Component {
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
+    this.handleManualOrder = this.handleManualOrder.bind(this);
 
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
+  }
+  handleManualOrder() {
+    const that = this;
+    let { smartbinQtyDefault, ordersQty, takeQty, smartbinQty, isContinuousReplenishment, smartbinGeneralStatus } = that.state
+    let order = smartbinQtyDefault - smartbinQty
+    this.setState({ ordersQty: order })
+    this.openOrderModal()
+
   }
   consume() {
     const that = this;
@@ -631,7 +653,7 @@ class Home extends Component {
   }
   continuousReplenishment(swt) {
     const that = this;
-    let timeout = (Math.floor(Math.random() * 3.5) + 1)* 1000
+    let timeout = (Math.floor(Math.random() * 3.5) + 1) * 1000
     let { isContinuousReplenishment } = that.state
     if (swt && isContinuousReplenishment) {
       setTimeout(() => {
@@ -1172,7 +1194,20 @@ class Home extends Component {
             <Close />
           </IconButton>
           <DialogContent>
-            <Typography variant="h6">New orders:{ordersQty}</Typography>
+          <CardHeader
+                classes={{ title: isDarkMode ? classes.cardTitleDark : classes.cardTitle }}
+
+                title="SmartBin"
+              >
+                <Typography variant="h6">SmartBin</Typography>
+              </CardHeader>
+            <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
+              
+              <CardContent>
+                <Typography variant="h6">New Order: </Typography>
+                <Typography variant="h6">Qty: {ordersQty}</Typography>
+              </CardContent>
+            </Card>
           </DialogContent>
         </Dialog>
         <Grid container spacing={1} className={classes.grid}>
@@ -1341,7 +1376,7 @@ class Home extends Component {
                   <br />
                   {isConfigured !== 'ok' && (<Typography style={{ color: 'darkred' }} variant="subtitle">You need MyAlgo Wallet</Typography>)}
                   {isConfigured === 'ok' && (<Tooltip title="Manual Order">
-                    <IconButton className={classes.iconButton}>
+                    <IconButton onClick={this.handleManualOrder} className={classes.iconButton}>
                       <ShoppingCartOutlined />
                     </IconButton>
                   </Tooltip>)}
