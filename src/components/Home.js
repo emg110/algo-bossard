@@ -820,7 +820,7 @@ class Home extends Component {
       "https://api.testnet.algoexplorer.io",
       ""
     );
-    let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet)
+    let thisAppProg = appProg.replaceAll('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet);
     store.addNotification({
       title: "Generating Dapp...",
       message: "Now Generating Algo Bossard dApp! ",
@@ -880,6 +880,7 @@ class Home extends Component {
       },
     });
     console.log("Signed transaction with txID: %s", txId);
+    window.localStorage.setItem('algo-bossard-dapp-txId',txId)
     console.log("Raw signed TXN: %s", rawSignedTxn);
 
     let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
@@ -910,7 +911,8 @@ class Home extends Component {
       .do();
     let appId = transactionResponse["application-index"];
     console.log("Created new app-id: ", appId);
-    this.setState({});
+    window.localStorage.setItem('algo-bossard-dapp-id',appId)
+    this.setState({appId});
     store.addNotification({
       title: "dApp Generated!",
       message: "Created new dApp: " + appId + " on Algorand!",
@@ -959,7 +961,7 @@ class Home extends Component {
 
     const lsig = algosdk.makeLogicSig(escroWprogram);
     const escrowAcc = lsig.address();
-
+    window.localStorage.setItem('algo-bossard-escrow-address',escrowAcc)
     this.setState({ escrowAddress: escrowAcc });
 
     store.addNotification({
