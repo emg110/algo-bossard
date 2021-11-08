@@ -50,6 +50,7 @@ const styles = (theme) => ({
   algoBossardImg: {
     float: "left",
     display: "inline",
+    cursor: 'pointer',
     [theme.breakpoints.down("lg")]: {
       width: "4%",
     },
@@ -146,6 +147,7 @@ class App extends Component {
                 src={algoBossardLogo}
                 className={classes.algoBossardImg}
                 alt="algo bossard"
+                onClick={this.openPresentation}
               />
               
               <div className={"App-name"}>

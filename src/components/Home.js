@@ -570,19 +570,17 @@ class Home extends Component {
     this.handleCloseOrderModal = this.handleCloseOrderModal.bind(this);
     this.handleCloseSupplyModal = this.handleCloseSupplyModal.bind(this);
     this.openOrderModal = this.openOrderModal.bind(this);
-
     this.fetchWalletInfo = this.fetchWalletInfo.bind(this);
     this.myAlgoConnect = this.myAlgoConnect.bind(this);
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
     this.register = this.register.bind(this);
     this.handleContinuousReplenishment =
-      this.handleContinuousReplenishment.bind(this);
+    this.handleContinuousReplenishment.bind(this);
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
     this.openSupplyModal = this.openSupplyModal.bind(this);
-
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
   }
@@ -1423,7 +1421,6 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                 <Grid item style={{ height: 86 }}>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
                     <Switch
-                      color="secondary"
                       checked={isDarkModeChecked}
                       onChange={this.handleDarkModeClick}
                     />
@@ -1468,8 +1465,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
 
                 <Grid item>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
-                    <Switch
-                      color="secondary"
+                    <Switch                    
                       checked={isDarkModeChecked}
                       onChange={this.handleDarkModeClick}
                     />
