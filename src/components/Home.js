@@ -792,6 +792,7 @@ class Home extends Component {
       },
     });
     await this.waitForConfirmation(algodClient, txId);
+    window.localStorage.setItem('algo-bossard-optin', 'ok')
     store.addNotification({
       title: "Welcome to Algo Bossard",
       message: "Done! Thank you for registering in Algo Bossard!",
@@ -810,7 +811,7 @@ class Home extends Component {
     });
   }
 
-  async deleteApps(wallet) {
+  async deleteApps(wallet, appId) {
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
@@ -848,7 +849,7 @@ class Home extends Component {
       })
     );
     let opttxnGroup = []
-    let appIndexArray = [42132004, 42151131, 42152652, 42260311, 42425047, 43750996, 43755140, 43755680,43758781];
+    let appIndexArray = [Number(appId)];
     appIndexArray.forEach((appIndex)=>{
       let txn = {
         ...params,
@@ -910,11 +911,15 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-    this.setState({ isConfiguring: false });
+    window.localStorage.removeItem("algo-bossard-dapp-txId");
+    window.localStorage.removeItem("algo-bossard-dapp-id");
+    window.localStorage.removeItem("algo-bossard-escrow-address");
+    
   }
 
   async compileProgram(client, programSource) {
     let compileResponse = await client.compile(programSource).do();
+    console.log("Compiled OK!")
     let compiledBytes = new Uint8Array(
       Buffer.from(compileResponse.result, "base64")
     );
@@ -951,6 +956,7 @@ class Home extends Component {
     let sender = wallet;
 
     const approvalProgram = await this.compileProgram(algodClient, thisAppProg);
+    console.log('dApp have been compiled!')
     const clearProgram = await this.compileProgram(algodClient, clearProg);
 
     let onComplete = algosdk.OnApplicationComplete.NoOpOC;
@@ -1038,7 +1044,7 @@ class Home extends Component {
     });
   }
 
-  async generateEscrow() {
+  async generateEscrow(dappId) {
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
@@ -1062,11 +1068,11 @@ class Home extends Component {
       },
     });
 
-    escrowProg.replaceAll("algoBossardAppId", Number(this.state.appId));
-    const escroWprogram = await this.compileProgram(algodClient, escrowProg);
+    let escrowProgSnd = escrowProg.replace("algoBossardAppId", Number(dappId));
+    const escrowProgram = await this.compileProgram(algodClient, escrowProgSnd);
 
     console.log('Escrow have been compiled!')
-    const lsig = new algosdk.LogicSigAccount(escroWprogram);
+    const lsig = new algosdk.LogicSigAccount(escrowProgram);
     const escrowAcc = lsig.address();
     window.localStorage.setItem('algo-bossard-escrow-address', escrowAcc)
     this.setState({ escrowAddress: escrowAcc });
@@ -1158,15 +1164,22 @@ class Home extends Component {
   async register() {
     this.setState({ isConfiguring: true });
     const wallet = await this.myAlgoConnect();
-    await this.assetOptIn(wallet);
-
-    await this.generateDapp(wallet);
-    window.localStorage.setItem("algo-bossard-wallet", wallet);
-    window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ wallet: wallet });
-
-    await this.generateEscrow();
-    //this.deleteApps(wallet)
+    window.localStorage.setItem("algo-bossard-wallet", wallet);
+    let inOptin = window.localStorage.getItem("algo-bossard-optin");
+    if(inOptin !== 'ok'){
+      await this.assetOptIn(wallet);
+    } 
+    
+   
+    let dappId = window.localStorage.getItem("algo-bossard-dapp-id");
+    if(dappId){
+      await this.deleteApps(wallet, dappId)
+    }
+    await this.generateDapp(wallet);
+    await this.generateEscrow(dappId);
+    window.localStorage.setItem("algo-bossard-configured", "ok");
+    this.setState({ isConfiguring: false });
   }
 
   fetchWalletInfo() {
