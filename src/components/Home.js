@@ -586,6 +586,7 @@ class Home extends Component {
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
   }
+
   openSupplyModal() {
     const that = this;
     let {
@@ -635,6 +636,7 @@ class Home extends Component {
       this.setState({ isOrderModalOpen: true });
     }
   }
+
   openOrderModal() {
     const that = this;
     let {
@@ -688,6 +690,7 @@ class Home extends Component {
       }
     });
   }
+
   consume() {
     const that = this;
     let {
@@ -787,6 +790,7 @@ class Home extends Component {
       ],
     });
   }
+
   continuousReplenishment(swt) {
     const that = this;
     let timeout = (Math.floor(Math.random() * 3.5) + 1) * 1000;
@@ -812,6 +816,7 @@ class Home extends Component {
       }
     );
   }
+
   checkAssetOptIn(wallet, asset) {
     const self = this;
     let isOptIn = false;
@@ -846,6 +851,7 @@ class Home extends Component {
         return false;
       });
   }
+
   async waitForConfirmation(algodClient, txId) {
     let response = await algodClient.status().do();
     let lastround = response["last-round"];
@@ -869,6 +875,7 @@ class Home extends Component {
       await algodClient.statusAfterBlock(lastround).do();
     }
   }
+
   async assetOptIn(wallet) {
     const algodClient = new algosdk.Algodv2(
       "",
@@ -972,6 +979,7 @@ class Home extends Component {
       },
     });
   }
+
   async compileProgram(client, programSource) {
     let compileResponse = await client.compile(programSource).do();
     let compiledBytes = new Uint8Array(
@@ -979,6 +987,7 @@ class Home extends Component {
     );
     return compiledBytes;
   }
+
   async generateDapp(wallet) {
     const algodClient = new algosdk.Algodv2(
       "",
@@ -1093,6 +1102,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       },
     });
   }
+
   async generateEscrow() {
     const algodClient = new algosdk.Algodv2(
       "",
@@ -1143,6 +1153,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       },
     });
   }
+
   generateWalletQRCode() {
     let {
       wallet,
@@ -1208,6 +1219,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       console.error(err);
     }
   }
+
   async register() {
     const wallet = await this.myAlgoConnect();
     await this.assetOptIn(wallet);
@@ -1276,14 +1288,17 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
         console.error("Error:", error);
       });
   }
+
   handleDarkModeClick() {
     const { isDarkMode, setIsDarkMode } = this.props;
     setIsDarkMode(!isDarkMode);
     this.setState({ isDarkModeChecked: !this.state.isDarkModeChecked });
   }
+
   handleCloseOrderModal() {
     this.setState({ isOrderModalOpen: false });
   }
+
   handleCloseSupplyModal() {
     this.setState({ isSupplyModalOpen: false });
   }
@@ -1720,6 +1735,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       </>
     );
   }
+  
 }
 Home.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
