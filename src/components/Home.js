@@ -44,182 +44,11 @@ import SmartLabel from "./SmartLabel.js";
 import algosdk from "algosdk";
 import MyAlgoConnect from "@randlabs/myalgo-connect";
 import { store } from "react-notifications-component";
-//import escrowProg from "../assets/smartcontracts/bossard-escrow.teal";
-//import appProg from '../assets/smartcontracts/bossard-approval.teal'
-//import clearProg from '../assets/smartcontracts/bossard-clear.teal'
+import SmartContracts from "../SmartContracts"
+
+const { appProg, escrowProg, clearProg } = SmartContracts;
 const bstAssetId = "40299547";
-const clearProg = `
-#pragma version 5
-int 1
-return
-`;
-const appProg = `
-#pragma version 5
-txn OnCompletion
-int NoOp
-==
-bnz handle_noop
 
-txn OnCompletion
-int OptIn
-==
-bnz handle_optin
-
-txn OnCompletion
-int CloseOut
-==
-bnz handle_closeout
-
-txn OnCompletion
-int UpdateApplication
-==
-bnz handle_updateapp
-
-txn OnCompletion
-int DeleteApplication
-==
-bnz handle_deleteapp
-
-
-err
-
-handle_noop:
-addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
-txn Sender
-==
-bnz handle_optin
-
-
-byte "bstcrqty"
-dup
-app_global_get
-
-
-int 1
-+
-
-
-dup
-store 0
-
-
-app_global_put
-
-
-int 0
-byte "bstcrqty"
-app_local_get
-
-
-int 1
-+
-store 1
-
-
-int 0
-byte "bstcrqty"
-load 1
-app_local_put
-
-
-int 0
-byte "bstqty"
-txn ApplicationArgs 0
-app_local_put
-
-
-load 0
-return
-
-handle_optin:
-// Handle OptIn
-// approval
-int 1
-return
-
-handle_closeout:
-// Handle CloseOut
-//approval
-int 1
-return
-
-handle_deleteapp:
-// Check for creator
-addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
-txn Sender
-==
-return
-
-handle_updateapp:
-// Check for creator
-addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
-txn Sender
-==
-return
-`;
-const escrowProg = `
-#pragma version 5
-b bcheck
-
-baxfer:
-txn AssetCloseTo
-global ZeroAddress
-==
-txn AssetAmount
-int 1
-==
-&&
-assert
-txn TypeEnum
-int axfer
-==
-txn AssetSender
-global ZeroAddress
-==
-&&
-assert
-int 1
-b fin
-
-bacfg:
-txn TypeEnum
-int acfg
-==
-b fin
-
-bcheck:
-gtxn 0 ApplicationID
-int algoBossardAppId
-==
-txn GroupIndex
-int 1
-==
-&&
-gtxn 0 TypeEnum
-int appl
-==
-&&
-assert
-txn RekeyTo
-global ZeroAddress
-==
-assert
-txn Fee
-global MinTxnFee
-<=
-assert
-gtxna 0 ApplicationArgs 0
-byte "bst_cfg"
-==
-bnz bacfg
-gtxna 0 ApplicationArgs 0
-byte "bst-xfer"
-==
-bnz baxfer
-err
-
-fin:
-`;
 const allAssets = [
   {
     _id: 12345678,
@@ -455,17 +284,18 @@ class Home extends Component {
     super(props);
     this.state = {
       wallet: "AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI",
+      walletSupplier: "LP6QRRBRDTDSP4HF7CSPWJV4AG4QWE437OYHGW7K5Y7DETKCSK5H3HCA7Q",
       walletDataURL: null,
       walletUri: null,
       escrowAddress: null,
       appId: "42151131",
-      description:
-        "Hexalobular socket pan washer head machine screws-ecosyn-fix",
+      description: "Hexalobular socket pan washer head machine screws-ecosyn-fix",
       expDate: "01.01.2035",
-      prodName: "ST",
-      ordersQty: 0,
+      prodName: "ST-42151131",
+      orderQty: 0,
+      orderNum: 0,
       supplyQty: 0,
-      takeQty: 0,
+      consumptionQty: 0,
       smartbinQty: 4000,
       smartbinQtyDefault: 4000,
       smartbinGeneralStatus: "green",
@@ -576,7 +406,7 @@ class Home extends Component {
     this.assetOptIn = this.assetOptIn.bind(this);
     this.register = this.register.bind(this);
     this.handleContinuousReplenishment =
-    this.handleContinuousReplenishment.bind(this);
+      this.handleContinuousReplenishment.bind(this);
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
@@ -589,13 +419,13 @@ class Home extends Component {
     const that = this;
     let {
       smartbinQtyDefault,
-      ordersQty,
-      takeQty,
+      orderQty,
+      consumptionQty,
       smartbinQty,
       isContinuousReplenishment,
       smartbinGeneralStatus,
     } = that.state;
-    let supply = ordersQty;
+    let supply = orderQty;
 
     if (supply === 0) {
       store.addNotification({
@@ -639,21 +469,19 @@ class Home extends Component {
     const that = this;
     let {
       smartbinQtyDefault,
-      ordersQty,
-      takeQty,
+      orderQty,
+      consumptionQty,
       smartbinQty,
       isContinuousReplenishment,
       smartbinGeneralStatus,
     } = that.state;
     let order = smartbinQtyDefault - smartbinQty;
-    this.setState({ ordersQty: order }, () => {
-      let { ordersQty } = that.state;
-      if (Number(ordersQty) === 0) {
+    this.setState({ orderQty: order }, () => {
+      let { orderQty } = that.state;
+      if (Number(orderQty) === 0) {
         store.addNotification({
           title: "Error",
-          message:
-            "There is no need for replenishment, currently! The SmartBin contains: " +
-            smartbinQty,
+          message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
           type: "danger",
           insert: "bottom",
           container: "bottom-left",
@@ -670,7 +498,7 @@ class Home extends Component {
       } else {
         store.addNotification({
           title: "Ordering...",
-          message: "Manually ordering in Qty: " + ordersQty,
+          message: "Manually ordering in Qty: " + orderQty,
           type: "info",
           insert: "bottom",
           container: "bottom-left",
@@ -692,8 +520,8 @@ class Home extends Component {
   consume() {
     const that = this;
     let {
-      ordersQty,
-      takeQty,
+      orderQty,
+      consumptionQty,
       smartbinQty,
       isContinuousReplenishment,
       smartbinGeneralStatus,
@@ -738,7 +566,7 @@ class Home extends Component {
     crSeries2.push(40);
     crSeries3.push(20);
     this.setState({
-      takeQty: take,
+      consumptionQty: take,
       smartbinQty: remVal,
       smartbinGeneralStatus: smartbinGeneralStatus,
       barChartSeries: newSeries,
@@ -863,9 +691,9 @@ class Home extends Component {
       ) {
         console.log(
           "Transaction " +
-            txId +
-            " confirmed in round " +
-            pendingInfo["confirmed-round"]
+          txId +
+          " confirmed in round " +
+          pendingInfo["confirmed-round"]
         );
         break;
       }
@@ -992,7 +820,7 @@ class Home extends Component {
       "https://api.testnet.algoexplorer.io",
       ""
     );
-let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI',wallet)
+    let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet).replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI', wallet)
     store.addNotification({
       title: "Generating Dapp...",
       message: "Now Generating Algo Bossard dApp! ",
@@ -1318,8 +1146,8 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       description,
       expDate,
       prodName,
-      ordersQty,
-      takeQty,
+      orderQty,
+      consumptionQty,
       smartbinQty,
       supplySty,
       isSupplyModalOpen,
@@ -1356,10 +1184,10 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                 }
               />
               <CardContent>
-                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>New Order: </Typography>
-                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>Qty: {ordersQty}</Typography>
-                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>OK</Button>
-                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>CANCEL</Button>
+                <Typography variant="h6" style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>New Order: </Typography>
+                <Typography variant="h6" style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>Qty: {orderQty}</Typography>
+                <Button style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>OK</Button>
+                <Button style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>CANCEL</Button>
               </CardContent>
             </Card>
           </DialogContent>
@@ -1395,10 +1223,10 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
             </CardHeader>
             <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
               <CardContent>
-                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>New Supply: </Typography>
-                <Typography variant="h6" style={{color: isDarkMode ? '#ffffff' : '#000000'}}>Qty: {supplySty}</Typography>
-                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>OK</Button>
-                <Button style={{color: isDarkMode ? '#ffffff' : '#000000'}}>CANCEL</Button>
+                <Typography variant="h6" style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>New Supply: </Typography>
+                <Typography variant="h6" style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>Qty: {supplySty}</Typography>
+                <Button style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>OK</Button>
+                <Button style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>CANCEL</Button>
               </CardContent>
             </Card>
           </DialogContent>
@@ -1427,18 +1255,18 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                   </Tooltip>
                 </Grid>
                 <Grid item style={{ height: 86 }}>
-                <Tooltip title="SmartBin status">
-                  <span
-                    className={
-                      smartbinGeneralStatus === "green"
-                        ? classes.greenStatus
-                        : smartbinGeneralStatus === "yellow"
-                        ? classes.yellowStatus
-                        : smartbinGeneralStatus === "blue"
-                        ? classes.blueStatus
-                        : classes.redStatus
-                    }
-                  ></span>
+                  <Tooltip title="SmartBin status">
+                    <span
+                      className={
+                        smartbinGeneralStatus === "green"
+                          ? classes.greenStatus
+                          : smartbinGeneralStatus === "yellow"
+                            ? classes.yellowStatus
+                            : smartbinGeneralStatus === "blue"
+                              ? classes.blueStatus
+                              : classes.redStatus
+                      }
+                    ></span>
                   </Tooltip>
                 </Grid>
               </Grid>
@@ -1455,17 +1283,17 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                       smartbinGeneralStatus === "green"
                         ? classes.greenStatus
                         : smartbinGeneralStatus === "yellow"
-                        ? classes.yellowStatus
-                        : smartbinGeneralStatus === "blue"
-                        ? classes.blueStatus
-                        : classes.redStatus
+                          ? classes.yellowStatus
+                          : smartbinGeneralStatus === "blue"
+                            ? classes.blueStatus
+                            : classes.redStatus
                     }
                   ></span>
                 </Grid>
 
                 <Grid item>
                   <Tooltip title={isDarkMode ? "Light mode" : "Dark mode"}>
-                    <Switch                    
+                    <Switch
                       checked={isDarkModeChecked}
                       onChange={this.handleDarkModeClick}
                     />
@@ -1482,51 +1310,51 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
             >
               <Grid style={{ padding: 26 }} container>
                 <Grid item xs={10} sm={10} md={10}>
-                <Tooltip title="SmartBin">
-                  <img
-                    src={
-                      smartbinGeneralStatus === "green"
-                        ? smartBin1
-                        : smartbinGeneralStatus === "yellow"
-                        ? smartBin3
-                        : smartbinGeneralStatus === "blue"
-                        ? smartBin2
-                        : smartBin4
-                    }
-                    className={classes.smartBinImg}
-                    alt="smart bin"
-                  />
+                  <Tooltip title="SmartBin">
+                    <img
+                      src={
+                        smartbinGeneralStatus === "green"
+                          ? smartBin1
+                          : smartbinGeneralStatus === "yellow"
+                            ? smartBin3
+                            : smartbinGeneralStatus === "blue"
+                              ? smartBin2
+                              : smartBin4
+                      }
+                      className={classes.smartBinImg}
+                      alt="smart bin"
+                    />
                   </Tooltip>
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
                   <br />
                   <Tooltip title="Configuration status">
-                  <div
-                    className={classes.badge}
-                    style={{
-                      backgroundColor:
-                        isConfigured === "ok" ? "#06ba0387" : "#f82a2aa3",
-                    }}
-                  >
-                    <BuildOutlined className={classes.icon} />
-                  </div>
+                    <div
+                      className={classes.badge}
+                      style={{
+                        backgroundColor:
+                          isConfigured === "ok" ? "#06ba0387" : "#f82a2aa3",
+                      }}
+                    >
+                      <BuildOutlined className={classes.icon} />
+                    </div>
                   </Tooltip>
                   <br />
                   <Tooltip title="Continus replenishment status">
-                  <div
-                    className={classes.badge}
-                    style={{
-                      backgroundColor: isContinuousReplenishment
-                        ? "#06ba0387"
-                        : "#f82a2aa3",
-                    }}
-                  >
-                    {isContinuousReplenishment ? (
-                      <CheckOutlined className={classes.icon} />
-                    ) : (
-                      <CloseOutlined className={classes.icon} />
-                    )}
-                  </div>
+                    <div
+                      className={classes.badge}
+                      style={{
+                        backgroundColor: isContinuousReplenishment
+                          ? "#06ba0387"
+                          : "#f82a2aa3",
+                      }}
+                    >
+                      {isContinuousReplenishment ? (
+                        <CheckOutlined className={classes.icon} />
+                      ) : (
+                        <CloseOutlined className={classes.icon} />
+                      )}
+                    </div>
                   </Tooltip>
                 </Grid>
               </Grid>
@@ -1541,9 +1369,9 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
               <Grid container item style={{ padding: 26 }}>
                 <Grid item xs={10} sm={10} md={10}>
                   <SmartLabel
-                    ordersQty={ordersQty}
+                    orderQty={orderQty}
                     smartbinQty={smartbinQty}
-                    takeQty={takeQty}
+                    consumptionQty={consumptionQty}
                     description={description}
                     expDate={expDate}
                     prodName={prodName}
@@ -1597,12 +1425,12 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
                       <br />
                       <br />
                       <Tooltip title={!isContinuousReplenishment
-                            ? "Turn ON Continuous Replenishment (Randomized)"
-                            : "Turn OFF Continuous Replenishment"}>
-                      <Switch
-                        onChange={this.handleContinuousReplenishment}
-                        color="secondary"
-                      />
+                        ? "Turn ON Continuous Replenishment (Randomized)"
+                        : "Turn OFF Continuous Replenishment"}>
+                        <Switch
+                          onChange={this.handleContinuousReplenishment}
+                          color="secondary"
+                        />
                       </Tooltip>
                     </>
                   )}
@@ -1731,7 +1559,7 @@ let thisAppProg = appProg.replace('AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX
       </>
     );
   }
-  
+
 }
 Home.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,

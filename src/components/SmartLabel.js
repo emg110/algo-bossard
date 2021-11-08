@@ -75,6 +75,8 @@ const styles = (theme) => ({
   subtitle: {
     fontSize: "9px",
     color: "#999999",
+    textAlign: 'left',
+    paddingLeft:'3px'
   },
   num: {
     fontSize: "13px",
@@ -115,7 +117,7 @@ class SmartLabel extends Component {
   }
 
   render() {
-    const { classes, description,expDate,prodName, isDarkMode,ordersQty,smartbinQty,takeQty } = this.props;
+    const { classes, description,expDate,prodName, isDarkMode,orderQty,smartbinQty,consumptionQty } = this.props;
     const {} = this.state;
 
     return (
@@ -133,13 +135,13 @@ class SmartLabel extends Component {
             <Typography className={classes.subtitle}>{expDate}</Typography>
           </Grid>
           <Grid item xs={9} sm={9} md={9} style={{ textAlign: "left" }}>
-          <Typography className={classes.topText}>QTY: {takeQty}</Typography>
+          <Typography className={classes.topText}>QTY: {consumptionQty}</Typography>
             <Typography className={isDarkMode ? classes.numDark : classes.num}>{smartbinQty}</Typography>
             <Typography className={isDarkMode ? classes.textDark : classes.text }>
               {description}
             </Typography>
             <div style={{ float: "right", marginRight: 4 }}>
-              <Typography className={classes.orders}>ORD : {ordersQty}</Typography>
+              <Typography className={classes.orders}>ORD : {orderQty}</Typography>
               <Typography className={classes.subText}>M6 X30/X30</Typography>
             </div>
           </Grid>
@@ -152,8 +154,8 @@ SmartLabel.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   assets: PropTypes.array.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
-  ordersQty: PropTypes.number.isRequired,
-  takeQty: PropTypes.number.isRequired,
+  orderQty: PropTypes.number.isRequired,
+  consumptionQty: PropTypes.number.isRequired,
   smartbinQty: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
   expDate: PropTypes.string.isRequired,
