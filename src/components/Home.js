@@ -407,6 +407,7 @@ class Home extends Component {
     this.myAlgoConnect = this.myAlgoConnect.bind(this);
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
+    this.funEscrow = this.funEscrow.bind(this);
     this.register = this.register.bind(this);
     this.handleContinuousReplenishment =
       this.handleContinuousReplenishment.bind(this);
@@ -811,6 +812,100 @@ class Home extends Component {
     });
   }
 
+  async funEscrow(wallet) {
+    let escrowAddress = window.localStorage.getItem("algo-bossard-escrow-address");
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+    store.addNotification({
+      title: "Funding escrow account...",
+      message: "Now funding SmartBin's escrow account: " + escrowAddress,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let sender = wallet;
+    let recipient = escrowAddress;
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+    let amount = 2000000;
+    let note = algosdk.encodeObj(
+      JSON.stringify({
+        system: "ALGOBOSSARD",
+        date: `${new Date()}`,
+      })
+    );
+
+    //let opttxnGroup = [];
+
+    let txn = {
+      ...params,
+
+      type: "pay",
+      from: sender,
+      to: recipient,
+      amount: amount,
+      note: note,
+      closeRemainderTo: undefined,
+      revocationTarget: undefined,
+    };
+
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
+    let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
+    let txId = sentTxn.txId;
+
+    store.addNotification({
+      title: "Waiting for transaction...",
+      message: "Now waiting for escrow fun transaction response from Algorand... ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    await this.waitForConfirmation(algodClient, txId);
+    window.localStorage.setItem('algo-bossard-fund', 'ok')
+    store.addNotification({
+      title: "Escrow funded!",
+      message: `Done! SmartBin Escrow Account founded for: 2000 MicroAlgos`,
+      type: "success",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+  }
+
   async deleteApps(wallet, appId) {
     const algodClient = new algosdk.Algodv2(
       "",
@@ -820,7 +915,7 @@ class Home extends Component {
 
     store.addNotification({
       title: "Deleting Apps...",
-      message: "Now deleting previous apps: 17601812! ",
+      message: "Now deleting previous apps:  " + appId,
       type: "info",
       insert: "bottom",
       container: "bottom-left",
@@ -850,7 +945,7 @@ class Home extends Component {
     );
     let opttxnGroup = []
     let appIndexArray = [Number(appId)];
-    appIndexArray.forEach((appIndex)=>{
+    appIndexArray.forEach((appIndex) => {
       let txn = {
         ...params,
         type: "appl",
@@ -865,8 +960,8 @@ class Home extends Component {
     })
     const groupID = await algosdk.computeGroupID(opttxnGroup)
     for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
-    
-    
+
+
 
 
     let rawSignedTxnGroup = await this.myAlgoWallet.signTransaction(opttxnGroup);
@@ -914,7 +1009,7 @@ class Home extends Component {
     window.localStorage.removeItem("algo-bossard-dapp-txId");
     window.localStorage.removeItem("algo-bossard-dapp-id");
     window.localStorage.removeItem("algo-bossard-escrow-address");
-    
+
   }
 
   async compileProgram(client, programSource) {
@@ -1167,17 +1262,19 @@ class Home extends Component {
     this.setState({ wallet: wallet });
     window.localStorage.setItem("algo-bossard-wallet", wallet);
     let inOptin = window.localStorage.getItem("algo-bossard-optin");
-    if(inOptin !== 'ok'){
+    if (inOptin !== 'ok') {
       await this.assetOptIn(wallet);
-    } 
-    
-   
+    }
+
+
     let dappId = window.localStorage.getItem("algo-bossard-dapp-id");
-    if(dappId){
+    if (dappId) {
       await this.deleteApps(wallet, dappId)
     }
     await this.generateDapp(wallet);
     await this.generateEscrow(dappId);
+    await this.funEscrow(wallet);
+    
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
   }
