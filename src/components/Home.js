@@ -407,7 +407,8 @@ class Home extends Component {
     this.myAlgoConnect = this.myAlgoConnect.bind(this);
     this.checkAssetOptIn = this.checkAssetOptIn.bind(this);
     this.assetOptIn = this.assetOptIn.bind(this);
-    this.funEscrow = this.funEscrow.bind(this);
+    this.fundEscrow = this.fundEscrow.bind(this);
+    this.fundEscrowBst = this.fundEscrowBst.bind(this);
     this.register = this.register.bind(this);
     this.handleContinuousReplenishment =
       this.handleContinuousReplenishment.bind(this);
@@ -812,7 +813,7 @@ class Home extends Component {
     });
   }
 
-  async funEscrow(wallet) {
+  async fundEscrow(wallet) {
     let escrowAddress = window.localStorage.getItem("algo-bossard-escrow-address");
     const algodClient = new algosdk.Algodv2(
       "",
@@ -852,11 +853,8 @@ class Home extends Component {
       })
     );
 
-    //let opttxnGroup = [];
-
     let txn = {
       ...params,
-
       type: "pay",
       from: sender,
       to: recipient,
@@ -906,6 +904,98 @@ class Home extends Component {
     });
   }
 
+  async fundEscrowBst(wallet) {
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+    store.addNotification({
+      title: "Funding Escrow BST...",
+      message: "Now Funding the escrow with 100 BST! ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let sender = wallet;
+    let recipient = sender;
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+    let amount = 1000;
+    let note = algosdk.encodeObj(
+      JSON.stringify({
+        system: "ALGOBOSSARD",
+        date: `${new Date()}`,
+      })
+    );
+
+    let txn = {
+      ...params,
+
+      type: "axfer",
+      assetIndex: Number(bstAssetId),
+      from: sender,
+      to: recipient,
+      amount: amount,
+      note: note,
+      closeRemainderTo: undefined,
+      revocationTarget: undefined,
+    };
+
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
+
+    let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
+    let txId = sentTxn.txId;
+
+    store.addNotification({
+      title: "Waiting for transaction...",
+      message: "Now waiting for Escrow BST fund transaction response from Algorand... ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    await this.waitForConfirmation(algodClient, txId);
+    window.localStorage.setItem('algo-bossard-fund-bst', 'ok')
+    store.addNotification({
+      title: "Escrow BST Funded",
+      message: "Done! Now SmartBin Escrow account is funded with 1000 BST!",
+      type: "success",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+  }
   async deleteApps(wallet, appId) {
     const algodClient = new algosdk.Algodv2(
       "",
@@ -1273,7 +1363,8 @@ class Home extends Component {
     }
     await this.generateDapp(wallet);
     await this.generateEscrow(dappId);
-    await this.funEscrow(wallet);
+    await this.fundEscrow(wallet);
+    await this.fundEscrowBst(wallet);
     
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
