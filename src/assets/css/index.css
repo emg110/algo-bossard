@@ -55,3 +55,25 @@ code {
     background-color: rgb(38, 174, 253);
     box-shadow: 0 0 1px 3px rgba(164, 223, 247, 0.5);
 }
+#spinning-circle {
+  animation-name: spinning-circle;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  width: 40px;
+  height: 40px;
+}
+
+@-webkit-keyframes spinning-circle {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transform-origin: 125% 125%;
+    transform-origin: 125% 125%;
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    -webkit-transform-origin: 125% 125%;
+    transform-origin: 125% 125%;
+  }
+}

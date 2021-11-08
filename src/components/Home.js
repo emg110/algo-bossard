@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, styled } from "@material-ui/core/styles";
 import bossardLogo from "../assets/images/logo.svg";
+import bossard from "../assets/images/bossard_icon.png";
 import algoBossardLogo from "../assets/images/algoBossard.png";
 import {
   ShoppingCartOutlined,
@@ -279,6 +280,7 @@ const styles = (theme) => ({
   },
 });
 
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -288,6 +290,7 @@ class Home extends Component {
       walletDataURL: null,
       walletUri: null,
       escrowAddress: null,
+      isConfiguring: false,
       appId: "42151131",
       description: "Hexalobular socket pan washer head machine screws-ecosyn-fix",
       expDate: "01.01.2035",
@@ -410,6 +413,7 @@ class Home extends Component {
     this.continuousReplenishment = this.continuousReplenishment.bind(this);
     this.generateDapp = this.generateDapp.bind(this);
     this.compileProgram = this.compileProgram.bind(this);
+    this.deleteApps = this.deleteApps.bind(this);
     this.openSupplyModal = this.openSupplyModal.bind(this);
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
@@ -806,6 +810,109 @@ class Home extends Component {
     });
   }
 
+  async deleteApps(wallet) {
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+    store.addNotification({
+      title: "Deleting Apps...",
+      message: "Now deleting previous apps: 17601812! ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let sender = wallet;
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+
+    let note = algosdk.encodeObj(
+      JSON.stringify({
+        system: "ALGOBOSSARD",
+        date: `${new Date()}`,
+      })
+    );
+    let opttxnGroup = []
+    let appIndexArray = [42132004, 42151131, 42152652, 42260311, 42425047, 43750996, 43755140, 43755680,43758781];
+    appIndexArray.forEach((appIndex)=>{
+      let txn = {
+        ...params,
+        type: "appl",
+        appIndex: appIndex,
+        from: sender,
+        appOnComplete: 5,
+        note: note,
+        closeRemainderTo: undefined,
+        revocationTarget: undefined,
+      };
+      opttxnGroup.push(txn)
+    })
+    const groupID = await algosdk.computeGroupID(opttxnGroup)
+    for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
+    
+    
+
+
+    let rawSignedTxnGroup = await this.myAlgoWallet.signTransaction(opttxnGroup);
+
+    let sigendTrxArray = [];
+    await rawSignedTxnGroup.forEach((txn) => {
+      sigendTrxArray.push(txn.blob);
+    });
+    let sentTxn = await algodClient.sendRawTransaction(sigendTrxArray).do();
+    let txId = sentTxn.txId;
+
+    store.addNotification({
+      title: "Waiting for transaction...",
+      message: "Now waiting for delete apps: " + appIndexArray.toString(),
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    await this.waitForConfirmation(algodClient, txId);
+    store.addNotification({
+      title: "dApp deleted!",
+      message: "Done! dApp deleted with IDs:" + appIndexArray.toString(),
+      type: "success",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    this.setState({ isConfiguring: false });
+  }
+
   async compileProgram(client, programSource) {
     let compileResponse = await client.compile(programSource).do();
     let compiledBytes = new Uint8Array(
@@ -852,9 +959,9 @@ class Home extends Component {
         ...params,
       },
       from: sender,
-      numLocalByteSlices: 1,
-      numGlobalByteSlices: 1,
-      numLocalInts: 1,
+      numLocalByteSlices: 2,
+      numGlobalByteSlices: 2,
+      numLocalInts: 2,
       numGlobalInts: 2,
       approvalProgram: approvalProgram,
       clearProgram: clearProgram,
@@ -880,7 +987,7 @@ class Home extends Component {
       },
     });
     console.log("Signed transaction with txID: %s", txId);
-    window.localStorage.setItem('algo-bossard-dapp-txId',txId)
+    window.localStorage.setItem('algo-bossard-dapp-txId', txId)
     console.log("Raw signed TXN: %s", rawSignedTxn);
 
     let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
@@ -911,8 +1018,8 @@ class Home extends Component {
       .do();
     let appId = transactionResponse["application-index"];
     console.log("Created new app-id: ", appId);
-    window.localStorage.setItem('algo-bossard-dapp-id',appId)
-    this.setState({appId});
+    window.localStorage.setItem('algo-bossard-dapp-id', appId)
+    this.setState({ appId });
     store.addNotification({
       title: "dApp Generated!",
       message: "Created new dApp: " + appId + " on Algorand!",
@@ -955,13 +1062,13 @@ class Home extends Component {
       },
     });
 
-    escrowProg.replace("algoBossardAppId", Number(this.state.appId));
+    escrowProg.replaceAll("algoBossardAppId", Number(this.state.appId));
     const escroWprogram = await this.compileProgram(algodClient, escrowProg);
-    //const clearProgram = await this.compileProgram(algodClient, clearProg);
 
-    const lsig = algosdk.makeLogicSig(escroWprogram);
+    console.log('Escrow have been compiled!')
+    const lsig = new algosdk.LogicSigAccount(escroWprogram);
     const escrowAcc = lsig.address();
-    window.localStorage.setItem('algo-bossard-escrow-address',escrowAcc)
+    window.localStorage.setItem('algo-bossard-escrow-address', escrowAcc)
     this.setState({ escrowAddress: escrowAcc });
 
     store.addNotification({
@@ -1049,6 +1156,7 @@ class Home extends Component {
   }
 
   async register() {
+    this.setState({ isConfiguring: true });
     const wallet = await this.myAlgoConnect();
     await this.assetOptIn(wallet);
 
@@ -1057,7 +1165,8 @@ class Home extends Component {
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ wallet: wallet });
 
-    //await this.generateEscrow();
+    await this.generateEscrow();
+    //this.deleteApps(wallet)
   }
 
   fetchWalletInfo() {
@@ -1153,6 +1262,7 @@ class Home extends Component {
       smartbinQty,
       supplySty,
       isSupplyModalOpen,
+      isConfiguring,
     } = this.state;
 
     return (
@@ -1381,7 +1491,7 @@ class Home extends Component {
                   />
                 </Grid>
                 <Grid item xs={2} sm={2} md={2}>
-                  {isConfigured !== "ok" && (
+                  {isConfigured !== "ok" && !isConfiguring && (
                     <Tooltip title="Configure SmartBin">
                       <IconButton
                         onClick={this.register}
@@ -1401,16 +1511,21 @@ class Home extends Component {
                       </IconButton>
                     </Tooltip>
                   )}
-                  {isConfigured !== "ok" && (
+                  {isConfigured !== "ok" && !isConfiguring && (
                     <Typography variant="body2">
                       ↑ Please configure SmartBin first!
                     </Typography>
                   )}
                   <br />
-                  {isConfigured !== "ok" && (
+                  {isConfigured !== "ok" && !isConfiguring && (
                     <Typography style={{ color: "darkred" }} variant="subtitle">
                       You need MyAlgo Wallet
                     </Typography>
+                  )}
+                  {isConfigured !== "ok" && isConfiguring && (
+                    <div id="spinning-circle">
+                      <img src={bossard} />
+                    </div>
                   )}
                   {isConfigured === "ok" && (
                     <Tooltip title="Manual Order">

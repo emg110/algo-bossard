@@ -148,7 +148,8 @@ return
 `;
 const escrowProg = `
 #pragma version 5
-b bcheck
+
+b bacheck
 
 baxfer:
 txn AssetCloseTo
@@ -176,7 +177,7 @@ int acfg
 ==
 b fin
 
-bcheck:
+bacheck:
 gtxn 0 ApplicationID
 int algoBossardAppId
 ==
@@ -208,7 +209,6 @@ bnz baxfer
 err
 
 fin:
-return
 `;
 const SmartContracts = { appProg, escrowProg, clearProg };
 
