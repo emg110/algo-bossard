@@ -29,82 +29,121 @@ txn OnCompletion
 int DeleteApplication
 ==
 bnz handle_deleteapp
-
-
-err
+b finerr
 
 handle_noop:
-addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
-txn Sender
-==
-bnz handle_optin
-
-
-byte "bstcrqty"
-dup
-app_global_get
-
-
 int 1
-+
+b bstart
 
 
-dup
-store 0
-
-
-app_global_put
-
-
-int 0
-byte "bstcrqty"
-app_local_get
-
-
-int 1
-+
-store 1
-
-
-int 0
-byte "bstcrqty"
-load 1
-app_local_put
-
-
-int 0
-byte "bstqty"
-txn ApplicationArgs 0
-app_local_put
-
-
-load 0
-return
 
 handle_optin:
-// Handle OptIn
-// approval
 int 1
-return
+b end
 
 handle_closeout:
-// Handle CloseOut
-//approval
 int 1
-return
+b end
 
 handle_deleteapp:
-// Check for creator
 addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
 txn Sender
 ==
-return
+b end
 
 handle_updateapp:
-// Check for creator
 addr AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI
 txn Sender
 ==
+b end
+
+bstart:
+txn ApplicationID
+bz end
+txna ApplicationArgs 0
+byte "escrow_set"
+==
+bnz bescrowset
+txna ApplicationArgs 0
+byte "bst_acfg"
+==
+bnz bacfg
+txna ApplicationArgs 0
+byte "bst-axfer"
+==
+bnz baxfer
+b finerr
+
+
+bescrowset:
+txn Sender
+global CreatorAddress
+==
+assert
+byte "bossardwallet"
+txna ApplicationArgs 1
+app_global_put
+int 1
+&&
+b end
+
+bacfgcheck:
+global GroupSize
+int 2
+==
+assert
+gtxn 1 Sender
+byte "bossardwallet"
+app_global_get
+==
+assert
+gtxn 1 TypeEnum
+int acfg
+==
+assert
+retsub
+
+bacfg:
+callsub bacfgcheck
+byte "ordercounter"
+app_global_get
+store 0
+gtxn 1 ConfigAssetName
+log
+byte "bstName"
+byte "BST-"
+load 0
+int 1
++
+itob
+concat
+app_global_put
+byte "ordercounter"
+dup
+app_global_get
+int 1
++
+app_global_put
+int 1
+b end
+
+baxfer:
+global GroupSize
+int 2
+==
+assert
+gtxn 1 Sender
+byte "bossardwallet"
+app_global_get
+==
+assert
+int 1
+&&
+b end
+
+finerr:
+err
+end:
 return
 `;
 const escrowProg = `
@@ -169,6 +208,7 @@ bnz baxfer
 err
 
 fin:
+return
 `;
 const SmartContracts = { appProg, escrowProg, clearProg };
 
