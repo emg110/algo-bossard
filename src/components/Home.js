@@ -72,6 +72,29 @@ const allAssets = [
 ];
 
 const styles = (theme) => ({
+  algoBtn: {
+    fontSize:'8px',
+    padding: "7px 28px",
+    backgroundColor: "#f1f1f1",
+    color: "#3d3c3c",
+    marginTop: "10px",
+    borderRadius:27,
+    [theme.breakpoints.down("xl")]: {
+      marginRight: "4%",
+    },
+    [theme.breakpoints.down("lg")]: {
+      marginRight: "3%",
+    },
+    [theme.breakpoints.down("md")]: {
+      marginRight: "4%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginRight: "3%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginRight: "2%",
+    },
+  },
   blueStatus: {
     width: "40px",
     height: "40px",
@@ -236,6 +259,16 @@ const styles = (theme) => ({
     borderRadius: 10,
     backgroundColor: "#242424",
   },
+   dialogRootIframe: {
+    borderRadius: 10,
+    backgroundColor: "#ffffff",
+    height:"75%"
+  },
+  dialogRootDarkIframe: {
+    borderRadius: 10,
+    backgroundColor: "#242424",
+    height:"75%"
+  },
   closeBtn: {
     position: "absolute",
     right: 8,
@@ -288,6 +321,7 @@ class Home extends Component {
       wallet: "AMESZ5UX7ZJL5M6GYEHXM63OMFCPOJ23UXCQ6CVTI2HVX6WUELYIY262WI",
       walletSupplier: "LP6QRRBRDTDSP4HF7CSPWJV4AG4QWE437OYHGW7K5Y7DETKCSK5H3HCA7Q",
       walletDataURL: null,
+      iframe: '',
       walletUri: null,
       escrowAddress: null,
       isConfiguring: false,
@@ -303,6 +337,7 @@ class Home extends Component {
       smartbinQtyDefault: 4000,
       smartbinGeneralStatus: "green",
       isSmartbinOk: false,
+      isAlgoExplorerModalOpen: false,
       isContinuousReplenishment: false,
       isSmartbinMaintenance: true,
       isOracleFullWidth: false,
@@ -1436,6 +1471,9 @@ class Home extends Component {
   handleCloseOrderModal() {
     this.setState({ isOrderModalOpen: false });
   }
+  handleCloseAlgoExplorerModal() {
+    this.setState({ isAlgoExplorerModalOpen: false });
+  }
 
   handleCloseSupplyModal() {
     this.setState({ isSupplyModalOpen: false });
@@ -1444,6 +1482,7 @@ class Home extends Component {
   render() {
     let isConfigured = window.localStorage.getItem("algo-bossard-configured");
     const { classes, isDarkMode } = this.props;
+    const that = this;
     const {
       smartbinGeneralStatus,
       isSmartbinOk,
@@ -1464,6 +1503,12 @@ class Home extends Component {
       supplySty,
       isSupplyModalOpen,
       isConfiguring,
+      appId,
+      escrowAddress,
+      wallet,
+      walletSupplier,
+      isAlgoExplorerModalOpen,
+      iframe
     } = this.state;
 
     return (
@@ -1542,6 +1587,40 @@ class Home extends Component {
                 <Button style={{ color: isDarkMode ? '#ffffff' : '#000000' }}>CANCEL</Button>
               </CardContent>
             </Card>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+        
+          open={isAlgoExplorerModalOpen}
+          onClose={this.handleCloseAlgoExplorerModal}
+          classes={{
+            paper: isDarkMode ? classes.dialogRootDarkIframe : classes.dialogRootIframe,
+          }}
+          fullWidth
+          maxWidth="xl"
+        >
+          <IconButton
+            className={classes.closeBtn}
+            onClick={this.handleCloseAlgoExplorerModal}
+          >
+            <Close />
+          </IconButton>
+          <DialogContent>
+          <CardHeader
+                classes={{
+                  title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+                }}
+                title="SmartBin"
+                avatar={
+                  <img
+                    src={algoBossardLogo}
+                    className={classes.algoBossardImg}
+                    alt="algo bossard"
+                  />
+                }
+              />
+          <iframe width="100%" height="100%" frameborder="no" allow="autoplay" src={iframe}></iframe>'
+            
           </DialogContent>
         </Dialog>
         <Grid container spacing={1} className={classes.grid}>
@@ -1671,6 +1750,25 @@ class Home extends Component {
                   </Tooltip>
                 </Grid>
               </Grid>
+              <Grid container alignItems="flex-end">
+              <Grid item xs={12} sm={12} md={12}>
+                <Button onClick={()=>{
+                  let iframeApp = window.localStorage.getItem('algo-bossard-dapp-id')
+                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/application/${iframeApp}`})
+                }}  className={classes.algoBtn}>
+                  APP
+                </Button>
+                <Button onClick={()=>{
+                  let iframeEscrow = window.localStorage.getItem('algo-bossard-escrow-address')
+                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeEscrow}`})
+                }} className={classes.algoBtn}>ESCROW</Button>
+                <Button onClick={()=>{
+                  let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
+                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorerapi.io/v2/accounts/${iframeWallet}`})
+                }} className={classes.algoBtn}>CONTROL ACC</Button>
+               
+              </Grid>
+            </Grid>
             </Card>
           </Grid>
           <Grid item xs={12} sm={5} md={5}>
