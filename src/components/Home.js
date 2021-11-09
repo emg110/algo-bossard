@@ -1766,7 +1766,7 @@ class Home extends Component {
                 }} className={classes.algoBtn}>ESCROW</Button>
                 <Button onClick={()=>{
                   let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
-                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorerapi.io/v2/accounts/${iframeWallet}`})
+                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeWallet}`})
                 }} className={classes.algoBtn}>CONTROL ACC</Button>
                
               </Grid>
@@ -1813,14 +1813,14 @@ class Home extends Component {
                     </Tooltip>
                   )}
                   {isConfigured !== "ok" && !isConfiguring && (
-                    <Typography variant="body2">
+                    <Typography style={{ fontSize: "12px" }} variant="body2">
                       ↑ Please configure SmartBin first!
                     </Typography>
                   )}
                   <br />
                   {isConfigured !== "ok" && !isConfiguring && (
-                    <Typography style={{ color: "darkred" }} variant="subtitle">
-                      You need MyAlgo Wallet
+                    <Typography style={{ color: "darkred", fontSize: "8px" }} variant="subtitle">
+                      You need a MyAlgo Wallet, min 1 Algo & 10 BST in it!
                     </Typography>
                   )}
                   {isConfigured !== "ok" && isConfiguring && (
