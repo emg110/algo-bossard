@@ -444,6 +444,13 @@ class Home extends Component {
       xaxis: {
         type: "numeric",
       },
+      assetsHeld: null,
+      assetsCreated: null,
+      balance: 0,
+      heldAssetsBalance: 0,
+      createdAssetsBalance: 0,
+      txnPayment: null,
+      txnTransfer: null
     };
     this.handleDarkModeClick = this.handleDarkModeClick.bind(this);
     this.handleCloseOrderModal = this.handleCloseOrderModal.bind(this);
@@ -467,7 +474,13 @@ class Home extends Component {
     this.consume = this.consume.bind(this);
     this.handleCloseAlgoExplorerModal = this.handleCloseAlgoExplorerModal.bind(this);
   }
-
+  /* componentDidUpdate() {
+   
+  } */
+  componentDidMount() {
+    let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
+    this.fetchWalletInfo(escrowAddress)
+  }
   openSupplyModal() {
     const that = this;
     let {
@@ -697,7 +710,7 @@ class Home extends Component {
   }
 
   checkAssetOptIn(wallet, asset) {
-    const self = this;
+    const that = this;
     let isOptIn = false;
     const url = `https://testnet.algoexplorerapi.io/idx2/v2/transactions?asset-id=${asset}&tx-type=axfer&address=${wallet}`;
     window
@@ -711,11 +724,11 @@ class Home extends Component {
       .then((data) => {
         if (data) {
           if (data.transactions) {
-            data.transactions.forEach((trx) => {
-              if (trx["asset-transfer-transaction"]) {
+            data.transactions.forEach((txn) => {
+              if (txn["asset-transfer-transaction"]) {
                 if (
-                  trx.sender === trx["asset-transfer-transaction"].receiver &&
-                  trx["asset-transfer-transaction"].amount === 0
+                  txn.sender === txn["asset-transfer-transaction"].receiver &&
+                  txn["asset-transfer-transaction"].amount === 0
                 ) {
                   isOptIn = true;
                 }
@@ -1352,11 +1365,11 @@ class Home extends Component {
 
     alrorandURI = `algorand://${wallet}?label=${label}`;
 
-    const self = this;
+    const that = this;
     opts.mode = "Auto";
     toDataURL(alrorandURI, opts)
       .then((res) => {
-        self.setState({ walletDataURL: res[0], walletUri: res[1] });
+        that.setState({ walletDataURL: res[0], walletUri: res[1] });
       })
       .catch((err) => {
         console.error(err);
@@ -1417,9 +1430,9 @@ class Home extends Component {
     this.setState({ isConfiguring: false });
   }
 
-  fetchWalletInfo() {
-    const { wallet } = this.state;
-    const self = this;
+  fetchWalletInfo(wallet) {
+
+    const that = this;
     const url = `https://testnet.algoexplorerapi.io/v2/accounts/${wallet}`;
     const urlTrx = `https://testnet.algoexplorerapi.io/idx2/v2/accounts/${wallet}/transactions?limit=10`;
     window
@@ -1433,7 +1446,7 @@ class Home extends Component {
       .then((data) => {
         if (data) {
           if (data.address === wallet) {
-            self.setState({
+            that.setState({
               assetsHeld: data.assets,
               assetsCreated: data["created-assets"],
               balance: data.amount / 1000000,
@@ -1458,12 +1471,12 @@ class Home extends Component {
       .then((data) => {
         if (data) {
           if (data.transactions) {
-            self.setState({
-              trxPayment: data.transactions.filter(
-                (trx) => !!trx["payment-transaction"]
+            that.setState({
+              txnPayment: data.transactions.filter(
+                (txn) => !!txn["payment-transaction"]
               ),
-              trxTransfer: data.transactions.filter(
-                (trx) => !!trx["asset-transfer-transaction"]
+              txnTransfer: data.transactions.filter(
+                (txn) => !!txn["asset-transfer-transaction"]
               ),
             });
           }
@@ -1481,14 +1494,20 @@ class Home extends Component {
   }
 
   handleCloseOrderModal() {
+    let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
+    this.fetchWalletInfo(escrowAddress)
     this.setState({ isOrderModalOpen: false });
   }
 
   handleCloseAlgoExplorerModal() {
+    let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
+    this.fetchWalletInfo(escrowAddress)
     this.setState({ isAlgoExplorerModalOpen: false });
   }
 
   handleCloseSupplyModal() {
+    let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
+    this.fetchWalletInfo(escrowAddress)
     this.setState({ isSupplyModalOpen: false });
   }
 
@@ -1521,7 +1540,10 @@ class Home extends Component {
       wallet,
       walletSupplier,
       isAlgoExplorerModalOpen,
-      iframe
+      iframe,
+      balance,
+      txnTransfer,
+      txnPayment
     } = this.state;
     let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
     let iframeEscrow = window.localStorage.getItem('algo-bossard-escrow-address')
@@ -1728,9 +1750,9 @@ class Home extends Component {
                   alignItems="center"
 
                 >
-                   <br />
+                  <br />
                   <Typography variant="subtitle" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
-                    {5}
+                    {balance}
                   </Typography>
                   <img src={isDarkMode ? algoWhite : algoLogo} className={classes.algoImg} />
                   <br />
@@ -1805,7 +1827,13 @@ class Home extends Component {
 
                     that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeWallet}` })
                   }} className={classes.algoBtn}>CONTROL ACC</Button>
-                  <Button href={`https://dispenser.testnet.aws.algodev.network/?account=${iframeEscrow}`} className={classes.algoBtn}>FUND</Button>
+                  <Button onClick={() => {
+
+                    that.setState({
+                      isAlgoExplorerModalOpen: true, iframe: `https://dispenser.testnet.aws.algodev.network/?account=${iframeEscrow}`
+                    })
+                  }} className={classes.algoBtn}>FUND</Button>
+
                 </Grid>
               </Grid>
             </Card>
@@ -1942,7 +1970,7 @@ class Home extends Component {
             md={isOracleFullWidth ? 12 : 3}
           >
             <OracleSmartView
-              assets={allAssets}
+              assets={txnTransfer}
               isDarkMode={isDarkMode}
               isOracleFullWidth={isOracleFullWidth}
               setFullWidth={(a, b, c) =>
@@ -1961,7 +1989,7 @@ class Home extends Component {
             md={isOrdersFullWidth ? 12 : 3}
           >
             <OrdersSmartView
-              assets={allAssets}
+              assets={txnTransfer}
               isDarkMode={isDarkMode}
               isOrdersFullWidth={isOrdersFullWidth}
               setFullWidth={(a, b, c) =>
@@ -1980,7 +2008,7 @@ class Home extends Component {
             md={isSupplyFullWidth ? 12 : 3}
           >
             <SupplySmartView
-              assets={allAssets}
+              assets={txnTransfer}
               isDarkMode={isDarkMode}
               isSupplyFullWidth={isSupplyFullWidth}
               setFullWidth={(a, b, c) =>
@@ -1999,7 +2027,7 @@ class Home extends Component {
             md={isTxnsFullWidth ? 12 : 3}
           >
             <TxnsSmartView
-              assets={allAssets}
+              assets={txnPayment}
               isDarkMode={isDarkMode}
               isTxnsFullWidth={isTxnsFullWidth}
               setFullWidth={(a, b, c) =>
