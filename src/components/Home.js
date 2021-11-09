@@ -454,6 +454,7 @@ class Home extends Component {
     this.openSupplyModal = this.openSupplyModal.bind(this);
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
+    this.handleCloseAlgoExplorerModal = this.handleCloseAlgoExplorerModal.bind(this);
   }
 
   openSupplyModal() {
@@ -1471,6 +1472,7 @@ class Home extends Component {
   handleCloseOrderModal() {
     this.setState({ isOrderModalOpen: false });
   }
+
   handleCloseAlgoExplorerModal() {
     this.setState({ isAlgoExplorerModalOpen: false });
   }
