@@ -11,6 +11,8 @@ import {
   CloseOutlined,
   Close,
 } from "@material-ui/icons";
+import algoLogo from "../assets/images/algo.png";
+import algoWhite from "../assets/images/algo-white.png";
 import GroupWork from "@material-ui/icons/GroupWork";
 import smartBin1 from "../assets/images/firstThresholdImage.png";
 import smartBin2 from "../assets/images/secondThresholdImage.png";
@@ -73,12 +75,12 @@ const allAssets = [
 
 const styles = (theme) => ({
   algoBtn: {
-    fontSize:'8px',
+    fontSize: '8px',
     padding: "7px 28px",
     backgroundColor: "#f1f1f1",
     color: "#3d3c3c",
     marginTop: "10px",
-    borderRadius:27,
+    borderRadius: 27,
     [theme.breakpoints.down("xl")]: {
       marginRight: "4%",
     },
@@ -132,6 +134,11 @@ const styles = (theme) => ({
   },
   smartLabelImg: {
     width: "50%",
+  },
+  algoImg: {
+    width: 16,
+    padding: 3,
+    display: "inline",
   },
   greenStatus: {
     width: "40px",
@@ -259,15 +266,19 @@ const styles = (theme) => ({
     borderRadius: 10,
     backgroundColor: "#242424",
   },
-   dialogRootIframe: {
+  dialogRootIframe: {
     borderRadius: 10,
     backgroundColor: "#ffffff",
-    height:"75%"
+    height: "75%"
   },
   dialogRootDarkIframe: {
     borderRadius: 10,
     backgroundColor: "#242424",
-    height:"75%"
+    height: "75%"
+  },
+  balance: {
+    display: "inline",
+    padding: 3,
   },
   closeBtn: {
     position: "absolute",
@@ -1401,7 +1412,7 @@ class Home extends Component {
     await this.generateEscrow(dappId);
     await this.fundEscrow(wallet);
     await this.fundEscrowBst(wallet);
-    
+
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
   }
@@ -1512,7 +1523,8 @@ class Home extends Component {
       isAlgoExplorerModalOpen,
       iframe
     } = this.state;
-
+    let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
+    let iframeEscrow = window.localStorage.getItem('algo-bossard-escrow-address')
     return (
       <>
         <Dialog
@@ -1592,7 +1604,7 @@ class Home extends Component {
           </DialogContent>
         </Dialog>
         <Dialog
-        
+
           open={isAlgoExplorerModalOpen}
           onClose={this.handleCloseAlgoExplorerModal}
           classes={{
@@ -1608,21 +1620,21 @@ class Home extends Component {
             <Close />
           </IconButton>
           <DialogContent>
-          <CardHeader
-                classes={{
-                  title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
-                }}
-                title="SmartBin"
-                avatar={
-                  <img
-                    src={algoBossardLogo}
-                    className={classes.algoBossardImg}
-                    alt="algo bossard"
-                  />
-                }
-              />
-          <iframe width="100%" height="100%" frameborder="no" allow="autoplay" src={iframe}></iframe>'
-            
+            <CardHeader
+              classes={{
+                title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+              }}
+              title="SmartBin"
+              avatar={
+                <img
+                  src={algoBossardLogo}
+                  className={classes.algoBossardImg}
+                  alt="algo bossard"
+                />
+              }
+            />
+            <iframe width="100%" height="100%" frameborder="no" allow="autoplay" src={iframe}></iframe>'
+
           </DialogContent>
         </Dialog>
         <Grid container spacing={1} className={classes.grid}>
@@ -1632,6 +1644,7 @@ class Home extends Component {
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
+
               <Grid
                 style={{ padding: 26 }}
                 container
@@ -1663,6 +1676,7 @@ class Home extends Component {
                     ></span>
                   </Tooltip>
                 </Grid>
+
               </Grid>
               <Grid
                 container
@@ -1694,6 +1708,8 @@ class Home extends Component {
                   </Tooltip>
                 </Grid>
               </Grid>
+
+
             </Card>
           </Grid>
           <Grid item xs={12} sm={4} md={5}>
@@ -1702,8 +1718,29 @@ class Home extends Component {
               elevation={1}
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
+
               <Grid style={{ padding: 26 }} container>
-                <Grid item xs={10} sm={10} md={10}>
+                <Grid
+
+                  item xs={2} sm={2} md={2}
+                  direction="column"
+                  justifyContent="center"
+                  alignItems="center"
+
+                >
+                   <br />
+                  <Typography variant="subtitle" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                    {5}
+                  </Typography>
+                  <img src={isDarkMode ? algoWhite : algoLogo} className={classes.algoImg} />
+                  <br />
+                  <br />
+                  <Typography variant="subtitle" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                    {1000}
+                  </Typography>
+                  <img src={bossard} className={classes.algoImg} />
+                </Grid>
+                <Grid item xs={8} sm={8} md={8}>
                   <Tooltip title="SmartBin">
                     <img
                       src={
@@ -1753,24 +1790,24 @@ class Home extends Component {
                 </Grid>
               </Grid>
               <Grid container alignItems="flex-end">
-              <Grid item xs={12} sm={12} md={12}>
-                <Button onClick={()=>{
-                  let iframeApp = window.localStorage.getItem('algo-bossard-dapp-id')
-                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/application/${iframeApp}`})
-                }}  className={classes.algoBtn}>
-                  APP
-                </Button>
-                <Button onClick={()=>{
-                  let iframeEscrow = window.localStorage.getItem('algo-bossard-escrow-address')
-                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeEscrow}`})
-                }} className={classes.algoBtn}>ESCROW</Button>
-                <Button onClick={()=>{
-                  let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
-                  that.setState({isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeWallet}`})
-                }} className={classes.algoBtn}>CONTROL ACC</Button>
-               
+                <Grid item xs={12} sm={12} md={12}>
+                  <Button onClick={() => {
+                    let iframeApp = window.localStorage.getItem('algo-bossard-dapp-id')
+                    that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/application/${iframeApp}` })
+                  }} className={classes.algoBtn}>
+                    APP
+                  </Button>
+                  <Button onClick={() => {
+
+                    that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeEscrow}` })
+                  }} className={classes.algoBtn}>ESCROW</Button>
+                  <Button onClick={() => {
+
+                    that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeWallet}` })
+                  }} className={classes.algoBtn}>CONTROL ACC</Button>
+                  <Button href={`https://dispenser.testnet.aws.algodev.network/?account=${iframeEscrow}`} className={classes.algoBtn}>FUND</Button>
+                </Grid>
               </Grid>
-            </Grid>
             </Card>
           </Grid>
           <Grid item xs={12} sm={5} md={5}>
@@ -1780,6 +1817,7 @@ class Home extends Component {
               classes={{ root: isDarkMode && classes.cardRootDark }}
             >
               <Grid container item style={{ padding: 26 }}>
+
                 <Grid item xs={10} sm={10} md={10}>
                   <SmartLabel
                     orderQty={orderQty}
