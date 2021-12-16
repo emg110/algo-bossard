@@ -28,6 +28,9 @@ const styles = (theme) => ({
   activeBtn: {
     backgroundColor: "#bee6fdbd",
   },
+  passiveBtn: {
+    backgroundColor: "white",
+  },
   cardRootDark: {
     backgroundColor: "#242424",
   },
@@ -41,6 +44,9 @@ const styles = (theme) => ({
   },
   darkIcon: {
     color: "#ffffff",
+  },
+  lightIcon: {
+    color: "#000000",
   },
 });
 
@@ -82,32 +88,32 @@ class OracleSmartView extends Component {
       <Card classes={{ root: isDarkMode && classes.cardRootDark }}>
         <CardHeader
           classes={{
-            title: isDarkMode ? classes.cardTitleDark : classes.cardTitle,
+            title: isDarkMode ? classes.cardTitleDark : classes.cardTitle
           }}
           action={
             <>
               <Tooltip title="Tile view">
                 <IconButton
                   onClick={this.handleClickTileView}
-                  className={isTileView && classes.activeBtn}
+                  className={isTileView ? classes.activeBtn : classes.passiveBtn}
                 >
-                  <Apps className={isDarkMode && classes.darkIcon} />
+                  <Apps className={isDarkMode ? classes.darkIcon : classes.lightIcon} />
                 </IconButton>
               </Tooltip>
               <Tooltip title="List view">
                 <IconButton
                   onClick={this.handleClickTableView}
-                  className={isTableView && classes.activeBtn}
+                  className={isTableView ? classes.activeBtn : classes.passiveBtn}
                 >
-                  <List className={isDarkMode && classes.darkIcon} />
+                  <List className={isDarkMode ? classes.darkIcon : classes.lightIcon} />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Full width">
                 <IconButton
                   onClick={this.handleFullWidthClick}
-                  className={isOracleFullWidth && classes.activeBtn}
+                  className={isOracleFullWidth ? classes.activeBtn : classes.passiveBtn}
                 >
-                  <Fullscreen className={isDarkMode && classes.darkIcon} />
+                  <Fullscreen className={isDarkMode ? classes.darkIcon : classes.lightIcon} />
                 </IconButton>
               </Tooltip>
             </>
@@ -124,7 +130,7 @@ class OracleSmartView extends Component {
 }
 OracleSmartView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isOracleFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
   isDarkMode: PropTypes.bool.isRequired,

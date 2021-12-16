@@ -124,7 +124,7 @@ class TxnsSmartView extends Component {
 }
 TxnsSmartView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isTxnsFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,
   isDarkMode: PropTypes.bool.isRequired,

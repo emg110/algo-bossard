@@ -118,7 +118,7 @@ class SupplySmartView extends Component {
 }
 SupplySmartView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isSupplyFullWidth: PropTypes.bool.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,

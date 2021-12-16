@@ -1390,6 +1390,104 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
+    
+
+    store.addNotification({
+      title: "Opting in...",
+      message: "Now opting into Bossard Smart Token: BST! ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    let params = await algodClient.getTransactionParams().do();
+    params.fee = 1000;
+    params.flatFee = true;
+    let sender = lsig.address();
+    let recipient = sender;
+    let revocationTarget = undefined;
+    let closeRemainderTo = undefined;
+    let amount = 0;
+    let note = algosdk.encodeObj(
+      JSON.stringify({
+        system: "ALGOBOSSARD",
+        date: `${new Date()}`,
+      })
+    );
+
+    //let opttxnGroup = [];
+
+    let txn = {
+      ...params,
+
+      type: "axfer",
+      assetIndex: Number(bstAssetId),
+      from: sender,
+      to: recipient,
+      amount: amount,
+      note: note,
+      closeRemainderTo: undefined,
+      revocationTarget: undefined,
+    };
+    /* 
+        const groupID = await algosdk.computeGroupID(opttxnGroup)
+        for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
+        
+     */
+
+    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
+
+    /* let sigendTrxArray = [];
+    await rawSignedTxnGroup.forEach((txn) => {
+      sigendTrxArray.push(txn.blob);
+    }); */
+
+    let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
+    let txId = sentTxn.txId;
+
+    store.addNotification({
+      title: "Waiting for transaction...",
+      message: "Now waiting for Opti-in transaction response from Algorand... ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    await this.waitForConfirmation(algodClient, txId);
+    window.localStorage.setItem('algo-bossard-optin', 'ok')
+    store.addNotification({
+      title: "Escro BST Optin",
+      message: "Done! Escrow has been generated and Opted into BST!",
+      type: "success",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
   }
 
   generateWalletQRCode() {
@@ -1475,9 +1573,9 @@ class Home extends Component {
     }
     await this.generateDapp(wallet);
     await this.generateEscrow(dappId);
-    //await this.generateBstEscrow();
+    await this.generateBstEscrow();
     await this.fundEscrow(wallet);
-    //await this.fundEscrowBst(wallet);
+    await this.fundEscrowBst(wallet);
 
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
@@ -1798,19 +1896,19 @@ class Home extends Component {
                 <Grid
 
                   item xs={2} sm={2} md={2}
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
+                  //direction="column"
+                  //justifyContent="center"
+                  //alignItems="center"
 
                 >
                   <br />
-                  <Typography variant="subtitle" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                  <Typography variant="subtitle1" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
                     {balance}
                   </Typography>
                   <img src={isDarkMode ? algoWhite : algoLogo} className={classes.algoImg} />
                   <br />
                   <br />
-                  <Typography variant="subtitle" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                  <Typography variant="subtitle1" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
                     {1000}
                   </Typography>
                   <img src={bossard} className={classes.algoImg} />
@@ -1938,7 +2036,7 @@ class Home extends Component {
                   )}
                   <br />
                   {isConfigured !== "ok" && !isConfiguring && (
-                    <Typography style={{ color: "darkred", fontSize: "8px" }} variant="subtitle">
+                    <Typography style={{ color: "darkred", fontSize: "8px" }} variant="subtitle1">
                       You need a MyAlgo Wallet, min 1 Algo & 10 BST in it!
                     </Typography>
                   )}

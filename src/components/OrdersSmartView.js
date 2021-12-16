@@ -124,7 +124,7 @@ class OrdersSmartView extends Component {
 }
 OrdersSmartView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isDarkMode: PropTypes.bool.isRequired,
   isOrdersFullWidth: PropTypes.bool.isRequired,
   setFullWidth: PropTypes.func.isRequired,

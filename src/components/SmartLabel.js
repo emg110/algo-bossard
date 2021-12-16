@@ -152,7 +152,7 @@ class SmartLabel extends Component {
 }
 SmartLabel.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isDarkMode: PropTypes.bool.isRequired,
   orderQty: PropTypes.number.isRequired,
   consumptionQty: PropTypes.number.isRequired,

@@ -8,7 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
-
+import nextId from "react-id-generator";
 const styles = (theme) => ({
   paper: {
     overflowX: "auto",
@@ -115,7 +115,7 @@ class TableView extends Component {
             <TableBody>
               {assets &&
                 assets.map((asset) => (
-                  <TableRow key={asset._id}> 
+                  <TableRow key={nextId()}> 
                   <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                       <Avatar src={asset.avatar} />
                     </TableCell>
@@ -139,7 +139,7 @@ class TableView extends Component {
 }
 TableView.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  assets: PropTypes.array.isRequired,
+  assets: PropTypes.array,
   isDarkMode: PropTypes.bool.isRequired,
   
 };
