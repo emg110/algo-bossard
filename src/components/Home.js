@@ -49,7 +49,7 @@ import MyAlgoConnect from "@randlabs/myalgo-connect";
 import { store } from "react-notifications-component";
 import SmartContracts from "../SmartContracts"
 
-const { appProg, escrowProg, clearProg } = SmartContracts;
+const { appProg, escrowProg, clearProg, bstEscrowProg } = SmartContracts;
 const bstAssetId = "40299547";
 
 const allAssets = [
@@ -450,7 +450,8 @@ class Home extends Component {
       heldAssetsBalance: 0,
       createdAssetsBalance: 0,
       txnPayment: null,
-      txnTransfer: null
+      txnTransfer: null,
+      bstEscrowAddress: null,
     };
     this.handleDarkModeClick = this.handleDarkModeClick.bind(this);
     this.handleCloseOrderModal = this.handleCloseOrderModal.bind(this);
@@ -1339,6 +1340,57 @@ class Home extends Component {
       },
     });
   }
+  async generateBstEscrow() {
+    const algodClient = new algosdk.Algodv2(
+      "",
+      "https://api.testnet.algoexplorer.io",
+      ""
+    );
+
+    store.addNotification({
+      title: "Escrow Generation...",
+      message: "Now Generating Algo Bossard SmartBin Escrow! ",
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+
+    
+    const bstEscrowProgram = await this.compileProgram(algodClient, bstEscrowProg);
+
+    
+    const lsig = new algosdk.LogicSigAccount(bstEscrowProgram);
+    const escrowAcc = lsig.address();
+    console.log('BST Escrow have been compiled: ', escrowAcc)
+    window.localStorage.setItem('algo-bossard-bst-escrow-address', escrowAcc)
+    this.setState({ bstEscrowAddress: escrowAcc });
+
+    store.addNotification({
+      title: "BST Escrow Generated!",
+      message: "BST Escrow Account created with address: " + escrowAcc,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+  }
 
   generateWalletQRCode() {
     let {
@@ -1423,8 +1475,9 @@ class Home extends Component {
     }
     await this.generateDapp(wallet);
     await this.generateEscrow(dappId);
+    //await this.generateBstEscrow();
     await this.fundEscrow(wallet);
-    await this.fundEscrowBst(wallet);
+    //await this.fundEscrowBst(wallet);
 
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });

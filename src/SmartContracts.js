@@ -155,16 +155,15 @@ baxfer:
 txn AssetCloseTo
 global ZeroAddress
 ==
-txn AssetAmount
-int 1
+txn CloseRemainderTo
+global ZeroAddress
 ==
 &&
-assert
 txn TypeEnum
 int axfer
 ==
-txn AssetSender
-global ZeroAddress
+txn XferAsset
+int 40299547
 ==
 &&
 assert
@@ -178,6 +177,7 @@ int acfg
 b fin
 
 bacheck:
+
 gtxn 0 ApplicationID
 int algoBossardAppId
 ==
@@ -203,13 +203,65 @@ byte "bst_cfg"
 ==
 bnz bacfg
 gtxna 0 ApplicationArgs 0
-byte "bst-xfer"
+byte "bst_xfer"
 ==
 bnz baxfer
 err
 
 fin:
+return
 `;
-const SmartContracts = { appProg, escrowProg, clearProg };
+const bstEscrowProg = `
+#pragma version 5
+
+b bacheck
+
+baxfer:
+txn AssetCloseTo
+global ZeroAddress
+==
+txn CloseRemainderTo
+global ZeroAddress
+==
+&&
+assert
+txn XferAsset
+int 40299547
+==
+assert
+int 1
+b fin
+
+bacfg:
+txn TypeEnum
+int acfg
+==
+b fin
+
+bacheck:
+txn RekeyTo
+global ZeroAddress
+==
+txn Fee
+global MinTxnFee
+<=
+&&
+assert
+txn TypeEnum
+int acfg
+==
+bnz bacfg
+
+txn TypeEnum
+int axfer
+==
+bnz baxfer
+
+err
+
+fin:
+return
+`;
+const SmartContracts = { appProg, escrowProg, clearProg, bstEscrowProg };
 
 export default SmartContracts
