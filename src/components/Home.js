@@ -2219,7 +2219,7 @@ class Home extends Component {
             md={isOracleFullWidth ? 12 : 3}
           >
             <OracleSmartView
-              assets={txnTransfer}
+              assets={[]}
               isDarkMode={isDarkMode}
               isOracleFullWidth={isOracleFullWidth}
               setFullWidth={(a, b, c) =>
@@ -2257,7 +2257,7 @@ class Home extends Component {
             md={isSupplyFullWidth ? 12 : 3}
           >
             <SupplySmartView
-              assets={txnTransfer}
+              assets={[]}
               isDarkMode={isDarkMode}
               isSupplyFullWidth={isSupplyFullWidth}
               setFullWidth={(a, b, c) =>
