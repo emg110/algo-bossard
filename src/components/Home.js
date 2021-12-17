@@ -874,8 +874,8 @@ class Home extends Component {
     });
   }
 
-  async fundEscrow(wallet) {
-    let escrowAddress = window.localStorage.getItem("algo-bossard-escrow-address");
+  async fundEscrow(wallet, escrowAddress) {
+    //let escrowAddress = window.localStorage.getItem("algo-bossard-escrow-address");
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
@@ -949,7 +949,7 @@ class Home extends Component {
     window.localStorage.setItem('algo-bossard-fund', 'ok')
     store.addNotification({
       title: "Escrow funded!",
-      message: `Done! SmartBin Escrow Account founded for: 2000 MicroAlgos`,
+      message: `Done! SmartBin Escrow Account funded for: 2000000 MicroAlgos`,
       type: "success",
       insert: "bottom",
       container: "bottom-left",
@@ -1340,7 +1340,7 @@ class Home extends Component {
       },
     });
   }
-  async generateBstEscrow() {
+  async generateBstEscrow(wallet) {
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
@@ -1364,16 +1364,16 @@ class Home extends Component {
       },
     });
 
-    
+
     const bstEscrowProgram = await this.compileProgram(algodClient, bstEscrowProg);
 
-    
+
     const lsig = new algosdk.LogicSigAccount(bstEscrowProgram);
     const escrowAcc = lsig.address();
     console.log('BST Escrow have been compiled: ', escrowAcc)
     window.localStorage.setItem('algo-bossard-bst-escrow-address', escrowAcc)
     this.setState({ bstEscrowAddress: escrowAcc });
-
+   
     store.addNotification({
       title: "BST Escrow Generated!",
       message: "BST Escrow Account created with address: " + escrowAcc,
@@ -1390,7 +1390,7 @@ class Home extends Component {
         waitForAnimation: false,
       },
     });
-    
+    await this.fundEscrow(wallet, escrowAcc)
 
     store.addNotification({
       title: "Opting in...",
@@ -1413,7 +1413,7 @@ class Home extends Component {
     params.fee = 1000;
     params.flatFee = true;
     let sender = lsig.address();
-    let recipient = sender;
+    let receiver = sender;
     let revocationTarget = undefined;
     let closeRemainderTo = undefined;
     let amount = 0;
@@ -1426,26 +1426,17 @@ class Home extends Component {
 
     //let opttxnGroup = [];
 
-    let txn = {
-      ...params,
 
-      type: "axfer",
-      assetIndex: Number(bstAssetId),
-      from: sender,
-      to: recipient,
-      amount: amount,
-      note: note,
-      closeRemainderTo: undefined,
-      revocationTarget: undefined,
-    };
+    let assetIndex = Number(bstAssetId)
+    const txn = algosdk.makeAssetTransferTxnWithSuggestedParams(sender, receiver, closeRemainderTo, revocationTarget, amount, note, assetIndex, params)
     /* 
         const groupID = await algosdk.computeGroupID(opttxnGroup)
         for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
         
      */
 
-    let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
-
+    //let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
+    const rawSignedTxn = algosdk.signLogicSigTransactionObject(txn, lsig)
     /* let sigendTrxArray = [];
     await rawSignedTxnGroup.forEach((txn) => {
       sigendTrxArray.push(txn.blob);
@@ -1573,8 +1564,8 @@ class Home extends Component {
     }
     await this.generateDapp(wallet);
     await this.generateEscrow(dappId);
-    await this.generateBstEscrow();
-    await this.fundEscrow(wallet);
+    await this.generateBstEscrow(wallet);
+    //await this.fundEscrow(wallet);
     await this.fundEscrowBst(wallet);
 
     window.localStorage.setItem("algo-bossard-configured", "ok");
@@ -1896,9 +1887,9 @@ class Home extends Component {
                 <Grid
 
                   item xs={2} sm={2} md={2}
-                  //direction="column"
-                  //justifyContent="center"
-                  //alignItems="center"
+                //direction="column"
+                //justifyContent="center"
+                //alignItems="center"
 
                 >
                   <br />
