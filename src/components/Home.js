@@ -971,7 +971,7 @@ class Home extends Component {
     });
   }
 
-  async fundEscrowBst(wallet) {
+  async fundEscrowBst(wallet, escrowAddress) {
     const algodClient = new algosdk.Algodv2(
       "",
       "https://api.testnet.algoexplorer.io",
@@ -999,7 +999,7 @@ class Home extends Component {
     params.fee = 1000;
     params.flatFee = true;
     let sender = wallet;
-    let recipient = sender;
+    let recipient = escrowAddress;
     let revocationTarget = undefined;
     let closeRemainderTo = undefined;
     let amount = 1000;
