@@ -276,7 +276,7 @@ const styles = (theme) => ({
     backgroundColor: "#242424",
     height: "75%"
   },
-  balance: {
+  balanceView: {
     display: "inline",
     padding: 3,
   },
@@ -446,7 +446,8 @@ class Home extends Component {
       },
       assetsHeld: null,
       assetsCreated: null,
-      balance: 0,
+      escrowBstBalance: 0,
+      walletBalance: 0,
       heldAssetsBalance: 0,
       createdAssetsBalance: 0,
       txnPayment: null,
@@ -481,7 +482,8 @@ class Home extends Component {
   } */
   componentDidMount() {
     let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
-    this.fetchWalletInfo(escrowAddress)
+    let escrowBstAddress = window.localStorage.getItem('algo-bossard-bst-escrow-address')
+    this.fetchWalletInfo(escrowBstAddress)
   }
   openSupplyModal() {
     const that = this;
@@ -548,15 +550,15 @@ class Home extends Component {
       let { orderQty } = that.state;
       if (Number(orderQty) === 0) {
         store.addNotification({
-          title: "Error",
+          title: "Warning",
           message: "There is no need for replenishment, currently! The SmartBin contains: " + smartbinQty,
-          type: "danger",
+          type: "warning",
           insert: "bottom",
           container: "bottom-left",
           animationIn: ["animated", "fadeIn"],
           animationOut: ["animated", "fadeOut"],
           dismiss: {
-            duration: 2000,
+            duration: 5000,
             onScreen: false,
             pauseOnHover: true,
             showIcon: true,
@@ -1649,12 +1651,30 @@ class Home extends Component {
       .then((data) => {
         if (data) {
           if (data.address === wallet) {
+            let heldAssetAmount
+            let createdAssetAmount
+            if(data.assets){
+              if(data.assets[0]){
+                heldAssetAmount = data.assets[0].amount
+              }
+              
+            }else{
+              heldAssetAmount = 0
+            }
+            if(data["created-assets"]){
+              if(data["created-assets"][0]){
+                createdAssetAmount = data["created-assets"][0].amount
+              }
+              
+            }else{
+              createdAssetAmount = 0
+            }
             that.setState({
               assetsHeld: data.assets,
               assetsCreated: data["created-assets"],
-              balance: data.amount / 1000000,
-              heldAssetsBalance: data.assets.length,
-              createdAssetsBalance: data["created-assets"].length,
+              escrowBstBalance: data.amount / 1000000,
+              heldAssetsBalance: heldAssetAmount,
+              createdAssetsBalance: createdAssetAmount,
             });
             console.log("Fetched wallet info: ", wallet);
            
@@ -1703,19 +1723,22 @@ class Home extends Component {
 
   handleCloseOrderModal() {
     let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
-    this.fetchWalletInfo(escrowAddress)
+    let escrowBstAddress = window.localStorage.getItem('algo-bossard-bst-escrow-address')
+    this.fetchWalletInfo(escrowBstAddress)
     this.setState({ isOrderModalOpen: false });
   }
 
   handleCloseAlgoExplorerModal() {
     let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
-    this.fetchWalletInfo(escrowAddress)
+    let escrowBstAddress = window.localStorage.getItem('algo-bossard-bst-escrow-address')
+    this.fetchWalletInfo(escrowBstAddress)
     this.setState({ isAlgoExplorerModalOpen: false });
   }
 
   handleCloseSupplyModal() {
     let escrowAddress = window.localStorage.getItem('algo-bossard-escrow-address')
-    this.fetchWalletInfo(escrowAddress)
+    let escrowBstAddress = window.localStorage.getItem('algo-bossard-bst-escrow-address')
+    this.fetchWalletInfo(escrowBstAddress)
     this.setState({ isSupplyModalOpen: false });
   }
 
@@ -1749,12 +1772,16 @@ class Home extends Component {
       walletSupplier,
       isAlgoExplorerModalOpen,
       iframe,
-      balance,
+      escrowBstBalance,
+      walletBalance,
+      heldAssetsBalance,
+      createdAssetsBalance,
       txnTransfer,
       txnPayment
     } = this.state;
     let iframeWallet = window.localStorage.getItem('algo-bossard-wallet')
     let iframeEscrow = window.localStorage.getItem('algo-bossard-escrow-address')
+    let iframeBstEscrow = window.localStorage.getItem('algo-bossard-bst-escrow-address')
     return (
       <>
         <Dialog
@@ -1959,14 +1986,14 @@ class Home extends Component {
 
                 >
                   <br />
-                  <Typography variant="subtitle1" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
-                    {balance}
+                  <Typography variant="subtitle1" className={classes.balanceView} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                    {escrowBstBalance}
                   </Typography>
                   <img src={isDarkMode ? algoWhite : algoLogo} className={classes.algoImg} />
                   <br />
                   <br />
-                  <Typography variant="subtitle1" className={classes.balance} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
-                    {1000}
+                  <Typography variant="subtitle1" className={classes.balanceView} style={{ color: isDarkMode && '#fff', verticalAlign: 'middle' }}>
+                    {heldAssetsBalance}
                   </Typography>
                   <img src={bossard} className={classes.algoImg} />
                 </Grid>
@@ -2029,7 +2056,7 @@ class Home extends Component {
                   </Button>
                   <Button onClick={() => {
 
-                    that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeEscrow}` })
+                    that.setState({ isAlgoExplorerModalOpen: true, iframe: `https://testnet.algoexplorer.io/address/${iframeBstEscrow}` })
                   }} className={classes.algoBtn}>ESCROW</Button>
                   <Button onClick={() => {
 
@@ -2038,7 +2065,7 @@ class Home extends Component {
                   <Button onClick={() => {
 
                     that.setState({
-                      isAlgoExplorerModalOpen: true, iframe: `https://dispenser.testnet.aws.algodev.network/?account=${iframeEscrow}`
+                      isAlgoExplorerModalOpen: true, iframe: `https://dispenser.testnet.aws.algodev.network/?account=${iframeBstEscrow}`
                     })
                   }} className={classes.algoBtn}>FUND</Button>
 
