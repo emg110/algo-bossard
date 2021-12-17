@@ -474,6 +474,7 @@ class Home extends Component {
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
     this.consume = this.consume.bind(this);
     this.handleCloseAlgoExplorerModal = this.handleCloseAlgoExplorerModal.bind(this);
+    this.generateTxnQRCode = this.generateTxnQRCode.bind(this);
   }
   /* componentDidUpdate() {
    
@@ -746,6 +747,23 @@ class Home extends Component {
   }
 
   async waitForConfirmation(algodClient, txId) {
+    store.addNotification({
+      title: "Waiting on transaction...",
+      message: "waiting for transaction: " + txId,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
+    console.log("waiting for transaction: ", txId)
     let response = await algodClient.status().do();
     let lastround = response["last-round"];
     while (true) {
@@ -775,10 +793,11 @@ class Home extends Component {
       "https://api.testnet.algoexplorer.io",
       ""
     );
-
+    console.log("Opting controller wallet into BST token")
     store.addNotification({
+
       title: "Opting in...",
-      message: "Now opting into Bossard Smart Token: BST! ",
+      message: "Now opting controller wallet into Bossard Smart Token: BST! ",
       type: "info",
       insert: "bottom",
       container: "bottom-left",
@@ -827,7 +846,7 @@ class Home extends Component {
         for (let i = 0; i < opttxnGroup.length; i++) opttxnGroup[i].group = groupID;
         
      */
-
+    console.log("Now signing the controller account's Optin transaction!")
     let rawSignedTxn = await this.myAlgoWallet.signTransaction(txn);
 
     /* let sigendTrxArray = [];
@@ -837,10 +856,10 @@ class Home extends Component {
 
     let sentTxn = await algodClient.sendRawTransaction(rawSignedTxn.blob).do();
     let txId = sentTxn.txId;
-
+    console.log("Controller account's Opti-in transaction sent to Algorand!", txId)
     store.addNotification({
-      title: "Waiting for transaction...",
-      message: "Now waiting for Opti-in transaction response from Algorand... ",
+      title: "Sent optin transaction...",
+      message: "Controller account's Opti-in transaction sent to Algorand: , " + txId,
       type: "info",
       insert: "bottom",
       container: "bottom-left",
@@ -856,22 +875,7 @@ class Home extends Component {
     });
     await this.waitForConfirmation(algodClient, txId);
     window.localStorage.setItem('algo-bossard-optin', 'ok')
-    store.addNotification({
-      title: "Welcome to Algo Bossard",
-      message: "Done! Thank you for registering in Algo Bossard!",
-      type: "success",
-      insert: "bottom",
-      container: "bottom-left",
-      animationIn: ["animated", "fadeIn"],
-      animationOut: ["animated", "fadeOut"],
-      dismiss: {
-        duration: 2000,
-        onScreen: false,
-        pauseOnHover: true,
-        showIcon: true,
-        waitForAnimation: false,
-      },
-    });
+
   }
 
   async fundEscrow(wallet, escrowAddress) {
@@ -1373,7 +1377,7 @@ class Home extends Component {
     console.log('BST Escrow have been compiled: ', escrowAcc)
     window.localStorage.setItem('algo-bossard-bst-escrow-address', escrowAcc)
     this.setState({ bstEscrowAddress: escrowAcc });
-   
+
     store.addNotification({
       title: "BST Escrow Generated!",
       message: "BST Escrow Account created with address: " + escrowAcc,
@@ -1510,13 +1514,37 @@ class Home extends Component {
     opts.mode = "Auto";
     toDataURL(alrorandURI, opts)
       .then((res) => {
-        that.setState({ walletDataURL: res[0], walletUri: res[1] });
+        that.setState({ walletDataURL: res, walletUri: alrorandURI });
       })
       .catch((err) => {
         console.error(err);
       });
   }
+  generateTxnQRCode(txnId) {
+    let {
+      
+      inverse,
+      version,
+      margin,
+      errorLevel,
+      lightColor,
+      darkColor,
+    } = this.state;
+    const errorCorrectionLevel = errorLevel;
+    const color = { light: lightColor, dark: darkColor };
 
+    const opts = {
+      inverse,
+      version,
+      margin,
+      errorCorrectionLevel,
+      color,
+    };
+ 
+    opts.mode = "Auto";
+    let dataUri = toDataURL(txnId, opts)
+    return dataUri
+  }
   async myAlgoConnect() {
     try {
       this.myAlgoWallet = new MyAlgoConnect();
@@ -1570,10 +1598,43 @@ class Home extends Component {
 
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
+    console.log("Setup complete! Welcome to Algo Bossard");
+    store.addNotification({
+      title: "Algo Bossard setup complete!",
+      message: "Welcome to Algo Bossard!",
+      type: "success",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
   }
 
   fetchWalletInfo(wallet) {
-
+    console.log("Fetching wallet info: ", wallet);
+    store.addNotification({
+      title: "Fetching wallet info!",
+      message: "Fetching wallet info: " + wallet,
+      type: "info",
+      insert: "bottom",
+      container: "bottom-left",
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: false,
+        pauseOnHover: true,
+        showIcon: true,
+        waitForAnimation: false,
+      },
+    });
     const that = this;
     const url = `https://testnet.algoexplorerapi.io/v2/accounts/${wallet}`;
     const urlTrx = `https://testnet.algoexplorerapi.io/idx2/v2/accounts/${wallet}/transactions?limit=10`;
@@ -1595,6 +1656,8 @@ class Home extends Component {
               heldAssetsBalance: data.assets.length,
               createdAssetsBalance: data["created-assets"].length,
             });
+            console.log("Fetched wallet info: ", wallet);
+           
           }
         }
       })
@@ -1614,6 +1677,7 @@ class Home extends Component {
         if (data) {
           if (data.transactions) {
             that.setState({
+              //https://testnet.algoexplorer.io/tx/
               txnPayment: data.transactions.filter(
                 (txn) => !!txn["payment-transaction"]
               ),
@@ -1621,6 +1685,8 @@ class Home extends Component {
                 (txn) => !!txn["asset-transfer-transaction"]
               ),
             });
+            console.log("Fetched wallet info: ", wallet);
+            
           }
         }
       })
