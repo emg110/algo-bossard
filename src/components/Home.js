@@ -1544,7 +1544,8 @@ class Home extends Component {
     };
 
     opts.mode = "Auto";
-    let dataUri = toDataURL(txnId, opts)
+    let text = "https://testnet.algoexplorer.io/tx/"+txnId
+    let dataUri = toDataURL(text, opts)
     return dataUri
   }
   async myAlgoConnect() {
@@ -1700,7 +1701,7 @@ class Home extends Component {
               (txn) => !!txn["payment-transaction"]
             )
             let txnPayment = txnPaymentFiltered.map((item) => ({
-              qrcode: "",
+              qrcode: that.generateTxnQRCode(item.id),
               txnId: item.id,
               url: "https://testnet.algoexplorer.io/tx/" + item.id,
               amount: item.amount
@@ -1709,7 +1710,7 @@ class Home extends Component {
               (txn) => !!txn["asset-transfer-transaction"]
             )
             let txnTransfer = txnTransferFiltered.map((item) => ({
-              qrcode: "",
+              qrcode: that.generateTxnQRCode(item.id),
               txnId: item.id,
               url: "https://testnet.algoexplorer.io/tx/" + item.id,
               amount: item.amount

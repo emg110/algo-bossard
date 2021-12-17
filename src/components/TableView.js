@@ -5,6 +5,7 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
+import Link from "@material-ui/core/Link";
 import TableRow from "@material-ui/core/TableRow";
 import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
@@ -121,7 +122,8 @@ class TableView extends Component {
                       {asset.txnId}
                     </TableCell>                   
                     <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                     {asset.url}
+                     <Link href={asset.url}>{asset.url}</Link>
+                     
                     </TableCell>
                     
                     

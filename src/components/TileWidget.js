@@ -5,6 +5,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import Avatar from "@material-ui/core/Avatar";
 import CardHeader from "@material-ui/core/CardHeader";
 import nextId from "react-id-generator";
@@ -99,8 +100,7 @@ class TileWiget extends Component {
                   <br />
                   <Typography className={classes.dataTitle}>URL:</Typography>
                   <Typography className={classes.subTitle}>
-                    {" "}
-                    {asset.url}
+                  <Link href={asset.url}>{asset.url}</Link>
                   </Typography>
                 
                 </div>
