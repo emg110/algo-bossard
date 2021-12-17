@@ -106,7 +106,9 @@ class TableView extends Component {
                 <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                   URL
                 </TableCell>
-                           
+                <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
+                  Amount
+                </TableCell>     
               
                 
               </TableRow>
@@ -123,6 +125,10 @@ class TableView extends Component {
                     </TableCell>                   
                     <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
                      <Link href={asset.url}>{asset.url}</Link>
+                     
+                    </TableCell>
+                    <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
+                    {asset.amount}
                      
                     </TableCell>
                     

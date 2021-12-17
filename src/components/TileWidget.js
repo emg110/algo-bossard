@@ -94,13 +94,17 @@ class TileWiget extends Component {
                 >
                   <Typography className={classes.dataTitle}>TXN ID:</Typography>
                   <Typography className={classes.subTitle}>
-                    {" "}
+                    
                     {asset.txnId}
                   </Typography>
                   <br />
                   <Typography className={classes.dataTitle}>URL:</Typography>
                   <Typography className={classes.subTitle}>
                   <Link href={asset.url}>{asset.url}</Link>
+                  </Typography>
+                  <Typography className={classes.dataTitle}>Amount:</Typography>
+                  <Typography className={classes.subTitle}>
+                  {asset.amount}
                   </Typography>
                 
                 </div>

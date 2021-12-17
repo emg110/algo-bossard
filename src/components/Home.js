@@ -1704,7 +1704,7 @@ class Home extends Component {
               qrcode: that.generateTxnQRCode(item.id),
               txnId: item.id,
               url: "https://testnet.algoexplorer.io/tx/" + item.id,
-              amount: item.amount
+              amount: item['payment-transaction']? item['payment-transaction'].amount : item.amount
             }))
             let txnTransferFiltered = data.transactions.filter(
               (txn) => !!txn["asset-transfer-transaction"]
@@ -1713,7 +1713,7 @@ class Home extends Component {
               qrcode: that.generateTxnQRCode(item.id),
               txnId: item.id,
               url: "https://testnet.algoexplorer.io/tx/" + item.id,
-              amount: item.amount
+              amount: item['asset-transfer-transaction']? item['asset-transfer-transaction'].amount : item.amount
             }))
             that.setState({
               txnPayment: txnPayment,
