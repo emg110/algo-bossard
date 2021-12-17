@@ -1522,7 +1522,7 @@ class Home extends Component {
         console.error(err);
       });
   }
-  generateTxnQRCode(txnId) {
+  async generateTxnQRCode(txnId) {
     let {
 
       inverse,
@@ -1545,7 +1545,7 @@ class Home extends Component {
 
     opts.mode = "Auto";
     let text = "https://testnet.algoexplorer.io/tx/"+txnId
-    let dataUri = toDataURL(text, opts)
+    let dataUri = await toDataURL(text, opts)
     return dataUri
   }
   async myAlgoConnect() {
@@ -1694,27 +1694,36 @@ class Home extends Component {
         },
       })
       .then((response) => response.json())
-      .then((data) => {
+      .then( (data) => {
         if (data) {
           if (data.transactions) {
             let txnPaymentFiltered = data.transactions.filter(
               (txn) => !!txn["payment-transaction"]
             )
-            let txnPayment = txnPaymentFiltered.map((item) => ({
-              qrcode: that.generateTxnQRCode(item.id),
-              txnId: item.id,
-              url: "https://testnet.algoexplorer.io/tx/" + item.id,
-              amount: item['payment-transaction']? item['payment-transaction'].amount : item.amount
-            }))
+            
+            let txnPayment = txnPaymentFiltered.map((item) => {
+              let qrcode =  that.generateTxnQRCode(item.id)
+             
+              return {
+                qrcode: qrcode,
+                txnId: item.id,
+                url: "https://testnet.algoexplorer.io/tx/" + item.id,
+                amount: item['payment-transaction']? item['payment-transaction'].amount : item.amount
+              }
+            })
             let txnTransferFiltered = data.transactions.filter(
               (txn) => !!txn["asset-transfer-transaction"]
             )
-            let txnTransfer = txnTransferFiltered.map((item) => ({
-              qrcode: that.generateTxnQRCode(item.id),
-              txnId: item.id,
-              url: "https://testnet.algoexplorer.io/tx/" + item.id,
-              amount: item['asset-transfer-transaction']? item['asset-transfer-transaction'].amount : item.amount
-            }))
+            let txnTransfer = txnTransferFiltered.map((item) => {
+              let qrcode =  that.generateTxnQRCode(item.id)
+            
+              return {
+                qrcode: qrcode,
+                txnId: item.id,
+                url: "https://testnet.algoexplorer.io/tx/" + item.id,
+                amount: item['asset-transfer-transaction']? item['asset-transfer-transaction'].amount : item.amount
+              }
+            })
             that.setState({
               txnPayment: txnPayment,
               txnTransfer: txnTransfer,
