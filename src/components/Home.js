@@ -1397,7 +1397,7 @@ class Home extends Component {
       },
     });
     await this.fundEscrow(wallet, escrowAcc)
-
+    await this.fundEscrowBst(wallet, escrowAcc);
     store.addNotification({
       title: "Opting in...",
       message: "Now opting into Bossard Smart Token: BST! ",
@@ -1597,7 +1597,7 @@ class Home extends Component {
     await this.generateEscrow(dappId);
     await this.generateBstEscrow(wallet);
     //await this.fundEscrow(wallet);
-    await this.fundEscrowBst(wallet);
+    //await this.fundEscrowBst(wallet);
 
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
