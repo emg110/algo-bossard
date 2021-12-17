@@ -82,7 +82,7 @@ class TileWiget extends Component {
                 action={
                   <Avatar
                     className={classes.avatar}
-                    // src={asset.avatar ? asset.avatar : avatarSample}
+                    src={asset.qrcode}
                   />
                 }
               />
@@ -91,25 +91,18 @@ class TileWiget extends Component {
                   className={classes.dataDiv}
                   // style={{ height: asset.description.length < 100 && 158 }}
                 >
-                  <Typography className={classes.dataTitle}>ID:</Typography>
+                  <Typography className={classes.dataTitle}>TXN ID:</Typography>
                   <Typography className={classes.subTitle}>
                     {" "}
-                    {asset._id}
+                    {asset.txnId}
                   </Typography>
                   <br />
-                  <Typography className={classes.dataTitle}>Title:</Typography>
+                  <Typography className={classes.dataTitle}>URL:</Typography>
                   <Typography className={classes.subTitle}>
                     {" "}
-                    {asset.name}
+                    {asset.url}
                   </Typography>
-                  <br />
-                  <Typography className={classes.dataTitle}>
-                    Description:
-                  </Typography>
-                  <Typography className={classes.subTitle}>
-                    {" "}
-                    {asset.description}
-                  </Typography>
+                
                 </div>
               </CardContent>
             </Card>

@@ -1524,7 +1524,7 @@ class Home extends Component {
   }
   generateTxnQRCode(txnId) {
     let {
-      
+
       inverse,
       version,
       margin,
@@ -1542,7 +1542,7 @@ class Home extends Component {
       errorCorrectionLevel,
       color,
     };
- 
+
     opts.mode = "Auto";
     let dataUri = toDataURL(txnId, opts)
     return dataUri
@@ -1653,20 +1653,20 @@ class Home extends Component {
           if (data.address === wallet) {
             let heldAssetAmount
             let createdAssetAmount
-            if(data.assets){
-              if(data.assets[0]){
+            if (data.assets) {
+              if (data.assets[0]) {
                 heldAssetAmount = data.assets[0].amount
               }
-              
-            }else{
+
+            } else {
               heldAssetAmount = 0
             }
-            if(data["created-assets"]){
-              if(data["created-assets"][0]){
+            if (data["created-assets"]) {
+              if (data["created-assets"][0]) {
                 createdAssetAmount = data["created-assets"][0].amount
               }
-              
-            }else{
+
+            } else {
               createdAssetAmount = 0
             }
             that.setState({
@@ -1677,7 +1677,7 @@ class Home extends Component {
               createdAssetsBalance: createdAssetAmount,
             });
             console.log("Fetched wallet info: ", wallet);
-           
+
           }
         }
       })
@@ -1696,17 +1696,30 @@ class Home extends Component {
       .then((data) => {
         if (data) {
           if (data.transactions) {
+            let txnPaymentFiltered = data.transactions.filter(
+              (txn) => !!txn["payment-transaction"]
+            )
+            let txnPayment = txnPaymentFiltered.map((item) => ({
+              qrcode: "",
+              txnId: item.id,
+              url: "https://testnet.algoexplorer.io/tx/" + item.id,
+              amount: item.amount
+            }))
+            let txnTransferFiltered = data.transactions.filter(
+              (txn) => !!txn["asset-transfer-transaction"]
+            )
+            let txnTransfer = txnTransferFiltered.map((item) => ({
+              qrcode: "",
+              txnId: item.id,
+              url: "https://testnet.algoexplorer.io/tx/" + item.id,
+              amount: item.amount
+            }))
             that.setState({
-              //https://testnet.algoexplorer.io/tx/
-              txnPayment: data.transactions.filter(
-                (txn) => !!txn["payment-transaction"]
-              ),
-              txnTransfer: data.transactions.filter(
-                (txn) => !!txn["asset-transfer-transaction"]
-              ),
+              txnPayment: txnPayment,
+              txnTransfer: txnTransfer,
             });
             console.log("Fetched wallet info: ", wallet);
-            
+
           }
         }
       })

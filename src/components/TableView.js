@@ -100,15 +100,13 @@ class TableView extends Component {
                   
                 </TableCell>
                 <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                  Id
+                  TXN ID
                 </TableCell>
                 <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                  Name
+                  URL
                 </TableCell>
                            
-                <TableCell align="left" className={classes.tableHeader} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                  Description
-                </TableCell>
+              
                 
               </TableRow>
             </TableHead>
@@ -117,18 +115,16 @@ class TableView extends Component {
                 assets.map((asset) => (
                   <TableRow key={nextId()}> 
                   <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                      <Avatar src={asset.avatar} />
+                      <Avatar src={asset.qrcode} />
                     </TableCell>
                   <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                      {asset._id}
+                      {asset.txnId}
                     </TableCell>                   
                     <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                     {asset.name}
+                     {asset.url}
                     </TableCell>
                     
-                    <TableCell align="left" className={classes.tableCell} style={{color: isDarkMode ? '#ffffff' : '#000000'}}>
-                      {asset.description}
-                    </TableCell>
+                    
                     
                   </TableRow>
                 ))}
