@@ -1602,6 +1602,7 @@ class Home extends Component {
     window.localStorage.setItem("algo-bossard-configured", "ok");
     this.setState({ isConfiguring: false });
     console.log("Setup complete! Welcome to Algo Bossard");
+    this.fetchWalletInfo(wallet)
     store.addNotification({
       title: "Algo Bossard setup complete!",
       message: "Welcome to Algo Bossard!",
